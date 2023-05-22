@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-require("dotenv").config();
 
 export async function initDb() {
   const mongoDB =

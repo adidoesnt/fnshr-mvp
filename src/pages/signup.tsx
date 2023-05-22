@@ -1,13 +1,20 @@
 import Head from "next/head";
 import AuthForm, { AuthFormNavigation } from "@/components/AuthForm";
+import axios from "axios";
 
 export default function SignupPage() {
-  const onSubmit = (username: string, password: string) => {
-    // submission logic
-    console.log({
-      username,
-      password,
-    });
+  const URI = "/api/signup";
+
+  const onSubmit = async (username: string, password: string) => {
+    try {
+      const response = await axios.post(URI, {
+        username,
+        password,
+      });
+      console.log(response.data);
+    } catch (err) {
+      console.log(err)
+    }
   };
 
   const navigation: AuthFormNavigation = {
