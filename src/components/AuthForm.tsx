@@ -13,7 +13,7 @@ export type AuthFormProps = {
   onSubmit: (username: string, password: string) => void;
 };
 
-export function AuthForm({ title, onSubmit }: AuthFormProps) {
+export default function AuthForm({ title, onSubmit }: AuthFormProps) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
