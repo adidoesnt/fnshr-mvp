@@ -1,7 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { initDb, closeDb } from "./repository";
 import bcrypt from "bcrypt";
-import { User } from "./schemas";
+import mongoose from "mongoose";
+
+const User = mongoose.model("User");
 
 type SignupStatus = "success" | "failure";
 
