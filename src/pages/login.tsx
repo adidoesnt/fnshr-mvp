@@ -1,14 +1,19 @@
 import Head from "next/head";
-import AuthForm from "@/components/AuthForm";
+import AuthForm, { AuthFormNavigation } from "@/components/AuthForm";
 
 export default function LoginPage() {
   const onSubmit = (username: string, password: string) => {
     // submission logic
     console.log({
       username,
-      password
-    })
-  }
+      password,
+    });
+  };
+
+  const navigation: AuthFormNavigation = {
+    link: { uri: "/signup", description: "Sign up." },
+    text: "Don't have an account?",
+  };
 
   return (
     <>
@@ -22,7 +27,11 @@ export default function LoginPage() {
           alignItems: "center",
         }}
       >
-        <AuthForm title={"Log In"} onSubmit={onSubmit} />
+        <AuthForm
+          title={"Log In"}
+          onSubmit={onSubmit}
+          navigation={navigation}
+        />
       </main>
     </>
   );
