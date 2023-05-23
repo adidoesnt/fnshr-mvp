@@ -11,8 +11,13 @@ export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    setGlobalUser: (state, action: PayloadAction<string>) => {
-      state.username = action.payload;
+    setGlobalUser: (
+      state,
+      action: PayloadAction<{ username: string; points: number }>
+    ) => {
+      const { username, points } = action.payload
+      state.username = username;
+      state.points = points
     },
   },
 });

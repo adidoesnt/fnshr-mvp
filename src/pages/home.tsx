@@ -6,8 +6,9 @@ import { useRouter } from "next/router";
 import Loading from "@/components/Loading";
 import { Button, Text } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
+import YourTasks, { YourTasksProps } from "@/components/YourTasks";
 
-type ContentProps = {
+type ContentProps = YourTasksProps & {
   points: number;
 };
 
@@ -16,7 +17,7 @@ function AddTaskButton() {
 
   const handleClick = () => {
     router.push("/addTask");
-  }
+  };
 
   return (
     <Button display={"flex"} onClick={handleClick}>
@@ -26,7 +27,7 @@ function AddTaskButton() {
   );
 }
 
-function Content({ points }: ContentProps) {
+function Content({ username, points }: ContentProps) {
   return (
     <>
       <Head>
@@ -42,6 +43,7 @@ function Content({ points }: ContentProps) {
       >
         <FnshrPoints points={points} />
         <AddTaskButton />
+        <YourTasks username={username} />
       </main>
     </>
   );
@@ -50,7 +52,7 @@ function Content({ points }: ContentProps) {
 export default function Home() {
   const router = useRouter();
   const user = useSelector(selectGlobalUser);
-  const points: number = user.points;
+  const { username, points } = user;
 
   const auth = user.username !== "";
 
@@ -58,5 +60,5 @@ export default function Home() {
     router.push("/login");
   }
 
-  return auth ? <Content points={points} /> : <Loading />;
+  return auth ? <Content username={username} points={points} /> : <Loading />;
 }

@@ -11,6 +11,8 @@ import { differenceInHours } from "date-fns";
 import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { fetchTasks } from "@/app/features/tasks/tasksSlice";
+import { store } from "@/app/store";
 
 export type TaskFormProps = {
   username: string;
@@ -47,6 +49,7 @@ export default function TaskForm({ username }: TaskFormProps) {
         pledge
       });
       console.log(response.data);
+      store.dispatch(fetchTasks());
       router.push("/home");
     } catch (err) {
       console.log(err);

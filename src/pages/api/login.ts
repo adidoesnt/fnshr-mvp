@@ -7,6 +7,7 @@ type LoginStatus = "success" | "not found" | "incorrect password";
 
 type Data = {
   username: string;
+  points: number;
   status: LoginStatus;
 };
 
@@ -23,9 +24,9 @@ export default async function handler(
       return res.status(404).json({ username, status: "not found", body: req.body } as any);
     } else {
       await closeDb();
-      const { hash } = user;
+      const { hash, points } = user;
       if (await bcrypt.compare(password, hash)) {
-        return res.status(200).json({ username, status: "success" });
+        return res.status(200).json({ username, points, status: "success" });
       } else {
         return res
           .status(401)

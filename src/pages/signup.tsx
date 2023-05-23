@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 
 export default function SignupPage() {
   const URI = "/api/signup";
-  
+
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -17,11 +17,12 @@ export default function SignupPage() {
         username,
         password,
       });
-      dispatch(setGlobalUser(username));
+      const { points } = response.data;
+      dispatch(setGlobalUser({ username, points }));
       console.log(response.data);
       router.push("/home");
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   };
 

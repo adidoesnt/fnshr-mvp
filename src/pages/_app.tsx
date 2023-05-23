@@ -3,6 +3,9 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { AppProps } from "next/app";
 import { store } from "@/app/store";
 import { Provider } from "react-redux";
+import { fetchTasks } from "@/app/features/tasks/tasksSlice";
+
+store.dispatch(fetchTasks());
 
 export default function App({ Component, pageProps }: AppProps) {
   const [isMobile, setIsMobile] = useState(false);

@@ -17,9 +17,10 @@ export default function LoginPage() {
         username,
         password,
       });
-      dispatch(setGlobalUser(username));
+      const { points } = response.data;
+      dispatch(setGlobalUser({ username, points }));
       console.log(response.data);
-      router.push("/home")
+      router.push("/home");
     } catch (err) {
       console.log(err);
     }

@@ -7,6 +7,7 @@ type SignupStatus = "success" | "failure" | "user already exists";
 
 type Data = {
   username: string;
+  points?: number;
   status: SignupStatus;
 };
 
@@ -35,7 +36,7 @@ export default async function handler(
           points
         }).save();
         await closeDb();
-        res.status(201).json({ username, status: "success" });
+        res.status(201).json({ username, points, status: "success" });
       } catch (err) {
         res.status(500).json({ username, status: "failure" });
       }
