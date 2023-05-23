@@ -8,6 +8,7 @@ type SignupStatus = "success" | "failure" | "user already exists";
 type Data = {
   username: string;
   points?: number;
+  friends?: string[],
   status: SignupStatus;
 };
 
@@ -24,6 +25,7 @@ export default async function handler(
     const hash = await bcrypt.hash(password, salt);
     const points = 0;
     const testUser = await User.findOne({ username });
+    const friends: string[] = [];
     if (testUser) {
       await closeDb();
       res.status(409).json({ username, status: "user already exists" });
@@ -33,10 +35,11 @@ export default async function handler(
           username,
           salt,
           hash,
-          points
+          points,
+          friends
         }).save();
         await closeDb();
-        res.status(201).json({ username, points, status: "success" });
+        res.status(201).json({ username, points, friends, status: "success" });
       } catch (err) {
         res.status(500).json({ username, status: "failure" });
       }

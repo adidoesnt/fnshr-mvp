@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
-import { selectGlobalUser } from "@/app/features/user/userSlice";
+import { selectGlobalUser, setFriends } from "@/app/features/user/userSlice";
 import { selectAllUsers } from "@/app/features/users/usersSlice";
 import Loading from "@/components/Loading";
 import { useState } from "react";
@@ -14,21 +14,41 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
+import axios from "axios";
+import { useDispatch } from "react-redux";
 
 type ContentProps = {
   username: string;
   users: any[];
+  friends: string[];
 };
 
-function Content({ username, users }: ContentProps) {
+function Content({ username, users, friends }: ContentProps) {
+  const URI = "api/addFriend";
+  const dispatch = useDispatch();
+
   const [searchValue, setSearchValue] = useState("");
   const filteredUsers = users.filter((user) => {
-    return user.username !== username && user.username.includes(searchValue);
+    return (
+      user.username !== username &&
+      user.username.includes(searchValue) &&
+      friends.findIndex((friend) => friend === user.username) === -1
+    );
   });
 
-  const handleAddFriend = () => {
-    // TODO: implement logic
-  };
+  async function handleAddFriend(friend: string) {
+    try {
+      const response = await axios.post(URI, {
+        username,
+        friend,
+      });
+      console.log(response.data);
+      const { friends } = response.data;
+      dispatch(setFriends(friends));
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   return (
     <Center flexDir={"column"} m={25}>
@@ -51,7 +71,7 @@ function Content({ username, users }: ContentProps) {
                 ml={2.5}
                 aria-label="add friend"
                 icon={<AddIcon />}
-                onClick={handleAddFriend}
+                onClick={() => handleAddFriend(user.username)}
               />
             </CardBody>
           </Card>
@@ -65,7 +85,7 @@ export default function AddFriends() {
   const router = useRouter();
   const user = useSelector(selectGlobalUser);
   const users = useSelector(selectAllUsers);
-  const { username } = user;
+  const { username, friends } = user;
 
   const auth = username !== "";
 
@@ -73,5 +93,9 @@ export default function AddFriends() {
     router.push("/login");
   }
 
-  return auth ? <Content username={username} users={users} /> : <Loading />;
+  return auth ? (
+    <Content username={username} users={users} friends={friends} />
+  ) : (
+    <Loading />
+  );
 }

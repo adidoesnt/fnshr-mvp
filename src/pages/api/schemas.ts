@@ -6,6 +6,7 @@ export const userSchema = new Schema({
   salt: { type: String, required: true },
   hash: { type: String, required: true },
   points: { type: Number, required: true },
+  friends: { type: [String], required: true },
 });
 
 export const taskSchema = new Schema({
