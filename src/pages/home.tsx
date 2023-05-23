@@ -7,6 +7,7 @@ import Loading from "@/components/Loading";
 import { Button, Text } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
 import YourTasks, { YourTasksProps } from "@/components/YourTasks";
+import FriendsTasks from "@/components/FriendsTasks";
 
 type ContentProps = YourTasksProps & {
   points: number;
@@ -44,6 +45,7 @@ function Content({ username, points }: ContentProps) {
         <FnshrPoints points={points} />
         <AddTaskButton />
         <YourTasks username={username} />
+        <FriendsTasks friends={[]} /> {/* TODO: change this to fetch friends */}
       </main>
     </>
   );
