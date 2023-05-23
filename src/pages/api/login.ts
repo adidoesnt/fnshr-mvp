@@ -1,9 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { initDb, closeDb } from "./repository";
 import bcrypt from "bcrypt";
-import mongoose from "mongoose";
-
-const User = mongoose.model("User");
+import { User } from "./schemas";
 
 type LoginStatus = "success" | "not found" | "incorrect password";
 

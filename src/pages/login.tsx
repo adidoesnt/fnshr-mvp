@@ -3,11 +3,13 @@ import AuthForm, { AuthFormNavigation } from "@/components/AuthForm";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setGlobalUser } from "@/app/features/user/userSlice";
-
-const URI = "/api/login";
+import { useRouter } from "next/router";
 
 export default function LoginPage() {
+  const URI = "/api/login";
+
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const onSubmit = async (username: string, password: string) => {
     try {
@@ -17,6 +19,7 @@ export default function LoginPage() {
       });
       dispatch(setGlobalUser(username));
       console.log(response.data);
+      router.push("/home")
     } catch (err) {
       console.log(err);
     }

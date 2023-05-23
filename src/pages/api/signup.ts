@@ -1,9 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { initDb, closeDb } from "./repository";
 import bcrypt from "bcrypt";
-import mongoose from "mongoose";
-
-const User = mongoose.model("User");
+import { User } from "./schemas";
 
 type SignupStatus = "success" | "failure" | "user already exists";
 
@@ -23,6 +21,7 @@ export default async function handler(
     const { username, password } = req.body;
     const salt = await bcrypt.genSalt(saltRounds);
     const hash = await bcrypt.hash(password, salt);
+    const points = 0;
     const testUser = await User.findOne({ username });
     if (testUser) {
       await closeDb();
@@ -33,6 +32,7 @@ export default async function handler(
           username,
           salt,
           hash,
+          points
         }).save();
         await closeDb();
         res.status(201).json({ username, status: "success" });
