@@ -6,6 +6,7 @@ import { Provider } from "react-redux";
 import { fetchTasks } from "@/app/features/tasks/tasksSlice";
 
 store.dispatch(fetchTasks());
+setInterval(() => store.dispatch(fetchTasks()), 60000);
 
 export default function App({ Component, pageProps }: AppProps) {
   const [isMobile, setIsMobile] = useState(false);
