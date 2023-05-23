@@ -1,4 +1,3 @@
-import { User } from "@/fnshr";
 import { Center, Heading } from "@chakra-ui/react";
 
 export type FnshrPointsProps = {
@@ -7,7 +6,7 @@ export type FnshrPointsProps = {
 
 export default function FnshrPoints({ points }: FnshrPointsProps) {
     return (
-        <Center>
+        <Center w={"90%"} m={50}>
             <Heading>
                 Fnshr Points: {points}
             </Heading>
