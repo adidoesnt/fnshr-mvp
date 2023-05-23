@@ -5,13 +5,28 @@ import FnshrPoints from "@/components/FnshrPoints";
 import { useRouter } from "next/router";
 import Loading from "@/components/Loading";
 import { Button, Text } from "@chakra-ui/react";
-import { AddIcon } from "@chakra-ui/icons";
+import { AddIcon, SearchIcon } from "@chakra-ui/icons";
 import YourTasks, { YourTasksProps } from "@/components/YourTasks";
 import FriendsTasks from "@/components/FriendsTasks";
 
 type ContentProps = YourTasksProps & {
   points: number;
 };
+
+function AddFriendsButton() {
+  const router = useRouter();
+
+  const handleClick = () => {
+    router.push("/addFriends");
+  }
+
+  return (
+    <Button display={"flex"} onClick={handleClick} mb={5} w={200}>
+      <Text m={2.5}>Add Friends</Text>
+      <SearchIcon m={2.5} />
+    </Button>
+  );
+}
 
 function AddTaskButton() {
   const router = useRouter();
@@ -21,7 +36,7 @@ function AddTaskButton() {
   };
 
   return (
-    <Button display={"flex"} onClick={handleClick}>
+    <Button display={"flex"} onClick={handleClick} w={200}>
       <Text m={2.5}>Add Task</Text>
       <AddIcon m={2.5} />
     </Button>
@@ -43,6 +58,7 @@ function Content({ username, points }: ContentProps) {
         }}
       >
         <FnshrPoints points={points} />
+        <AddFriendsButton />
         <AddTaskButton />
         <YourTasks username={username} />
         <FriendsTasks friends={[]} /> {/* TODO: change this to fetch friends */}

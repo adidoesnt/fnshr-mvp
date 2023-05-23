@@ -4,9 +4,16 @@ import { AppProps } from "next/app";
 import { store } from "@/app/store";
 import { Provider } from "react-redux";
 import { fetchTasks } from "@/app/features/tasks/tasksSlice";
+import { fetchUsers } from "@/app/features/users/usersSlice";
 
-store.dispatch(fetchTasks());
-setInterval(() => store.dispatch(fetchTasks()), 60000);
+store.dispatch(fetchTasks()).then(() => {
+  store.dispatch(fetchUsers());
+});
+setInterval(() => {
+  store.dispatch(fetchTasks()).then(() => {
+    store.dispatch(fetchUsers());
+  });
+}, 60000);
 
 export default function App({ Component, pageProps }: AppProps) {
   const [isMobile, setIsMobile] = useState(false);
