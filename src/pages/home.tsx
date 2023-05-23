@@ -11,6 +11,7 @@ import FriendsTasks from "@/components/FriendsTasks";
 
 type ContentProps = YourTasksProps & {
   points: number;
+  friends: string[];
 };
 
 function AddFriendsButton() {
@@ -18,7 +19,7 @@ function AddFriendsButton() {
 
   const handleClick = () => {
     router.push("/addFriends");
-  }
+  };
 
   return (
     <Button display={"flex"} onClick={handleClick} mb={5} w={200}>
@@ -43,7 +44,7 @@ function AddTaskButton() {
   );
 }
 
-function Content({ username, points }: ContentProps) {
+function Content({ username, points, friends }: ContentProps) {
   return (
     <>
       <Head>
@@ -61,7 +62,7 @@ function Content({ username, points }: ContentProps) {
         <AddFriendsButton />
         <AddTaskButton />
         <YourTasks username={username} />
-        <FriendsTasks friends={[]} /> {/* TODO: change this to fetch friends */}
+        <FriendsTasks friends={friends} />
       </main>
     </>
   );
@@ -70,7 +71,7 @@ function Content({ username, points }: ContentProps) {
 export default function Home() {
   const router = useRouter();
   const user = useSelector(selectGlobalUser);
-  const { username, points } = user;
+  const { username, points, friends } = user;
 
   const auth = user.username !== "";
 
@@ -78,5 +79,9 @@ export default function Home() {
     router.push("/login");
   }
 
-  return auth ? <Content username={username} points={points} /> : <Loading />;
+  return auth ? (
+    <Content username={username} points={points} friends={friends} />
+  ) : (
+    <Loading />
+  );
 }

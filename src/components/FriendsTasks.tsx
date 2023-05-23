@@ -41,10 +41,12 @@ export default function FriendsTasks({ friends }: FriendsTasksProps) {
       </Center>
       {buttonText === "hide"
         ? filteredTasks.map((task: any, index: number) => {
-            const { name, deadline, pledge, status } = task;
+            const { username, name, deadline, pledge, status } = task;
             return (
               <Card key={index} m={2.5}>
                 <CardHeader>
+                  <Heading fontSize={20}>Friend:</Heading>
+                  <Text>{username}</Text><br />
                   <Heading fontSize={20}>Task Name:</Heading>
                   <Text>{name}</Text>
                 </CardHeader>
