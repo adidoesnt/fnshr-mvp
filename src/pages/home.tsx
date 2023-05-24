@@ -4,10 +4,12 @@ import Head from "next/head";
 import FnshrPoints from "@/components/FnshrPoints";
 import { useRouter } from "next/router";
 import Loading from "@/components/Loading";
-import { Button, Text } from "@chakra-ui/react";
+import { Button, Flex, Text } from "@chakra-ui/react";
 import { AddIcon, SearchIcon } from "@chakra-ui/icons";
 import YourTasks, { YourTasksProps } from "@/components/YourTasks";
 import FriendsTasks from "@/components/FriendsTasks";
+import { useDispatch } from "react-redux";
+import { clearGlobalUser } from "@/app/features/user/userSlice";
 
 type ContentProps = YourTasksProps & {
   points: number;
@@ -26,6 +28,22 @@ function AddFriendsButton() {
       <Text m={2.5}>Add Friends</Text>
       <SearchIcon m={2.5} />
     </Button>
+  );
+}
+
+function LogoutButton() {
+  const dispatch = useDispatch();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    dispatch(clearGlobalUser);
+    router.push("/login");
+  };
+
+  return (
+    <Flex w={"95%"} justifyContent={"flex-start"} mt={"10px"}>
+      <Button onClick={handleLogout}>Logout</Button>
+    </Flex>
   );
 }
 
@@ -58,6 +76,7 @@ function Content({ username, points, friends }: ContentProps) {
           alignItems: "center",
         }}
       >
+        <LogoutButton />
         <FnshrPoints points={points} />
         <AddFriendsButton />
         <AddTaskButton />

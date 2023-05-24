@@ -23,11 +23,14 @@ export const userSlice = createSlice({
     },
     setFriends: (state, action) => {
       state.friends = action.payload;
+    },
+    clearGlobalUser: (state, action) => {
+      state = initialState;
     }
   },
 });
 
-export const { setGlobalUser, setFriends } = userSlice.actions;
+export const { setGlobalUser, setFriends, clearGlobalUser } = userSlice.actions;
 
 export const selectGlobalUser = (state: RootState) => state.user;
 
