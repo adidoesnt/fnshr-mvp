@@ -41,7 +41,7 @@ function LogoutButton() {
   };
 
   return (
-    <Flex w={"95%"} justifyContent={"flex-start"} mt={"10px"}>
+    <Flex w={"90%"} justifyContent={"flex-start"} mt={"5%"}>
       <Button onClick={handleLogout}>Logout</Button>
     </Flex>
   );

@@ -60,7 +60,7 @@ export default function TaskForm({ username }: TaskFormProps) {
     !validateName() || !validatePledge() || !validateDate();
 
   return (
-    <Center w={"90%"} m={50}>
+    <Center w={"90%"} m={50} mt={0}>
       <FormControl>
         <Heading>Add New Task</Heading>
         <FormLabel>Task Name</FormLabel>

@@ -16,6 +16,8 @@ import {
 import { AddIcon } from "@chakra-ui/icons";
 import axios from "axios";
 import { useDispatch } from "react-redux";
+import BackButton from "@/components/BackButton";
+import Head from "next/head";
 
 type ContentProps = {
   username: string;
@@ -51,33 +53,48 @@ function Content({ username, users, friends }: ContentProps) {
   }
 
   return (
-    <Center flexDir={"column"} m={25}>
-      <Heading>Add Friends</Heading>
-      <Input
-        w={"90%"}
-        id="search"
-        type={"text"}
-        onChange={(e) => setSearchValue(e.target.value)}
-        value={searchValue}
-        placeholder={"search username..."}
-        m={5}
-      />
-      {filteredUsers.map((user: any, index: number) => {
-        return (
-          <Card key={index}>
-            <CardBody display={"flex"} alignItems={"center"}>
-              <Text mr={2.5}>{user.username}</Text>
-              <IconButton
-                ml={2.5}
-                aria-label="add friend"
-                icon={<AddIcon />}
-                onClick={() => handleAddFriend(user.username)}
-              />
-            </CardBody>
-          </Card>
-        );
-      })}
-    </Center>
+    <>
+      <Head>
+        <title>Fnshr - Add Task</title>
+      </Head>
+      <main
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <BackButton w={"90%"} mt={"5%"} />
+        <Center flexDir={"column"} m={25}>
+          <Heading>Add Friends</Heading>
+          <Input
+            w={"90%"}
+            id="search"
+            type={"text"}
+            onChange={(e) => setSearchValue(e.target.value)}
+            value={searchValue}
+            placeholder={"search username..."}
+            m={5}
+          />
+          {filteredUsers.map((user: any, index: number) => {
+            return (
+              <Card key={index}>
+                <CardBody display={"flex"} alignItems={"center"}>
+                  <Text mr={2.5}>{user.username}</Text>
+                  <IconButton
+                    ml={2.5}
+                    aria-label="add friend"
+                    icon={<AddIcon />}
+                    onClick={() => handleAddFriend(user.username)}
+                  />
+                </CardBody>
+              </Card>
+            );
+          })}
+        </Center>
+      </main>
+    </>
   );
 }
 

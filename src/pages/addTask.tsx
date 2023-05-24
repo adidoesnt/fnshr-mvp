@@ -5,6 +5,7 @@ import { selectGlobalUser } from "@/app/features/user/userSlice";
 import TaskForm, { TaskFormProps } from "@/components/TaskForm";
 import Head from "next/head";
 import FnshrPoints, { FnshrPointsProps } from "@/components/FnshrPoints";
+import BackButton from "@/components/BackButton";
 
 type ContentProps = TaskFormProps & FnshrPointsProps;
 
@@ -22,6 +23,7 @@ function Content({ username, points }: ContentProps) {
               alignItems: "center",
             }}
           >
+            <BackButton w={"90%"} mt={"5%"} />
             <FnshrPoints points={points} />
             <TaskForm username={username} />
           </main>
