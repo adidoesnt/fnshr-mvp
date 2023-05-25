@@ -5,6 +5,7 @@ import axios from "axios";
 import { differenceInMilliseconds, parseISO } from "date-fns";
 import { store } from "@/app/store";
 import { fetchTasks } from "@/app/features/tasks/tasksSlice";
+import { fetchUsers } from "@/app/features/users/usersSlice";
 
 type CreationStatus = "success" | "failure";
 
@@ -29,6 +30,22 @@ async function handleTaskOverdue(id: string) {
     const response = await axios.post(URI, { id });
     console.log(response.data);
     store.dispatch(fetchTasks());
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function deductPledgeAmount(username: string, pledge: number) {
+  const API_PREFIX =
+    process.env.ENV === "PROD"
+      ? process.env.CLOUD_API_PREFIX
+      : process.env.LOCAL_API_PREFIX;
+  const URI = `${API_PREFIX}deductPoints`;
+
+  try {
+    const response = await axios.post(URI, { username, pledge });
+    console.log(response.data);
+    store.dispatch(fetchUsers);
   } catch (err) {
     console.log(err);
   }
@@ -60,7 +77,7 @@ export default async function handler(
       deadline,
       pledge,
       status,
-      prompts
+      prompts,
     };
     try {
       const task = await new Task(newTask).save();
@@ -68,6 +85,7 @@ export default async function handler(
       const { created, due, diff } = calculateTimeout(deadline);
       setTimeout(() => handleTaskOverdue(id), diff);
       await closeDb();
+      await deductPledgeAmount(username, pledge);
       res
         .status(201)
         .json({ name, status: "success", timings: { created, due, diff } });

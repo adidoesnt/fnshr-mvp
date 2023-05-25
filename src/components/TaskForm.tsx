@@ -13,14 +13,19 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { fetchTasks } from "@/app/features/tasks/tasksSlice";
 import { store } from "@/app/store";
+import { useSelector } from "react-redux";
+import { selectGlobalUser } from "@/app/features/user/userSlice";
 
 export type TaskFormProps = {
   username: string;
 };
 
 export default function TaskForm({ username }: TaskFormProps) {
-    const router = useRouter();
-    const URI = "/api/addTask";
+  const globalUser = useSelector(selectGlobalUser);
+  const { points } = globalUser;
+
+  const router = useRouter();
+  const URI = "/api/addTask";
 
   const [name, setName] = useState("");
   const [deadline, setDeadline] = useState(new Date());
@@ -31,7 +36,7 @@ export default function TaskForm({ username }: TaskFormProps) {
   };
 
   const validatePledge = () => {
-    return pledge > 0;
+    return pledge > 0 && pledge <= points;
   };
 
   const validateDate = () => {
@@ -46,7 +51,7 @@ export default function TaskForm({ username }: TaskFormProps) {
         username,
         name,
         deadline,
-        pledge
+        pledge,
       });
       console.log(response.data);
       store.dispatch(fetchTasks());
@@ -54,7 +59,7 @@ export default function TaskForm({ username }: TaskFormProps) {
     } catch (err) {
       console.log(err);
     }
-  };
+  }
 
   const submissionDisabled =
     !validateName() || !validatePledge() || !validateDate();
@@ -88,7 +93,7 @@ export default function TaskForm({ username }: TaskFormProps) {
         <FormLabel>Pledge</FormLabel>
         <FormHelperText>
           How many Fnshr points would you like to pledge for this task? This
-          should be at least 1.
+          should be at least 1, and at most the number of Fnshr points you have.
         </FormHelperText>
         <Input
           id="pledge"
