@@ -10,6 +10,7 @@ type UpdateStatus = "success" | "failure";
 type Data = {
   id: string;
   status: UpdateStatus;
+  points?: number;
 };
 
 async function creditPledgeAmount(username: string, pledge: number) {
@@ -23,6 +24,7 @@ async function creditPledgeAmount(username: string, pledge: number) {
     const response = await axios.post(URI, { username, pledge });
     console.log(response.data);
     store.dispatch(fetchUsers);
+    return response.data;
   } catch (err) {
     console.log(err);
   }
@@ -41,8 +43,9 @@ export default async function handler(
       const { username, pledge } = task;
       await Task.updateOne({ _id: id }, { status });
       await closeDb();
-      await creditPledgeAmount(username, pledge);
-      res.status(200).json({ id, status: "success" });
+      const data = await creditPledgeAmount(username, pledge);
+      const { points } = data;
+      res.status(200).json({ id, status: "success", points });
     } catch {
       await closeDb();
       res.status(500).json({ id, status: "failure" });

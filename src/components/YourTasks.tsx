@@ -1,4 +1,4 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchTasks, selectAllTasks } from "@/app/features/tasks/tasksSlice";
 import {
   Button,
@@ -15,12 +15,21 @@ import axios from "axios";
 import { store } from "@/app/store";
 import { parseISO } from "date-fns";
 import TaskPrompts from "./TaskPrompts";
+import { setPoints } from "@/app/features/user/userSlice";
 
 export type YourTasksProps = {
   username: string;
 };
 
+export const convertISOToLocalTime = (deadline: string) => {
+  const deadlineDate: Date = parseISO(deadline);
+  const dateString = deadlineDate.toLocaleDateString();
+  const timeString = deadlineDate.toLocaleTimeString();
+  return `${dateString} ${timeString}`;
+}
+
 export default function YourTasks({ username }: YourTasksProps) {
+  const dispatch = useDispatch();
   const URI = "api/completeTask";
   const tasks = useSelector(selectAllTasks);
   const [buttonText, setButtonText] = useState("show");
@@ -48,6 +57,8 @@ export default function YourTasks({ username }: YourTasksProps) {
   async function handleCompleteTask(id: string) {
     try {
       const response = await axios.post(URI, { id });
+      const { points } = response.data;
+      dispatch(setPoints(points));
       console.log(response.data);
       store.dispatch(fetchTasks());
     } catch (err) {
@@ -66,6 +77,7 @@ export default function YourTasks({ username }: YourTasksProps) {
       {buttonText === "hide"
         ? filteredTasks.map((task: any, index: number) => {
             const { _id: id, name, deadline, pledge, status, prompts } = task;
+            const convertedDeadline = convertISOToLocalTime(deadline);
             return (
               <Card key={index} m={2.5}>
                 <TaskPrompts prompts={prompts} status={status} />
@@ -78,7 +90,7 @@ export default function YourTasks({ username }: YourTasksProps) {
                   <Text>{pledge} points</Text>
                   <br />
                   <Heading fontSize={20}>Deadline</Heading>
-                  <Text>{deadline}</Text>
+                  <Text>{convertedDeadline}</Text>
                 </CardBody>
                 <CardFooter display={"flex"} flexDir={"column"}>
                   <Heading fontSize={20}>Task Status:</Heading>

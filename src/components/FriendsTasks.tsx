@@ -18,6 +18,7 @@ import axios from "axios";
 import { store } from "@/app/store";
 import TaskPrompts from "./TaskPrompts";
 import { selectGlobalUser } from "@/app/features/user/userSlice";
+import { convertISOToLocalTime } from "./YourTasks";
 
 export type FriendsTasksProps = {
   friends: string[];
@@ -118,6 +119,8 @@ export default function FriendsTasks({ friends }: FriendsTasksProps) {
               status,
               prompts,
             } = task;
+            const convertedDeadline = convertISOToLocalTime(deadline);
+
             return (
               <Card key={id} m={2.5}>
                 <TaskPrompts status={status} prompts={prompts} />
@@ -133,7 +136,7 @@ export default function FriendsTasks({ friends }: FriendsTasksProps) {
                   <Text>{pledge} points</Text>
                   <br />
                   <Heading fontSize={20}>Deadline</Heading>
-                  <Text>{deadline}</Text>
+                  <Text>{convertedDeadline}</Text>
                 </CardBody>
                 <CardFooter display={"flex"} flexDir={"column"}>
                   <Heading fontSize={20}>Task Status:</Heading>

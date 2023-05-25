@@ -13,14 +13,15 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { fetchTasks } from "@/app/features/tasks/tasksSlice";
 import { store } from "@/app/store";
-import { useSelector } from "react-redux";
-import { selectGlobalUser } from "@/app/features/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { selectGlobalUser, setPoints } from "@/app/features/user/userSlice";
 
 export type TaskFormProps = {
   username: string;
 };
 
 export default function TaskForm({ username }: TaskFormProps) {
+  const dispatch = useDispatch();
   const globalUser = useSelector(selectGlobalUser);
   const { points } = globalUser;
 
@@ -53,6 +54,8 @@ export default function TaskForm({ username }: TaskFormProps) {
         deadline,
         pledge,
       });
+      const { points } = response.data;
+      dispatch(setPoints(points));
       console.log(response.data);
       store.dispatch(fetchTasks());
       router.push("/home");

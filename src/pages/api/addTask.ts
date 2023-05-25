@@ -17,6 +17,7 @@ type Data = {
     due: Date;
     diff: number;
   };
+  points?: number;
 };
 
 async function handleTaskOverdue(id: string) {
@@ -46,6 +47,7 @@ async function deductPledgeAmount(username: string, pledge: number) {
     const response = await axios.post(URI, { username, pledge });
     console.log(response.data);
     store.dispatch(fetchUsers);
+    return response.data;
   } catch (err) {
     console.log(err);
   }
@@ -85,10 +87,11 @@ export default async function handler(
       const { created, due, diff } = calculateTimeout(deadline);
       setTimeout(() => handleTaskOverdue(id), diff);
       await closeDb();
-      await deductPledgeAmount(username, pledge);
+      const data = await deductPledgeAmount(username, pledge);
+      const { points } = data;
       res
         .status(201)
-        .json({ name, status: "success", timings: { created, due, diff } });
+        .json({ name, status: "success", timings: { created, due, diff }, points });
     } catch (err) {
       await closeDb();
       res.status(500).json({ name, status: "failure" });
