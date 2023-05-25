@@ -7,6 +7,7 @@ import {
   CardFooter,
   CardHeader,
   Center,
+  Flex,
   Heading,
   Text,
 } from "@chakra-ui/react";
@@ -16,6 +17,7 @@ import { store } from "@/app/store";
 import { parseISO } from "date-fns";
 import TaskPrompts from "./TaskPrompts";
 import { setPoints } from "@/app/features/user/userSlice";
+import TaskFilterMenu from "./TaskFilterMenu";
 
 export type YourTasksProps = {
   username: string;
@@ -26,14 +28,20 @@ export const convertISOToLocalTime = (deadline: string) => {
   const dateString = deadlineDate.toLocaleDateString();
   const timeString = deadlineDate.toLocaleTimeString();
   return `${dateString} ${timeString}`;
-}
+};
 
 export default function YourTasks({ username }: YourTasksProps) {
   const dispatch = useDispatch();
   const URI = "api/completeTask";
   const tasks = useSelector(selectAllTasks);
-  const [buttonText, setButtonText] = useState("show");
+  const [buttonText, setButtonText] = useState("Show");
+  const [filter, setFilter] = useState("All");
   let filteredTasks = tasks.filter((task: any) => task.username === username);
+  if (filter !== "All") {
+    filteredTasks = filteredTasks.filter(
+      (task: any) => task.status === filter.toLowerCase()
+    );
+  }
   filteredTasks = filteredTasks.sort((a: any, b: any) => {
     const firstDate = parseISO(a.deadline);
     const secondDate = parseISO(b.deadline);
@@ -47,10 +55,10 @@ export default function YourTasks({ username }: YourTasksProps) {
   });
 
   const toggleButtonText = () => {
-    if (buttonText === "show") {
-      setButtonText("hide");
+    if (buttonText === "Show") {
+      setButtonText("Hide");
     } else {
-      setButtonText("show");
+      setButtonText("Show");
     }
   };
 
@@ -69,15 +77,19 @@ export default function YourTasks({ username }: YourTasksProps) {
   return (
     <Card display={"flex"} flexDir={"column"} w={"90%"} m={50} mb={2.5}>
       <Center alignItems={"center"}>
-        <Heading fontSize={25} m={2.5}>
+        <Heading fontSize={25} m={2.5} w={"50%"}>
           Your Tasks
         </Heading>
-        <Button onClick={toggleButtonText}>{buttonText}</Button>
+        <Flex flexDir={"column"} m={2.5} w={"50%"}>
+          <Button mb={2.5} onClick={toggleButtonText}>{buttonText}</Button>
+          <TaskFilterMenu setFilter={setFilter} />
+        </Flex>
       </Center>
-      {buttonText === "hide"
+      {buttonText === "Hide"
         ? filteredTasks.map((task: any, index: number) => {
             const { _id: id, name, deadline, pledge, status, prompts } = task;
             const convertedDeadline = convertISOToLocalTime(deadline);
+
             return (
               <Card key={index} m={2.5}>
                 <TaskPrompts prompts={prompts} status={status} />

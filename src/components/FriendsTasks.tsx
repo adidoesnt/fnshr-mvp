@@ -19,6 +19,7 @@ import { store } from "@/app/store";
 import TaskPrompts from "./TaskPrompts";
 import { selectGlobalUser } from "@/app/features/user/userSlice";
 import { convertISOToLocalTime } from "./YourTasks";
+import TaskFilterMenu from "./TaskFilterMenu";
 
 export type FriendsTasksProps = {
   friends: string[];
@@ -75,11 +76,17 @@ export default function FriendsTasks({ friends }: FriendsTasksProps) {
   const globalUser = useSelector(selectGlobalUser);
   const { username: globalUsername } = globalUser;
   const tasks = useSelector(selectAllTasks);
-  const [buttonText, setButtonText] = useState("show");
+  const [buttonText, setButtonText] = useState("Show");
+  const [filter, setFilter] = useState("All");
   let filteredTasks = tasks.filter(
     (task: any) =>
       friends.findIndex((friend) => friend === task.username) !== -1
   );
+  if (filter !== "All") {
+    filteredTasks = filteredTasks.filter(
+      (task: any) => task.status === filter.toLowerCase()
+    );
+  }
   filteredTasks = filteredTasks.sort((a: any, b: any) => {
     const firstDate = parseISO(a.deadline);
     const secondDate = parseISO(b.deadline);
@@ -93,22 +100,27 @@ export default function FriendsTasks({ friends }: FriendsTasksProps) {
   });
 
   const toggleButtonText = () => {
-    if (buttonText === "show") {
-      setButtonText("hide");
+    if (buttonText === "Show") {
+      setButtonText("Hide");
     } else {
-      setButtonText("show");
+      setButtonText("Show");
     }
   };
 
   return (
     <Card display={"flex"} flexDir={"column"} w={"90%"} m={50} mt={2.5}>
       <Center alignItems={"center"}>
-        <Heading fontSize={25} m={2.5}>
+        <Heading fontSize={25} m={2.5} w={"50%"}>
           Friends&apos; Tasks
         </Heading>
-        <Button onClick={toggleButtonText}>{buttonText}</Button>
+        <Flex flexDir={"column"} m={2.5} w={"50%"}>
+          <Button mb={2.5} onClick={toggleButtonText}>
+            {buttonText}
+          </Button>
+          <TaskFilterMenu setFilter={setFilter} />
+        </Flex>
       </Center>
-      {buttonText === "hide"
+      {buttonText === "Hide"
         ? filteredTasks.map((task: any) => {
             const {
               _id: id,
