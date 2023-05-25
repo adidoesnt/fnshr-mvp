@@ -72,6 +72,68 @@ function PromptButton({
   ) : null;
 }
 
+type TaskCardProps = {
+  id: string;
+  prompts: string[];
+  status: "ongoing" | "completed" | "missed";
+  username: string;
+  name: string;
+  pledge: number;
+  convertedDeadline: string;
+  globalUsername: string;
+};
+
+function TaskCard({
+  id,
+  prompts,
+  status,
+  username,
+  name,
+  pledge,
+  convertedDeadline,
+  globalUsername,
+}: TaskCardProps) {
+  const [expand, setExpand] = useState(false);
+
+  return (
+    <Card key={id} m={2.5}>
+      <TaskPrompts status={status} prompts={prompts} />
+      <CardHeader>
+        <Heading fontSize={20}>Friend:</Heading>
+        <Text>{username}</Text>
+        <br />
+        <Heading fontSize={20}>Task Name:</Heading>
+        <Text>{name}</Text>
+      </CardHeader>
+      {!expand ? <Button onClick={() => setExpand(true)}>Expand</Button> : null}
+      {expand ? (
+        <>
+          <CardBody>
+            <Heading fontSize={20}>Pledge Amount</Heading>
+            <Text>{pledge} points</Text>
+            <br />
+            <Heading fontSize={20}>Deadline</Heading>
+            <Text>{convertedDeadline}</Text>
+          </CardBody>
+          <CardFooter display={"flex"} flexDir={"column"}>
+            <Heading fontSize={20}>Task Status:</Heading>
+            <Text>{status}</Text>
+          </CardFooter>
+          <PromptButton
+            status={status}
+            id={id}
+            globalUsername={globalUsername}
+            prompts={prompts}
+          />
+          {expand ? (
+            <Button onClick={() => setExpand(false)}>Collapse</Button>
+          ) : null}
+        </>
+      ) : null}
+    </Card>
+  );
+}
+
 export default function FriendsTasks({ friends }: FriendsTasksProps) {
   const globalUser = useSelector(selectGlobalUser);
   const { username: globalUsername } = globalUser;
@@ -134,33 +196,17 @@ export default function FriendsTasks({ friends }: FriendsTasksProps) {
             const convertedDeadline = convertISOToLocalTime(deadline);
 
             return (
-              <Card key={id} m={2.5}>
-                <TaskPrompts status={status} prompts={prompts} />
-                <CardHeader>
-                  <Heading fontSize={20}>Friend:</Heading>
-                  <Text>{username}</Text>
-                  <br />
-                  <Heading fontSize={20}>Task Name:</Heading>
-                  <Text>{name}</Text>
-                </CardHeader>
-                <CardBody>
-                  <Heading fontSize={20}>Pledge Amount</Heading>
-                  <Text>{pledge} points</Text>
-                  <br />
-                  <Heading fontSize={20}>Deadline</Heading>
-                  <Text>{convertedDeadline}</Text>
-                </CardBody>
-                <CardFooter display={"flex"} flexDir={"column"}>
-                  <Heading fontSize={20}>Task Status:</Heading>
-                  <Text>{status}</Text>
-                </CardFooter>
-                <PromptButton
-                  status={status}
-                  id={id}
-                  globalUsername={globalUsername}
-                  prompts={prompts}
-                />
-              </Card>
+              <TaskCard
+                key={id}
+                convertedDeadline={convertedDeadline}
+                globalUsername={globalUsername}
+                id={id}
+                name={name}
+                pledge={pledge}
+                prompts={prompts}
+                status={status}
+                username={username}
+              />
             );
           })
         : null}
