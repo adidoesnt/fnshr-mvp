@@ -4,12 +4,15 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setGlobalUser } from "@/app/features/user/userSlice";
 import { useRouter } from "next/router";
+import { useWindowSize } from "@/app/hooks";
 
 export default function LoginPage() {
   const URI = "/api/login";
 
   const dispatch = useDispatch();
   const router = useRouter();
+
+  const size = useWindowSize();
 
   const onSubmit = async (username: string, password: string) => {
     try {
@@ -41,6 +44,8 @@ export default function LoginPage() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          width: size.width,
+          height: size.height
         }}
       >
         <AuthForm

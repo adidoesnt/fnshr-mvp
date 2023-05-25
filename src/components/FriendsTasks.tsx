@@ -172,7 +172,7 @@ export default function FriendsTasks({ friends }: FriendsTasksProps) {
   return (
     <Card display={"flex"} flexDir={"column"} w={"90%"} m={50} mt={2.5}>
       <Center alignItems={"center"}>
-        <Heading fontSize={25} m={2.5} w={"50%"}>
+        <Heading fontSize={25} m={2.5} w={"50%"} textAlign={"center"}>
           Friends&apos; Tasks
         </Heading>
         <Flex flexDir={"column"} m={2.5} w={"50%"}>

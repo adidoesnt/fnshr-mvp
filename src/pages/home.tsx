@@ -10,6 +10,7 @@ import YourTasks, { YourTasksProps } from "@/components/YourTasks";
 import FriendsTasks from "@/components/FriendsTasks";
 import { useDispatch } from "react-redux";
 import { clearGlobalUser } from "@/app/features/user/userSlice";
+import { useWindowSize } from "@/app/hooks";
 
 type ContentProps = YourTasksProps & {
   points: number;
@@ -63,6 +64,8 @@ function AddTaskButton() {
 }
 
 function Content({ username, points, friends }: ContentProps) {
+  const size = useWindowSize();
+
   return (
     <>
       <Head>
@@ -72,8 +75,10 @@ function Content({ username, points, friends }: ContentProps) {
         style={{
           display: "flex",
           flexDirection: "column",
-          justifyContent: "center",
+          justifyContent: "flex-start",
           alignItems: "center",
+          width: size.width,
+          height: size.height,
         }}
       >
         <LogoutButton />

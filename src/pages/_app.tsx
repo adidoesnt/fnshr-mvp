@@ -5,6 +5,7 @@ import { store } from "@/app/store";
 import { Provider } from "react-redux";
 import { fetchTasks } from "@/app/features/tasks/tasksSlice";
 import { fetchUsers } from "@/app/features/users/usersSlice";
+import { useWindowSize } from "@/app/hooks";
 
 store.dispatch(fetchTasks()).then(() => {
   store.dispatch(fetchUsers());
@@ -17,6 +18,8 @@ setInterval(() => {
 
 export default function App({ Component, pageProps }: AppProps) {
   const [isMobile, setIsMobile] = useState(false);
+  const size = useWindowSize();
+  const isPortrait = size.width < size.height;
 
   useEffect(() => {
     setIsMobile(
@@ -29,7 +32,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <Provider store={store}>
       <ChakraProvider>
-        {isMobile ? (
+        {isMobile && isPortrait ? (
           <Component {...pageProps} />
         ) : (
           <div
@@ -41,7 +44,8 @@ export default function App({ Component, pageProps }: AppProps) {
               alignItems: "center",
             }}
           >
-            The Fnshr web-app is currently only supported on mobile browsers.
+            The Fnshr web-app is currently only supported on mobile browsers, in
+            portrait orientation.
           </div>
         )}
       </ChakraProvider>

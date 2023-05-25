@@ -4,8 +4,10 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setGlobalUser } from "@/app/features/user/userSlice";
 import { useRouter } from "next/router";
+import { useWindowSize } from "@/app/hooks";
 
 export default function SignupPage() {
+  const size = useWindowSize();
   const URI = "/api/signup";
 
   const router = useRouter();
@@ -41,6 +43,8 @@ export default function SignupPage() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          width: size.width,
+          height: size.height
         }}
       >
         <AuthForm

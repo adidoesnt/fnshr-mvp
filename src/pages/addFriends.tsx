@@ -18,6 +18,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import BackButton from "@/components/BackButton";
 import Head from "next/head";
+import { useWindowSize } from "@/app/hooks";
 
 type ContentProps = {
   username: string;
@@ -26,6 +27,7 @@ type ContentProps = {
 };
 
 function Content({ username, users, friends }: ContentProps) {
+  const size = useWindowSize();
   const URI = "api/addFriend";
   const dispatch = useDispatch();
 
@@ -61,8 +63,10 @@ function Content({ username, users, friends }: ContentProps) {
         style={{
           display: "flex",
           flexDirection: "column",
-          justifyContent: "center",
+          justifyContent: "flex-start",
           alignItems: "center",
+          width: size.width,
+          height: size.height
         }}
       >
         <BackButton w={"90%"} mt={"5%"} />
