@@ -7,7 +7,7 @@ import {
   Heading,
   FormHelperText,
 } from "@chakra-ui/react";
-import { differenceInHours } from "date-fns";
+import { differenceInMinutes } from "date-fns";
 import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -36,8 +36,8 @@ export default function TaskForm({ username }: TaskFormProps) {
 
   const validateDate = () => {
     const now = new Date();
-    const diff = differenceInHours(deadline, now);
-    return diff >= 0;
+    const diff = differenceInMinutes(deadline, now);
+    return diff >= 59;
   };
 
   async function handleSubmit() {

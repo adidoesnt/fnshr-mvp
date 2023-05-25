@@ -53,12 +53,14 @@ export default async function handler(
     await initDb();
     const { username, name, deadline, pledge } = req.body;
     const status = "ongoing";
+    const prompts: string[] = [];
     const newTask = {
       username,
       name,
       deadline,
       pledge,
       status,
+      prompts
     };
     try {
       const task = await new Task(newTask).save();

@@ -19,6 +19,10 @@ export const taskSchema = new Schema({
     required: true,
     enum: ["ongoing", "completed", "missed"],
   },
+  prompts: {
+    type: [String],
+    required: true,
+  },
 });
 
 export const User = mongoose.models.User || model("User", userSchema);
