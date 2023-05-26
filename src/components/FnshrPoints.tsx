@@ -42,11 +42,11 @@ function TopupModal({ isOpen, onClose }: TopupModalProps) {
               How does this work?
             </Heading>
             <Text>
-              Paylah! your desired amount to this QR Code to fill your FNSHR
+              Paylah! your desired amount to this QR code to fill your FNSHR
               wallet with FNSHR Points. <br />
               Do remember to add your username as the payment reference/comment.
               <br />
-              The Fnshr team will be notified, and we will top-up your wallet
+              Once the payment is received, the FNSHR team will top-up your wallet
               for you.
             </Text>
           </Center>
