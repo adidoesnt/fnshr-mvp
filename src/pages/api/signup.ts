@@ -8,8 +8,9 @@ type SignupStatus = "success" | "failure" | "user already exists";
 type Data = {
   username: string;
   points?: number;
-  friends?: string[],
+  friends?: string[];
   status: SignupStatus;
+  admin?: boolean;
 };
 
 const saltRounds = 10;
@@ -38,10 +39,12 @@ export default async function handler(
           hash,
           points,
           friends,
-          admin
+          admin,
         }).save();
         await closeDb();
-        res.status(201).json({ username, points, friends, status: "success" });
+        res
+          .status(201)
+          .json({ username, points, friends, admin, status: "success" });
       } catch (err) {
         res.status(500).json({ username, status: "failure" });
       }

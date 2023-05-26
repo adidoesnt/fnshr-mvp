@@ -57,7 +57,7 @@ function Content({ username, users, friends }: ContentProps) {
   return (
     <>
       <Head>
-        <title>Fnshr - Add Task</title>
+        <title>Fnshr - Add Friends</title>
       </Head>
       <main
         style={{

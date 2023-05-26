@@ -31,7 +31,7 @@ function TopupModal({ isOpen, onClose }: TopupModalProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
-      <ModalContent w={"90%"} display={"flex"} alignSelf={"center"}>
+      <ModalContent w={"90%"} display={"flex"} alignSelf={"center"} maxH={"90%"} overflowY={"scroll"}>
         <ModalHeader>Top up Fnshr Points</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
