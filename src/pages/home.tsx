@@ -4,7 +4,7 @@ import Head from "next/head";
 import FnshrPoints from "@/components/FnshrPoints";
 import { useRouter } from "next/router";
 import Loading from "@/components/Loading";
-import { Button, Flex, Text } from "@chakra-ui/react";
+import { Button, Center, Flex, Text } from "@chakra-ui/react";
 import { AddIcon, SearchIcon } from "@chakra-ui/icons";
 import YourTasks, { YourTasksProps } from "@/components/YourTasks";
 import FriendsTasks from "@/components/FriendsTasks";
@@ -15,6 +15,7 @@ import { useWindowSize } from "@/app/hooks";
 type ContentProps = YourTasksProps & {
   points: number;
   friends: string[];
+  admin: boolean;
 };
 
 function AddFriendsButton() {
@@ -32,9 +33,17 @@ function AddFriendsButton() {
   );
 }
 
-function LogoutButton() {
+type LogoutButtonProps = {
+  admin: boolean;
+};
+
+function LogoutButton({ admin }: LogoutButtonProps) {
   const dispatch = useDispatch();
   const router = useRouter();
+
+  const handleClick = () => {
+    router.push("/admin");
+  };
 
   const handleLogout = () => {
     dispatch(clearGlobalUser);
@@ -42,8 +51,23 @@ function LogoutButton() {
   };
 
   return (
-    <Flex w={"90%"} justifyContent={"flex-start"} mt={"5%"}>
-      <Button onClick={handleLogout}>Logout</Button>
+    <Flex w={"90%"} mt={"5%"}>
+      <Flex justifyContent={"flex-start"} w={admin ? "50%" : "100%"}>
+        <Button w={"100px"} onClick={handleLogout}>
+          Logout
+        </Button>
+      </Flex>
+      {admin ? (
+        <Flex justifyContent={"flex-end"} w={"50%"}>
+          <Button
+            display={"flex"}
+            w={"100px"}
+            onClick={handleClick}
+          >
+            Admin
+          </Button>
+        </Flex>
+      ) : null}
     </Flex>
   );
 }
@@ -63,7 +87,7 @@ function AddTaskButton() {
   );
 }
 
-function Content({ username, points, friends }: ContentProps) {
+function Content({ username, points, friends, admin }: ContentProps) {
   const size = useWindowSize();
 
   return (
@@ -81,7 +105,7 @@ function Content({ username, points, friends }: ContentProps) {
           height: size.height,
         }}
       >
-        <LogoutButton />
+        <LogoutButton admin={admin} />
         <FnshrPoints points={points} />
         <AddFriendsButton />
         <AddTaskButton />
@@ -95,7 +119,7 @@ function Content({ username, points, friends }: ContentProps) {
 export default function Home() {
   const router = useRouter();
   const user = useSelector(selectGlobalUser);
-  const { username, points, friends } = user;
+  const { username, points, friends, admin } = user;
 
   const auth = user.username !== "";
 
@@ -104,7 +128,12 @@ export default function Home() {
   }
 
   return auth ? (
-    <Content username={username} points={points} friends={friends} />
+    <Content
+      username={username}
+      points={points}
+      friends={friends}
+      admin={admin}
+    />
   ) : (
     <Loading />
   );

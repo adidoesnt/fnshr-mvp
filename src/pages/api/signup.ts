@@ -26,6 +26,7 @@ export default async function handler(
     const points = 0;
     const testUser = await User.findOne({ username });
     const friends: string[] = [];
+    const admin = false;
     if (testUser) {
       await closeDb();
       res.status(409).json({ username, status: "user already exists" });
@@ -36,7 +37,8 @@ export default async function handler(
           salt,
           hash,
           points,
-          friends
+          friends,
+          admin
         }).save();
         await closeDb();
         res.status(201).json({ username, points, friends, status: "success" });

@@ -7,6 +7,7 @@ export const userSchema = new Schema({
   hash: { type: String, required: true },
   points: { type: Number, required: true },
   friends: { type: [String], required: true },
+  admin: { type: Boolean, required: true }
 });
 
 export const taskSchema = new Schema({
