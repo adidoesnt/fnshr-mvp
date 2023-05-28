@@ -58,10 +58,10 @@ export default function TaskForm({ username }: TaskFormProps) {
       dispatch(setPoints(points));
       console.log(response.data);
       store.dispatch(fetchTasks());
-      router.push("/home");
     } catch (err) {
       console.log(err);
     }
+    router.back();
   }
 
   const submissionDisabled =
