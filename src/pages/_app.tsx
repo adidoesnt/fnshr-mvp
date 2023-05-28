@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { ChakraProvider } from "@chakra-ui/react";
 import { AppProps } from "next/app";
-import { store } from "@/app/store";
+import { store, persistor } from "@/app/store";
+import { PersistGate } from "redux-persist/integration/react";
 import { Provider } from "react-redux";
 import { fetchTasks } from "@/app/features/tasks/tasksSlice";
 import { fetchUsers } from "@/app/features/users/usersSlice";
@@ -32,34 +33,36 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <Provider store={store}>
-      <ChakraProvider theme={theme}>
-        {isMobile && isPortrait ? (
-          <div
-            style={{
-              background: `linear-gradient(to right, ${theme.colors.primary}, ${theme.colors.secondary})`,
-              color: "white",
-              overflowY: "auto"
-            }}
-          >
-            <Component {...pageProps} />
-          </div>
-        ) : (
-          <div
-            style={{
-              width: "100vw",
-              height: "100vh",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              background: `linear-gradient(to right, ${theme.colors.primary}, ${theme.colors.secondary})`,
-              color: "white",
-            }}
-          >
-            The Fnshr web-app is currently only supported on mobile browsers, in
-            portrait orientation.
-          </div>
-        )}
-      </ChakraProvider>
+      <PersistGate loading={null} persistor={persistor}>
+        <ChakraProvider theme={theme}>
+          {isMobile && isPortrait ? (
+            <div
+              style={{
+                background: `linear-gradient(to right, ${theme.colors.primary}, ${theme.colors.secondary})`,
+                color: "white",
+                overflowY: "auto",
+              }}
+            >
+              <Component {...pageProps} />
+            </div>
+          ) : (
+            <div
+              style={{
+                width: "100vw",
+                height: "100vh",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                background: `linear-gradient(to right, ${theme.colors.primary}, ${theme.colors.secondary})`,
+                color: "white",
+              }}
+            >
+              The Fnshr web-app is currently only supported on mobile browsers,
+              in portrait orientation.
+            </div>
+          )}
+        </ChakraProvider>
+      </PersistGate>
     </Provider>
   );
 }

@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import { clearGlobalUser } from "@/app/features/user/userSlice";
 import { useWindowSize } from "@/app/hooks";
 import Callouts from "@/components/Callouts";
+import { persistor } from "@/app/store";
 
 type ContentProps = YourTasksProps & {
   points: number;
@@ -48,6 +49,7 @@ function LogoutButton({ admin }: LogoutButtonProps) {
 
   const handleLogout = () => {
     dispatch(clearGlobalUser);
+    persistor.purge();
     router.push("/login");
   };
 
