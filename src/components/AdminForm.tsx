@@ -54,11 +54,11 @@ export default function AdminForm() {
     !validateDate();
 
   return (
-    <Center w={"90%"} m={50}>
+    <Center w={"90%"} m={25}>
       <FormControl>
         <Heading>Add New Payment</Heading>
-        <FormLabel>Username</FormLabel>
-        <FormHelperText>
+        <FormLabel mt={"20px"}>Username</FormLabel>
+        <FormHelperText mb={"5px"}>
           This is the username of the user that paid.
         </FormHelperText>
         <Input
@@ -68,8 +68,8 @@ export default function AdminForm() {
             setUsername(e.target.value);
           }}
         />
-        <FormLabel>Amount</FormLabel>
-        <FormHelperText>This is the amount paid in SGD.</FormHelperText>
+        <FormLabel mt={"15px"}>Amount</FormLabel>
+        <FormHelperText mb={"5px"}>This is the amount paid in SGD.</FormHelperText>
         <Input
           id="amount"
           type={"text"}
@@ -77,8 +77,8 @@ export default function AdminForm() {
             setAmount(e.target.value);
           }}
         />
-        <FormLabel>Payment Date</FormLabel>
-        <FormHelperText>
+        <FormLabel mt={"15px"}>Payment Date</FormLabel>
+        <FormHelperText mb={"5px"}>
           This is the date and time the payment was made by the user.
         </FormHelperText>
         <Input
@@ -90,8 +90,8 @@ export default function AdminForm() {
             setDate(deadlineToSet);
           }}
         />
-        <FormLabel>Reference Number</FormLabel>
-        <FormHelperText>
+        <FormLabel mt={"15px"}>Reference Number</FormLabel>
+        <FormHelperText mb={"5px"}>
           This is the reference number for the payment made.
         </FormHelperText>
         <Input
@@ -101,7 +101,7 @@ export default function AdminForm() {
             setRefNumber(e.target.value);
           }}
         />
-        <Button onClick={handleSubmit} isDisabled={submissionDisabled}>
+        <Button mt={"20px"} onClick={handleSubmit} isDisabled={submissionDisabled}>
           Submit
         </Button>
       </FormControl>

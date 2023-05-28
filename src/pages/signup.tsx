@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { setGlobalUser } from "@/app/features/user/userSlice";
 import { useRouter } from "next/router";
 import { useWindowSize } from "@/app/hooks";
+import { useState } from "react";
 
 export default function SignupPage() {
   const size = useWindowSize();
@@ -13,7 +14,10 @@ export default function SignupPage() {
   const router = useRouter();
   const dispatch = useDispatch();
 
+  const [ submitting, setSubmitting ] = useState(false);
+
   const onSubmit = async (username: string, password: string) => {
+    setSubmitting(true);
     try {
       const response = await axios.post(URI, {
         username,
@@ -26,6 +30,7 @@ export default function SignupPage() {
     } catch (err) {
       console.log(err);
     }
+    setSubmitting(false);
   };
 
   const navigation: AuthFormNavigation = {
@@ -51,6 +56,7 @@ export default function SignupPage() {
           title={"Sign Up"}
           onSubmit={onSubmit}
           navigation={navigation}
+          submitting={submitting}
         />
       </main>
     </>

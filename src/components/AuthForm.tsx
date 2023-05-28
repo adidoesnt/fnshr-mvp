@@ -22,12 +22,14 @@ export type AuthFormProps = {
   title: string;
   onSubmit: (username: string, password: string) => void;
   navigation: AuthFormNavigation;
+  submitting: boolean;
 };
 
 export default function AuthForm({
   title,
   onSubmit,
   navigation,
+  submitting
 }: AuthFormProps) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -40,10 +42,10 @@ export default function AuthForm({
     onSubmit(username, password);
   };
 
-  const submissionDisabled = !validate(username) || !validate(password);
+  const submissionDisabled = !validate(username) || !validate(password) || submitting;
 
   return (
-    <Center w={"90%"} m={50}>
+    <Center w={"90%"} m={25}>
       <FormControl>
         <Heading>{title}</Heading>
         <FormLabel mt={"20px"}>Username</FormLabel>

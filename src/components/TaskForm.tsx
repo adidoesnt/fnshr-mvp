@@ -32,6 +32,8 @@ export default function TaskForm({ username }: TaskFormProps) {
   const [deadline, setDeadline] = useState(new Date());
   const [pledge, setPledge] = useState(0);
 
+  const [ submitting, setSubmitting ] = useState(false);
+
   const validateName = () => {
     return name !== "";
   };
@@ -47,6 +49,7 @@ export default function TaskForm({ username }: TaskFormProps) {
   };
 
   async function handleSubmit() {
+    setSubmitting(true);
     try {
       const response = await axios.post(URI, {
         username,
@@ -62,10 +65,11 @@ export default function TaskForm({ username }: TaskFormProps) {
     } catch (err) {
       console.log(err);
     }
+    setSubmitting(false);
   }
 
-  const submissionDisabled =
-    !validateName() || !validatePledge() || !validateDate();
+  let submissionDisabled =
+    !validateName() || !validatePledge() || !validateDate() || submitting;
 
   return (
     <Center w={"90%"} m={50} mt={0}>
