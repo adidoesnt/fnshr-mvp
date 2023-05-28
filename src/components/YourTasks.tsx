@@ -50,7 +50,9 @@ function TaskCard({
   const [expand, setExpand] = useState(false);
   const URI = "api/completeTask";
   const dispatch = useDispatch();
+  const [submitting, setSubmitting] = useState(false);
   async function handleCompleteTask(id: string) {
+    setSubmitting(true);
     try {
       const response = await axios.post(URI, { id });
       const { points } = response.data;
@@ -60,6 +62,7 @@ function TaskCard({
     } catch (err) {
       console.log(err);
     }
+    setSubmitting(false);
   }
 
   return (
@@ -83,7 +86,11 @@ function TaskCard({
             <Heading fontSize={20}>Task Status:</Heading>
             <Text>{status}</Text>
             {status === "ongoing" ? (
-              <Button m={2.5} onClick={() => handleCompleteTask(id)}>
+              <Button
+                m={2.5}
+                onClick={() => handleCompleteTask(id)}
+                isDisabled={submitting}
+              >
                 Mark Complete
               </Button>
             ) : null}

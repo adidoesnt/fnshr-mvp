@@ -45,8 +45,10 @@ function PromptButton({
   const globalUser = useSelector(selectGlobalUser);
   const { username: prompter } = globalUser;
   const penalty = 2;
+  const [ submitting, setSubmitting ] = useState(false);
 
   async function handleClick(id: string) {
+    setSubmitting(true);
     try {
       const promptResponse = await axios.post(promptURI, { id, prompter });
       console.log(promptResponse.data);
@@ -59,6 +61,7 @@ function PromptButton({
     } catch (err) {
       console.log(err);
     }
+    setSubmitting(false);
   }
 
   const show =
@@ -73,6 +76,7 @@ function PromptButton({
         mb={"15px"}
         justifyContent={"space-evenly"}
         onClick={() => handleClick(id)}
+        isDisabled={submitting}
       >
         <Text>Prompt</Text>
         <WarningIcon />

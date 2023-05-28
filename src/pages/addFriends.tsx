@@ -26,21 +26,17 @@ type ContentProps = {
   friends: string[];
 };
 
-function Content({ username, users, friends }: ContentProps) {
-  const size = useWindowSize();
+type FriendCardProps = {
+  username: string;
+};
+
+function FriendCard({ username }: FriendCardProps) {
   const URI = "api/addFriend";
   const dispatch = useDispatch();
-
-  const [searchValue, setSearchValue] = useState("");
-  const filteredUsers = users.filter((user) => {
-    return (
-      user.username !== username &&
-      user.username.includes(searchValue) &&
-      friends.findIndex((friend) => friend === user.username) === -1
-    );
-  });
+  const [submitting, setSubmitting] = useState(false);
 
   async function handleAddFriend(friend: string) {
+    setSubmitting(true);
     try {
       const response = await axios.post(URI, {
         username,
@@ -52,7 +48,39 @@ function Content({ username, users, friends }: ContentProps) {
     } catch (err) {
       console.log(err);
     }
+    setSubmitting(false);
   }
+
+  return (
+    <Card m={"5px"} w={"200px"} display={"flex"}>
+      <CardBody display={"flex"} alignItems={"center"}>
+        <Text mr={2.5} w={"75%"} textOverflow={"ellipsis"}>
+          {username}
+        </Text>
+        <IconButton
+          ml={2.5}
+          aria-label="add friend"
+          icon={<AddIcon />}
+          onClick={() => handleAddFriend(username)}
+          w={"25%"}
+          isDisabled={submitting}
+        />
+      </CardBody>
+    </Card>
+  );
+}
+
+function Content({ username, users, friends }: ContentProps) {
+  const size = useWindowSize();
+
+  const [searchValue, setSearchValue] = useState("");
+  const filteredUsers = users.filter((user) => {
+    return (
+      user.username !== username &&
+      user.username.includes(searchValue) &&
+      friends.findIndex((friend) => friend === user.username) === -1
+    );
+  });
 
   return (
     <>
@@ -82,22 +110,7 @@ function Content({ username, users, friends }: ContentProps) {
             m={5}
           />
           {filteredUsers.map((user: any, index: number) => {
-            return (
-              <Card key={index} m={"5px"} w={"200px"} display={"flex"}>
-                <CardBody display={"flex"} alignItems={"center"}>
-                  <Text mr={2.5} w={"75%"} textOverflow={"ellipsis"}>
-                    {user.username}
-                  </Text>
-                  <IconButton
-                    ml={2.5}
-                    aria-label="add friend"
-                    icon={<AddIcon />}
-                    onClick={() => handleAddFriend(user.username)}
-                    w={"25%"}
-                  />
-                </CardBody>
-              </Card>
-            );
+            return <FriendCard username={user.username} key={index} />;
           })}
         </Center>
       </main>
