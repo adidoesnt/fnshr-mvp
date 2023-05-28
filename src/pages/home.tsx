@@ -11,6 +11,7 @@ import FriendsTasks from "@/components/FriendsTasks";
 import { useDispatch } from "react-redux";
 import { clearGlobalUser } from "@/app/features/user/userSlice";
 import { useWindowSize } from "@/app/hooks";
+import Callouts from "@/components/Callouts";
 
 type ContentProps = YourTasksProps & {
   points: number;
@@ -52,18 +53,17 @@ function LogoutButton({ admin }: LogoutButtonProps) {
 
   return (
     <Flex w={"90%"} mt={"5%"}>
-      <Flex justifyContent={"flex-start"} w={admin ? "50%" : "100%"}>
+      <Flex justifyContent={"flex-start"} w={admin ? `${100 / 3}%` : "100%"}>
         <Button w={"100px"} onClick={handleLogout}>
           Logout
         </Button>
       </Flex>
+      <Flex justifyContent={"center"} alignItems={"center"} w={`${100 / 3}%`}>
+        <Callouts />
+      </Flex>
       {admin ? (
-        <Flex justifyContent={"flex-end"} w={"50%"}>
-          <Button
-            display={"flex"}
-            w={"100px"}
-            onClick={handleClick}
-          >
+        <Flex justifyContent={"flex-end"} w={`${100 / 3}%`}>
+          <Button display={"flex"} w={"100px"} onClick={handleClick}>
             Admin
           </Button>
         </Flex>

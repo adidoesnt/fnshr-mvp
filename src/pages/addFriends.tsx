@@ -78,7 +78,7 @@ function Content({ username, users, friends }: ContentProps) {
             type={"text"}
             onChange={(e) => setSearchValue(e.target.value)}
             value={searchValue}
-            placeholder={"search username..."}
+            placeholder={"Search username..."}
             m={5}
           />
           {filteredUsers.map((user: any, index: number) => {

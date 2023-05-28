@@ -6,6 +6,7 @@ import { Provider } from "react-redux";
 import { fetchTasks } from "@/app/features/tasks/tasksSlice";
 import { fetchUsers } from "@/app/features/users/usersSlice";
 import { useWindowSize } from "@/app/hooks";
+import theme from "@/app/theme";
 
 store.dispatch(fetchTasks()).then(() => {
   store.dispatch(fetchUsers());
@@ -31,9 +32,17 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <Provider store={store}>
-      <ChakraProvider>
+      <ChakraProvider theme={theme}>
         {isMobile && isPortrait ? (
-          <Component {...pageProps} />
+          <div
+            style={{
+              background: `linear-gradient(to right, ${theme.colors.primary}, ${theme.colors.secondary})`,
+              color: "white",
+              overflowY: "auto"
+            }}
+          >
+            <Component {...pageProps} />
+          </div>
         ) : (
           <div
             style={{
@@ -42,6 +51,8 @@ export default function App({ Component, pageProps }: AppProps) {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
+              background: `linear-gradient(to right, ${theme.colors.primary}, ${theme.colors.secondary})`,
+              color: "white",
             }}
           >
             The Fnshr web-app is currently only supported on mobile browsers, in

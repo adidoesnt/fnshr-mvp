@@ -7,7 +7,6 @@ import {
   ModalHeader,
   ModalFooter,
   ModalBody,
-  ModalCloseButton,
   Button,
   useDisclosure,
   Text,
@@ -29,11 +28,16 @@ function ExchangeRate() {
 
 function TopupModal({ isOpen, onClose }: TopupModalProps) {
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside">
       <ModalOverlay />
-      <ModalContent w={"90%"} display={"flex"} alignSelf={"center"} maxH={"90%"} overflowY={"scroll"}>
+      <ModalContent
+        w={"90%"}
+        display={"flex"}
+        alignSelf={"center"}
+        maxH={"90%"}
+        overflowY={"scroll"}
+      >
         <ModalHeader>Top up Fnshr Points</ModalHeader>
-        <ModalCloseButton />
         <ModalBody>
           <Center flexDir={"column"}>
             <ExchangeRate />
@@ -46,8 +50,8 @@ function TopupModal({ isOpen, onClose }: TopupModalProps) {
               wallet with FNSHR Points. <br />
               Do remember to add your username as the payment reference/comment.
               <br />
-              Once the payment is received, the FNSHR team will top-up your wallet
-              for you.
+              Once the payment is received, the FNSHR team will top-up your
+              wallet for you.
             </Text>
           </Center>
         </ModalBody>

@@ -9,7 +9,7 @@ function Intro() {
     <Link href={"/login"}>
       <Flex flexDir={"column"} alignItems={"center"} m={50}>
         <Logo />
-        <Text textAlign={"center"}>
+        <Text mt={"15px"} textAlign={"center"}>
           Social productivity at your fingertips. Tap to begin.
         </Text>
       </Flex>
@@ -31,7 +31,7 @@ export default function HomePage() {
           justifyContent: "center",
           alignItems: "center",
           width: size.width,
-          height: size.height
+          height: size.height,
         }}
       >
         <Intro />
