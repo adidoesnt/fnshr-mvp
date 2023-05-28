@@ -29,7 +29,7 @@ function ExchangeRate() {
 function TopupModal({ isOpen, onClose }: TopupModalProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside">
-      <ModalOverlay />
+      <ModalOverlay backdropFilter="blur(10px) hue-rotate(10deg)" />
       <ModalContent
         w={"90%"}
         display={"flex"}

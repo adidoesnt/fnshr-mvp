@@ -24,7 +24,7 @@ type CalloutModalProps = {
 function CalloutModal({ isOpen, onClose }: CalloutModalProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside">
-      <ModalOverlay />
+      <ModalOverlay backdropFilter="blur(10px) hue-rotate(10deg)" />
       <ModalContent
         w={"90%"}
         display={"flex"}
