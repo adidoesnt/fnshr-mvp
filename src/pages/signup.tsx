@@ -1,18 +1,16 @@
 import Head from "next/head";
 import AuthForm, { AuthFormNavigation } from "@/components/AuthForm";
 import axios from "axios";
-import { useDispatch } from "react-redux";
-import { setGlobalUser } from "@/app/features/user/userSlice";
+import { fetchGlobalUser } from "@/app/features/user/userSlice";
 import { useRouter } from "next/router";
 import { useWindowSize } from "@/app/hooks";
 import { useState } from "react";
+import { store } from "@/app/store";
 
 export default function SignupPage() {
   const size = useWindowSize();
   const URI = "/api/signup";
-
   const router = useRouter();
-  const dispatch = useDispatch();
 
   const [ submitting, setSubmitting ] = useState(false);
 
@@ -23,8 +21,7 @@ export default function SignupPage() {
         username,
         password,
       });
-      const { points, friends, admin } = response.data;
-      dispatch(setGlobalUser({ username, points, friends, admin }));
+      store.dispatch(fetchGlobalUser(username));
       console.log(response.data);
       router.push("/home");
     } catch (err) {

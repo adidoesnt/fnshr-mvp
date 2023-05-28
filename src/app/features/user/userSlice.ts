@@ -1,6 +1,6 @@
-import { RootState } from "@/app/store";
-import { createSlice } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
+import { RootState, store } from "@/app/store";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 
 const initialState = {
   username: "",
@@ -9,25 +9,20 @@ const initialState = {
   admin: false,
 };
 
+export const fetchGlobalUser = createAsyncThunk(
+  "user/getUser",
+  async (username: string) => {
+    const URI = `/api/getUser?username=${username}`;
+    const response = await axios.get(URI);
+    console.log(response.data);
+    return response.data;
+  }
+);
+
 export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    setGlobalUser: (
-      state,
-      action: PayloadAction<{
-        username: string;
-        points: number;
-        friends: string[];
-        admin: boolean;
-      }>
-    ) => {
-      const { username, points, friends, admin } = action.payload;
-      state.username = username;
-      state.points = points;
-      state.friends = friends;
-      state.admin = admin;
-    },
     setFriends: (state, action) => {
       state.friends = action.payload;
     },
@@ -38,10 +33,19 @@ export const userSlice = createSlice({
       state.points = action.payload;
     },
   },
+  extraReducers(builder) {
+    builder.addCase(fetchGlobalUser.fulfilled, (state, action) => {
+      console.log(action.payload.user);
+      const { username, points, friends, admin } = action.payload.user;
+      state.username = username;
+      state.points = points;
+      state.friends = friends;
+      state.admin = admin;
+    });
+  },
 });
 
-export const { setGlobalUser, setFriends, clearGlobalUser, setPoints } =
-  userSlice.actions;
+export const { setFriends, clearGlobalUser, setPoints } = userSlice.actions;
 
 export const selectGlobalUser = (state: RootState) => state.user;
 

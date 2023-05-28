@@ -70,7 +70,7 @@ export default function FnshrPoints({ points }: FnshrPointsProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
-    <Center w={"90%"} m={25} flexDir={"column"}>
+    <Center w={"90%"} m={25} mb={35} flexDir={"column"}>
       <ExchangeRate />
       <Heading>Fnshr Points: {points}</Heading>
       <Button onClick={onOpen} mt={2.5}>

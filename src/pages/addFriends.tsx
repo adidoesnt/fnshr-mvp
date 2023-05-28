@@ -34,12 +34,13 @@ function FriendCard({ username }: FriendCardProps) {
   const URI = "api/addFriend";
   const dispatch = useDispatch();
   const [submitting, setSubmitting] = useState(false);
+  const { username: ownUsername } = useSelector(selectGlobalUser);
 
   async function handleAddFriend(friend: string) {
     setSubmitting(true);
     try {
       const response = await axios.post(URI, {
-        username,
+        username: ownUsername,
         friend,
       });
       console.log(response.data);
