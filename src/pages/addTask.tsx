@@ -25,6 +25,8 @@ function Content({ username, points }: ContentProps) {
           alignItems: "center",
           width: size.width,
           height: size.height,
+          overflowY: "auto",
+          overflowX: "hidden"
         }}
       >
         <BackButton w={"90%"} mt={"5%"} />

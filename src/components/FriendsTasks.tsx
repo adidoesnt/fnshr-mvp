@@ -26,6 +26,7 @@ export type FriendsTasksProps = {
 };
 
 type PromptButtonProps = {
+  promptee: string;
   status: "ongoing" | "completed" | "missed";
   id: string;
   prompts: string[];
@@ -33,19 +34,27 @@ type PromptButtonProps = {
 };
 
 function PromptButton({
+  promptee,
   status,
   id,
   globalUsername,
   prompts,
 }: PromptButtonProps) {
-  const URI = "/api/promptTask";
+  const deductionURI = "api/deductPoints";
+  const promptURI = "/api/promptTask";
   const globalUser = useSelector(selectGlobalUser);
   const { username: prompter } = globalUser;
+  const penalty = 2;
 
   async function handleClick(id: string) {
     try {
-      const response = await axios.post(URI, { id, prompter });
-      console.log(response.data);
+      const promptResponse = await axios.post(promptURI, { id, prompter });
+      console.log(promptResponse.data);
+      const deductionResponse = await axios.post(deductionURI, {
+        username: promptee,
+        pledge: penalty,
+      });
+      console.log(deductionResponse.data);
       store.dispatch(fetchTasks());
     } catch (err) {
       console.log(err);
@@ -120,6 +129,7 @@ function TaskCard({
             <Text>{status}</Text>
           </CardFooter>
           <PromptButton
+            promptee={username}
             status={status}
             id={id}
             globalUsername={globalUsername}

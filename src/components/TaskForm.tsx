@@ -71,7 +71,7 @@ export default function TaskForm({ username }: TaskFormProps) {
     <Center w={"90%"} m={50} mt={0}>
       <FormControl>
         <Heading>Add New Task</Heading>
-        <FormLabel>Task Name</FormLabel>
+        <FormLabel mt={"20px"}>Task Name</FormLabel>
         <Input
           id="name"
           type={"text"}
@@ -79,12 +79,13 @@ export default function TaskForm({ username }: TaskFormProps) {
             setName(e.target.value);
           }}
         />
-        <FormLabel>Task Deadline</FormLabel>
+        <FormLabel mt={"15px"}>Task Deadline</FormLabel>
         <FormHelperText>
           When do you intend to complete this task by? This should be at least
           an hour from now.
         </FormHelperText>
         <Input
+          mt={"5px"}
           placeholder="Select Date and Time"
           size="md"
           type="datetime-local"
@@ -93,19 +94,24 @@ export default function TaskForm({ username }: TaskFormProps) {
             setDeadline(deadlineToSet);
           }}
         />
-        <FormLabel>Pledge</FormLabel>
+        <FormLabel mt={"15px"}>Pledge</FormLabel>
         <FormHelperText>
           How many Fnshr points would you like to pledge for this task? This
           should be at least 1, and at most the number of Fnshr points you have.
         </FormHelperText>
         <Input
+          mt={"5px"}
           id="pledge"
           type={"text"}
           onChange={(e) => {
             setPledge(parseInt(e.target.value));
           }}
         />
-        <Button onClick={handleSubmit} isDisabled={submissionDisabled}>
+        <Button
+          mt={"20px"}
+          onClick={handleSubmit}
+          isDisabled={submissionDisabled}
+        >
           Submit
         </Button>
       </FormControl>

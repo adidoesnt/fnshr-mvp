@@ -66,7 +66,7 @@ function Content({ username, users, friends }: ContentProps) {
           justifyContent: "flex-start",
           alignItems: "center",
           width: size.width,
-          height: size.height
+          height: size.height,
         }}
       >
         <BackButton w={"90%"} mt={"5%"} />
@@ -83,14 +83,17 @@ function Content({ username, users, friends }: ContentProps) {
           />
           {filteredUsers.map((user: any, index: number) => {
             return (
-              <Card key={index}>
+              <Card key={index} m={"5px"} w={"200px"} display={"flex"}>
                 <CardBody display={"flex"} alignItems={"center"}>
-                  <Text mr={2.5}>{user.username}</Text>
+                  <Text mr={2.5} w={"75%"} textOverflow={"ellipsis"}>
+                    {user.username}
+                  </Text>
                   <IconButton
                     ml={2.5}
                     aria-label="add friend"
                     icon={<AddIcon />}
                     onClick={() => handleAddFriend(user.username)}
+                    w={"25%"}
                   />
                 </CardBody>
               </Card>
