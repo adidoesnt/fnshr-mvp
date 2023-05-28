@@ -21,7 +21,7 @@ export default function SignupPage() {
         username,
         password,
       });
-      store.dispatch(fetchGlobalUser(username));
+      await store.dispatch(fetchGlobalUser(username));
       console.log(response.data);
       router.push("/home");
     } catch (err) {

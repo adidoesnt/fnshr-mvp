@@ -57,7 +57,7 @@ function PromptButton({
         pledge: penalty,
       });
       console.log(deductionResponse.data);
-      store.dispatch(fetchTasks());
+      await store.dispatch(fetchTasks());
     } catch (err) {
       console.log(err);
     }

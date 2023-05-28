@@ -23,7 +23,7 @@ async function creditPledgeAmount(username: string, pledge: number) {
   try {
     const response = await axios.post(URI, { username, pledge });
     console.log(response.data);
-    store.dispatch(fetchUsers);
+    await store.dispatch(fetchUsers());
     return response.data;
   } catch (err) {
     console.log(err);

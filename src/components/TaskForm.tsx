@@ -60,7 +60,7 @@ export default function TaskForm({ username }: TaskFormProps) {
       const { points } = response.data;
       dispatch(setPoints(points));
       console.log(response.data);
-      store.dispatch(fetchTasks());
+      await store.dispatch(fetchTasks());
       router.back();
     } catch (err) {
       console.log(err);

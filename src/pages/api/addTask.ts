@@ -30,7 +30,7 @@ async function handleTaskOverdue(id: string) {
   try {
     const response = await axios.post(URI, { id });
     console.log(response.data);
-    store.dispatch(fetchTasks());
+    await store.dispatch(fetchTasks());
   } catch (err) {
     console.log(err);
   }
@@ -46,7 +46,7 @@ async function deductPledgeAmount(username: string, pledge: number) {
   try {
     const response = await axios.post(URI, { username, pledge });
     console.log(response.data);
-    store.dispatch(fetchUsers);
+    await store.dispatch(fetchUsers());
     return response.data;
   } catch (err) {
     console.log(err);

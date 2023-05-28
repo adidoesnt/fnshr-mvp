@@ -58,7 +58,7 @@ function TaskCard({
       const { points } = response.data;
       dispatch(setPoints(points));
       console.log(response.data);
-      store.dispatch(fetchTasks());
+      await store.dispatch(fetchTasks());
     } catch (err) {
       console.log(err);
     }
