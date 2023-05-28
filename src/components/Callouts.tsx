@@ -65,7 +65,7 @@ export default function Callouts() {
   const filteredTasks = tasks.filter(
     (task: any) => task.username === user.username
   );
-  const mappedTasks = filteredTasks.map((task: any) => task.prompts.size());
+  const mappedTasks = filteredTasks.map((task: any) => task.prompts.length);
   const numPrompts = mappedTasks.reduce((a: number, b: number) => a + b, 0);
 
   return (
