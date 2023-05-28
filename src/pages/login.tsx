@@ -4,6 +4,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setGlobalUser } from "@/app/features/user/userSlice";
 import { useRouter } from "next/router";
+import { useWindowSize } from "@/app/hooks";
 
 export default function LoginPage() {
   const URI = "/api/login";
@@ -11,14 +12,16 @@ export default function LoginPage() {
   const dispatch = useDispatch();
   const router = useRouter();
 
+  const size = useWindowSize();
+
   const onSubmit = async (username: string, password: string) => {
     try {
       const response = await axios.post(URI, {
         username,
         password,
       });
-      const { points, friends } = response.data;
-      dispatch(setGlobalUser({ username, points, friends }));
+      const { points, friends, admin } = response.data;
+      dispatch(setGlobalUser({ username, points, friends, admin }));
       console.log(response.data);
       router.push("/home");
     } catch (err) {
@@ -41,6 +44,8 @@ export default function LoginPage() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          width: size.width,
+          height: size.height
         }}
       >
         <AuthForm

@@ -46,7 +46,7 @@ export default function AuthForm({
     <Center w={"90%"} m={50}>
       <FormControl>
         <Heading>{title}</Heading>
-        <FormLabel>Username</FormLabel>
+        <FormLabel mt={"20px"}>Username</FormLabel>
         <Input
           id="username"
           type={"text"}
@@ -54,7 +54,7 @@ export default function AuthForm({
             setUsername(e.target.value);
           }}
         />
-        <FormLabel>Password</FormLabel>
+        <FormLabel mt={"15px"}>Password</FormLabel>
         <Input
           id="password"
           type={"password"}
@@ -62,12 +62,18 @@ export default function AuthForm({
             setPassword(e.target.value);
           }}
         />
-        <Button onClick={handleSubmit} isDisabled={submissionDisabled}>
+        <Button
+          mt={"20px"}
+          onClick={handleSubmit}
+          isDisabled={submissionDisabled}
+        >
           Submit
         </Button>
-        <Text>
+        <Text textAlign={"center"} mt={"15px"}>
           {navigation.text}{" "}
-          <Link href={navigation.link.uri}>{navigation.link.description}</Link>
+          <Link style={{ color: "black" }} href={navigation.link.uri}>
+            {navigation.link.description}
+          </Link>
         </Text>
       </FormControl>
     </Center>

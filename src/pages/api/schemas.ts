@@ -7,6 +7,7 @@ export const userSchema = new Schema({
   hash: { type: String, required: true },
   points: { type: Number, required: true },
   friends: { type: [String], required: true },
+  admin: { type: Boolean, required: true },
 });
 
 export const taskSchema = new Schema({
@@ -25,5 +26,14 @@ export const taskSchema = new Schema({
   },
 });
 
+export const paymentSchema = new Schema({
+  username: { type: String, required: true },
+  amount: { type: Number, required: true },
+  refNumber: { type: String, required: true },
+  date: { type: String, required: true },
+});
+
 export const User = mongoose.models.User || model("User", userSchema);
 export const Task = mongoose.models.Task || model("Task", taskSchema);
+export const Payment =
+  mongoose.models.Payment || model("Payment", paymentSchema);

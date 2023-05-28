@@ -1,21 +1,19 @@
 import { useRouter } from "next/router";
-import Loading from "@/components/Loading";
 import { useSelector } from "react-redux";
 import { selectGlobalUser } from "@/app/features/user/userSlice";
-import TaskForm, { TaskFormProps } from "@/components/TaskForm";
+import Loading from "@/components/Loading";
 import Head from "next/head";
-import FnshrPoints, { FnshrPointsProps } from "@/components/FnshrPoints";
-import BackButton from "@/components/BackButton";
 import { useWindowSize } from "@/app/hooks";
+import BackButton from "@/components/BackButton";
+import AdminForm from "@/components/AdminForm";
 
-type ContentProps = TaskFormProps & FnshrPointsProps;
-
-function Content({ username, points }: ContentProps) {
+function Content() {
   const size = useWindowSize();
+
   return (
     <>
       <Head>
-        <title>Fnshr - Add Task</title>
+        <title>Fnshr - Add Payment</title>
       </Head>
       <main
         style={{
@@ -25,28 +23,25 @@ function Content({ username, points }: ContentProps) {
           alignItems: "center",
           width: size.width,
           height: size.height,
-          overflowY: "auto",
-          overflowX: "hidden"
         }}
       >
         <BackButton w={"90%"} mt={"5%"} />
-        <FnshrPoints points={points} />
-        <TaskForm username={username} />
+        <AdminForm />
       </main>
     </>
   );
 }
 
-export default function AddTask() {
+export default function Admin() {
   const router = useRouter();
   const user = useSelector(selectGlobalUser);
-  const { username, points } = user;
+  const { username, admin } = user;
 
-  const auth = username !== "";
+  const auth = username !== "" || admin;
 
   if (!auth) {
     router.push("/login");
   }
 
-  return auth ? <Content username={username} points={points} /> : <Loading />;
+  return auth ? <Content /> : <Loading />;
 }

@@ -6,6 +6,7 @@ const initialState = {
   username: "",
   points: 0,
   friends: [] as string[],
+  admin: false,
 };
 
 export const userSlice = createSlice({
@@ -14,12 +15,18 @@ export const userSlice = createSlice({
   reducers: {
     setGlobalUser: (
       state,
-      action: PayloadAction<{ username: string; points: number, friends: string[] }>
+      action: PayloadAction<{
+        username: string;
+        points: number;
+        friends: string[];
+        admin: boolean;
+      }>
     ) => {
-      const { username, points, friends } = action.payload
+      const { username, points, friends, admin } = action.payload;
       state.username = username;
       state.points = points;
       state.friends = friends;
+      state.admin = admin;
     },
     setFriends: (state, action) => {
       state.friends = action.payload;
@@ -29,11 +36,12 @@ export const userSlice = createSlice({
     },
     setPoints: (state, action) => {
       state.points = action.payload;
-    }
+    },
   },
 });
 
-export const { setGlobalUser, setFriends, clearGlobalUser, setPoints } = userSlice.actions;
+export const { setGlobalUser, setFriends, clearGlobalUser, setPoints } =
+  userSlice.actions;
 
 export const selectGlobalUser = (state: RootState) => state.user;
 

@@ -18,6 +18,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import BackButton from "@/components/BackButton";
 import Head from "next/head";
+import { useWindowSize } from "@/app/hooks";
 
 type ContentProps = {
   username: string;
@@ -26,6 +27,7 @@ type ContentProps = {
 };
 
 function Content({ username, users, friends }: ContentProps) {
+  const size = useWindowSize();
   const URI = "api/addFriend";
   const dispatch = useDispatch();
 
@@ -55,14 +57,16 @@ function Content({ username, users, friends }: ContentProps) {
   return (
     <>
       <Head>
-        <title>Fnshr - Add Task</title>
+        <title>Fnshr - Add Friends</title>
       </Head>
       <main
         style={{
           display: "flex",
           flexDirection: "column",
-          justifyContent: "center",
+          justifyContent: "flex-start",
           alignItems: "center",
+          width: size.width,
+          height: size.height,
         }}
       >
         <BackButton w={"90%"} mt={"5%"} />
@@ -74,19 +78,22 @@ function Content({ username, users, friends }: ContentProps) {
             type={"text"}
             onChange={(e) => setSearchValue(e.target.value)}
             value={searchValue}
-            placeholder={"search username..."}
+            placeholder={"Search username..."}
             m={5}
           />
           {filteredUsers.map((user: any, index: number) => {
             return (
-              <Card key={index}>
+              <Card key={index} m={"5px"} w={"200px"} display={"flex"}>
                 <CardBody display={"flex"} alignItems={"center"}>
-                  <Text mr={2.5}>{user.username}</Text>
+                  <Text mr={2.5} w={"75%"} textOverflow={"ellipsis"}>
+                    {user.username}
+                  </Text>
                   <IconButton
                     ml={2.5}
                     aria-label="add friend"
                     icon={<AddIcon />}
                     onClick={() => handleAddFriend(user.username)}
+                    w={"25%"}
                   />
                 </CardBody>
               </Card>

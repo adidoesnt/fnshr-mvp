@@ -130,7 +130,7 @@ export default function YourTasks({ username }: YourTasksProps) {
   return (
     <Card display={"flex"} flexDir={"column"} w={"90%"} m={50} mb={2.5}>
       <Center alignItems={"center"}>
-        <Heading fontSize={25} m={2.5} w={"50%"}>
+        <Heading fontSize={25} m={2.5} w={"50%"} textAlign={"center"}>
           Your Tasks
         </Heading>
         <Flex flexDir={"column"} m={2.5} w={"50%"}>
