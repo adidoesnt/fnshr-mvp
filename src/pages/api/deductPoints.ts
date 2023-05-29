@@ -22,10 +22,14 @@ export default async function handler(
       const { points } = user;
       let numericPoints = parseInt(points);
       const numericPledge = parseInt(pledge);
-      numericPoints -= numericPledge;
+      if (numericPoints >= numericPledge) {
+        numericPoints -= numericPledge;
+      }
       await User.updateOne({ username }, { points: numericPoints });
       await closeDb();
-      res.status(200).json({ username, points: numericPoints, status: "success" });
+      res
+        .status(200)
+        .json({ username, points: numericPoints, status: "success" });
     } catch {
       await closeDb();
       res.status(500).json({ username, status: "failure" });

@@ -24,7 +24,7 @@ export default async function handler(
     const { username, password } = req.body;
     const salt = await bcrypt.genSalt(saltRounds);
     const hash = await bcrypt.hash(password, salt);
-    const points = 0;
+    const points = 50;
     const testUser = await User.findOne({ username });
     const friends: string[] = [];
     const admin = false;
