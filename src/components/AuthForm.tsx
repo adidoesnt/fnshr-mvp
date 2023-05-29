@@ -40,7 +40,7 @@ export default function AuthForm({
   };
 
   const handleSubmit = () => {
-    onSubmit(username, password);
+    onSubmit(username.trim(), password);
   };
 
   const submissionDisabled =
