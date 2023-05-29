@@ -23,12 +23,20 @@ export default function App({ Component, pageProps }: AppProps) {
   const size = useWindowSize();
   const isPortrait = size.width < size.height;
 
-  useEffect(() => {
+  const handleResize = () => {
     setIsMobile(
       /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
         navigator.userAgent
       )
     );
+  };
+
+  useEffect(() => {
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   return (
