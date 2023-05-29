@@ -18,6 +18,7 @@ import { parseISO } from "date-fns";
 import TaskPrompts from "./TaskPrompts";
 import { setPoints } from "@/app/features/user/userSlice";
 import TaskFilterMenu from "./TaskFilterMenu";
+import LoadingSpinner from "./LoadingSpinner";
 
 export type YourTasksProps = {
   username: string;
@@ -91,7 +92,7 @@ function TaskCard({
                 onClick={() => handleCompleteTask(id)}
                 isDisabled={submitting}
               >
-                Mark Complete
+                {submitting ? <LoadingSpinner /> : "Mark Complete"}
               </Button>
             ) : null}
           </CardFooter>

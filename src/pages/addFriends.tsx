@@ -11,6 +11,7 @@ import {
   Heading,
   IconButton,
   Input,
+  Spinner,
   Text,
 } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
@@ -61,7 +62,7 @@ function FriendCard({ username }: FriendCardProps) {
         <IconButton
           ml={2.5}
           aria-label="add friend"
-          icon={<AddIcon />}
+          icon={submitting ? <Spinner /> : <AddIcon />}
           onClick={() => handleAddFriend(username)}
           w={"25%"}
           isDisabled={submitting}
