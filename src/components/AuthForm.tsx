@@ -9,6 +9,7 @@ import {
 } from "@chakra-ui/react";
 import Link from "next/link";
 import { useState } from "react";
+import LoadingSpinner from "./LoadingSpinner";
 
 export type AuthFormNavigation = {
   text: string;
@@ -29,7 +30,7 @@ export default function AuthForm({
   title,
   onSubmit,
   navigation,
-  submitting
+  submitting,
 }: AuthFormProps) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -42,42 +43,47 @@ export default function AuthForm({
     onSubmit(username, password);
   };
 
-  const submissionDisabled = !validate(username) || !validate(password) || submitting;
+  const submissionDisabled =
+    !validate(username) || !validate(password) || submitting;
 
   return (
     <Center w={"90%"} m={25}>
-      <FormControl>
-        <Heading>{title}</Heading>
-        <FormLabel mt={"20px"}>Username</FormLabel>
-        <Input
-          id="username"
-          type={"text"}
-          onChange={(e) => {
-            setUsername(e.target.value);
-          }}
-        />
-        <FormLabel mt={"15px"}>Password</FormLabel>
-        <Input
-          id="password"
-          type={"password"}
-          onChange={(e) => {
-            setPassword(e.target.value);
-          }}
-        />
-        <Button
-          mt={"20px"}
-          onClick={handleSubmit}
-          isDisabled={submissionDisabled}
-        >
-          Submit
-        </Button>
-        <Text textAlign={"center"} mt={"15px"}>
-          {navigation.text}{" "}
-          <Link style={{ color: "black" }} href={navigation.link.uri}>
-            {navigation.link.description}
-          </Link>
-        </Text>
-      </FormControl>
+      {submitting ? (
+        <LoadingSpinner />
+      ) : (
+        <FormControl>
+          <Heading>{title}</Heading>
+          <FormLabel mt={"20px"}>Username</FormLabel>
+          <Input
+            id="username"
+            type={"text"}
+            onChange={(e) => {
+              setUsername(e.target.value);
+            }}
+          />
+          <FormLabel mt={"15px"}>Password</FormLabel>
+          <Input
+            id="password"
+            type={"password"}
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
+          />
+          <Button
+            mt={"20px"}
+            onClick={handleSubmit}
+            isDisabled={submissionDisabled}
+          >
+            Submit
+          </Button>
+          <Text textAlign={"center"} mt={"15px"}>
+            {navigation.text}{" "}
+            <Link style={{ color: "black" }} href={navigation.link.uri}>
+              {navigation.link.description}
+            </Link>
+          </Text>
+        </FormControl>
+      )}
     </Center>
   );
 }
