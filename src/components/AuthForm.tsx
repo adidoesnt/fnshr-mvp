@@ -9,6 +9,7 @@ import {
 } from "@chakra-ui/react";
 import Link from "next/link";
 import { useState } from "react";
+import LoadingSpinner from "./LoadingSpinner";
 
 export type AuthFormNavigation = {
   text: string;
@@ -29,7 +30,7 @@ export default function AuthForm({
   title,
   onSubmit,
   navigation,
-  submitting
+  submitting,
 }: AuthFormProps) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -42,7 +43,8 @@ export default function AuthForm({
     onSubmit(username, password);
   };
 
-  const submissionDisabled = !validate(username) || !validate(password) || submitting;
+  const submissionDisabled =
+    !validate(username) || !validate(password) || submitting;
 
   return (
     <Center w={"90%"} m={25}>
@@ -69,7 +71,7 @@ export default function AuthForm({
           onClick={handleSubmit}
           isDisabled={submissionDisabled}
         >
-          Submit
+          {submitting ? <LoadingSpinner /> : "Submit"}
         </Button>
         <Text textAlign={"center"} mt={"15px"}>
           {navigation.text}{" "}

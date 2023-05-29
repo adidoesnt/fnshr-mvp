@@ -20,6 +20,7 @@ import TaskPrompts from "./TaskPrompts";
 import { selectGlobalUser } from "@/app/features/user/userSlice";
 import { convertISOToLocalTime } from "./YourTasks";
 import TaskFilterMenu from "./TaskFilterMenu";
+import LoadingSpinner from "./LoadingSpinner";
 
 export type FriendsTasksProps = {
   friends: string[];
@@ -78,7 +79,7 @@ function PromptButton({
         onClick={() => handleClick(id)}
         isDisabled={submitting}
       >
-        <Text>Prompt</Text>
+        {submitting ? <LoadingSpinner /> : <Text>Call out</Text>}
         <WarningIcon />
       </Button>
     </Flex>

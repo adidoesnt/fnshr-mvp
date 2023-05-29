@@ -15,6 +15,7 @@ import { fetchTasks } from "@/app/features/tasks/tasksSlice";
 import { store } from "@/app/store";
 import { useDispatch, useSelector } from "react-redux";
 import { selectGlobalUser, setPoints } from "@/app/features/user/userSlice";
+import LoadingSpinner from "./LoadingSpinner";
 
 export type TaskFormProps = {
   username: string;
@@ -116,7 +117,7 @@ export default function TaskForm({ username }: TaskFormProps) {
           onClick={handleSubmit}
           isDisabled={submissionDisabled}
         >
-          Submit
+          {submitting ? <LoadingSpinner /> : "Submit"}
         </Button>
       </FormControl>
     </Center>

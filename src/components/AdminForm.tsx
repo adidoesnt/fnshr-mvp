@@ -10,6 +10,7 @@ import {
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import LoadingSpinner from "./LoadingSpinner";
 
 export default function AdminForm() {
   const router = useRouter();
@@ -17,6 +18,7 @@ export default function AdminForm() {
   const [amount, setAmount] = useState("");
   const [date, setDate] = useState(new Date());
   const [refNumber, setRefNumber] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const validate = (data: string) => {
     return data !== "";
@@ -32,6 +34,7 @@ export default function AdminForm() {
   };
 
   const handleSubmit = async () => {
+    setSubmitting(true);
     const URI = "api/addPayment";
     try {
       const response = await axios.post(URI, {
@@ -45,13 +48,15 @@ export default function AdminForm() {
     } catch (err) {
       console.log(err);
     }
+    setSubmitting(false);
   };
 
   const submissionDisabled =
     !validate(username) ||
     !validate(amount) ||
     !validate(refNumber) ||
-    !validateDate();
+    !validateDate() ||
+    submitting;
 
   return (
     <Center w={"90%"} m={25}>
@@ -69,7 +74,9 @@ export default function AdminForm() {
           }}
         />
         <FormLabel mt={"15px"}>Amount</FormLabel>
-        <FormHelperText mb={"5px"}>This is the amount paid in SGD.</FormHelperText>
+        <FormHelperText mb={"5px"}>
+          This is the amount paid in SGD.
+        </FormHelperText>
         <Input
           id="amount"
           type={"text"}
@@ -101,8 +108,12 @@ export default function AdminForm() {
             setRefNumber(e.target.value);
           }}
         />
-        <Button mt={"20px"} onClick={handleSubmit} isDisabled={submissionDisabled}>
-          Submit
+        <Button
+          mt={"20px"}
+          onClick={handleSubmit}
+          isDisabled={submissionDisabled}
+        >
+          {submitting ? <LoadingSpinner /> : "Submit"}
         </Button>
       </FormControl>
     </Center>
