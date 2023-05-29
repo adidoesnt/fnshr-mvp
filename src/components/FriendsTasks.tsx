@@ -21,6 +21,7 @@ import { selectGlobalUser } from "@/app/features/user/userSlice";
 import { convertISOToLocalTime } from "./YourTasks";
 import TaskFilterMenu from "./TaskFilterMenu";
 import LoadingSpinner from "./LoadingSpinner";
+import TaskPill from "./TaskPill";
 
 export type FriendsTasksProps = {
   friends: string[];
@@ -118,6 +119,7 @@ function TaskCard({
         <br />
         <Heading fontSize={20}>Task Name:</Heading>
         <Text>{name}</Text>
+        <TaskPill status={status} />
       </CardHeader>
       {!expand ? <Button onClick={() => setExpand(true)}>Expand</Button> : null}
       {expand ? (

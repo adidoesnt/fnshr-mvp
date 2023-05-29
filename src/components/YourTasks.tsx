@@ -11,7 +11,7 @@ import {
   Heading,
   Text,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import axios from "axios";
 import { store } from "@/app/store";
 import { parseISO } from "date-fns";
@@ -19,6 +19,7 @@ import TaskPrompts from "./TaskPrompts";
 import { setPoints } from "@/app/features/user/userSlice";
 import TaskFilterMenu from "./TaskFilterMenu";
 import LoadingSpinner from "./LoadingSpinner";
+import TaskPill from "./TaskPill";
 
 export type YourTasksProps = {
   username: string;
@@ -40,6 +41,8 @@ type TaskCardProps = {
   convertedDeadline: string;
 };
 
+export type Color = "red" | "green" | "blue"
+
 function TaskCard({
   id,
   prompts,
@@ -52,6 +55,7 @@ function TaskCard({
   const URI = "api/completeTask";
   const dispatch = useDispatch();
   const [submitting, setSubmitting] = useState(false);
+
   async function handleCompleteTask(id: string) {
     setSubmitting(true);
     try {
@@ -72,6 +76,7 @@ function TaskCard({
       <CardHeader>
         <Heading fontSize={20}>Task Name:</Heading>
         <Text>{name}</Text>
+        <TaskPill status={status} />
       </CardHeader>
       {!expand ? <Button onClick={() => setExpand(true)}>Expand</Button> : null}
       {expand ? (
