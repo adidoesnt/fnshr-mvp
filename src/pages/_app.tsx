@@ -10,13 +10,15 @@ import { useWindowSize } from "@/app/hooks";
 import theme from "@/app/theme";
 
 store.dispatch(markTasksOverdue()).then(() => {
-  store.dispatch(fetchUsers());
-  store.dispatch(fetchTasks());
+  store.dispatch(fetchUsers()).then(() => {
+    store.dispatch(fetchTasks());
+  });
 });
 setInterval(() => {
   store.dispatch(markTasksOverdue()).then(() => {
-    store.dispatch(fetchUsers());
-    store.dispatch(fetchTasks());
+    store.dispatch(fetchUsers()).then(() => {
+      store.dispatch(fetchTasks());
+    });
   });
 }, 60000);
 
