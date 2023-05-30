@@ -89,8 +89,6 @@ function TaskCard({
             <Text>{convertedDeadline}</Text>
           </CardBody>
           <CardFooter display={"flex"} flexDir={"column"}>
-            <Heading fontSize={20}>Task Status:</Heading>
-            <Text>{status}</Text>
             {status === "ongoing" ? (
               <Button
                 m={2.5}
@@ -154,7 +152,7 @@ export default function YourTasks({ username }: YourTasksProps) {
         </Flex>
       </Center>
       {buttonText === "Hide"
-        ? filteredTasks.map((task: any, index: number) => {
+        ? filteredTasks.map((task: any) => {
             const { _id: id, name, deadline, pledge, status, prompts } = task;
             const convertedDeadline = convertISOToLocalTime(deadline);
 
