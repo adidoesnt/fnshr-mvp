@@ -14,9 +14,9 @@ store.dispatch(markTasksOverdue()).then(() => {
   store.dispatch(fetchTasks());
 });
 setInterval(() => {
-  store.dispatch(fetchTasks()).then(() => {
+  store.dispatch(markTasksOverdue()).then(() => {
     store.dispatch(fetchUsers());
-    store.dispatch(markTasksOverdue());
+    store.dispatch(fetchTasks());
   });
 }, 60000);
 
