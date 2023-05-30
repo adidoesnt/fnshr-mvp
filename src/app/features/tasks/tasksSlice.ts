@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export const markTasksOverdue = createAsyncThunk("tasks/markTasksOverdue", async() => {
-  const URI = "/api/markOverdueTasks";
+  const URI = "/api/markTasksOverdue";
   const response = await axios.get(URI);
   return response.data;
 })
