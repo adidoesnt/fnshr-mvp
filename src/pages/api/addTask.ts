@@ -4,7 +4,6 @@ import { Task } from "./schemas";
 import axios from "axios";
 import { differenceInMilliseconds, parseISO } from "date-fns";
 import { store } from "@/app/store";
-import { fetchTasks } from "@/app/features/tasks/tasksSlice";
 import { fetchUsers } from "@/app/features/users/usersSlice";
 
 type CreationStatus = "success" | "failure";
