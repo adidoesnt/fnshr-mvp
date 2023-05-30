@@ -20,22 +20,6 @@ type Data = {
   points?: number;
 };
 
-async function handleTaskOverdue(id: string) {
-  const API_PREFIX =
-    process.env.ENV === "PROD"
-      ? process.env.CLOUD_API_PREFIX
-      : process.env.LOCAL_API_PREFIX;
-  const URI = `${API_PREFIX}overdueTask`;
-
-  try {
-    const response = await axios.post(URI, { id });
-    console.log(response.data);
-    await store.dispatch(fetchTasks());
-  } catch (err) {
-    console.log(err);
-  }
-}
-
 async function deductPledgeAmount(username: string, pledge: number) {
   const API_PREFIX =
     process.env.ENV === "PROD"
@@ -82,10 +66,8 @@ export default async function handler(
       prompts,
     };
     try {
-      const task = await new Task(newTask).save();
-      const { _id: id } = task;
+      await new Task(newTask).save();
       const { created, due, diff } = calculateTimeout(deadline);
-      setTimeout(() => handleTaskOverdue(id), diff);
       await closeDb();
       const data = await deductPledgeAmount(username, pledge);
       const { points } = data;

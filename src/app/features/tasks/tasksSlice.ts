@@ -2,6 +2,12 @@ import { RootState } from "@/app/store";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
+export const markTasksOverdue = createAsyncThunk("tasks/markTasksOverdue", async() => {
+  const URI = "/api/markOverdueTasks";
+  const response = await axios.get(URI);
+  return response.data;
+})
+
 export const fetchTasks = createAsyncThunk("tasks/getAllTasks", async () => {
   const URI = "/api/getTasks";
   const response = await axios.get(URI);
