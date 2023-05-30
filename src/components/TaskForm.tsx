@@ -46,7 +46,7 @@ export default function TaskForm({ username }: TaskFormProps) {
   const validateDate = () => {
     const now = new Date();
     const diff = differenceInMinutes(deadline, now);
-    return diff >= 59;
+    return diff >= 0; // TODO: change this back
   };
 
   async function handleSubmit() {
