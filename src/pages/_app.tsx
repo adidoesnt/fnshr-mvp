@@ -9,9 +9,9 @@ import { fetchUsers } from "@/app/features/users/usersSlice";
 import { useWindowSize } from "@/app/hooks";
 import theme from "@/app/theme";
 
-store.dispatch(fetchTasks()).then(() => {
+store.dispatch(markTasksOverdue()).then(() => {
   store.dispatch(fetchUsers());
-  store.dispatch(markTasksOverdue());
+  store.dispatch(fetchTasks());
 });
 setInterval(() => {
   store.dispatch(fetchTasks()).then(() => {
