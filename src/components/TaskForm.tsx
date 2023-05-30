@@ -46,7 +46,7 @@ export default function TaskForm({ username }: TaskFormProps) {
   const validateDate = () => {
     const now = new Date();
     const diff = differenceInMinutes(deadline, now);
-    return diff >= 0; // TODO: change this back
+    return diff >= 14;
   };
 
   async function handleSubmit() {
@@ -87,7 +87,7 @@ export default function TaskForm({ username }: TaskFormProps) {
         <FormLabel mt={"15px"}>Task Deadline</FormLabel>
         <FormHelperText>
           When do you intend to complete this task by? This should be at least
-          an hour from now.
+          15 minutes from now.
         </FormHelperText>
         <Input
           mt={"5px"}
