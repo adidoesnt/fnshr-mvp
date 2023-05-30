@@ -4,8 +4,8 @@ import Head from "next/head";
 import FnshrPoints from "@/components/FnshrPoints";
 import { useRouter } from "next/router";
 import Loading from "@/components/Loading";
-import { Button, Center, Flex, Text } from "@chakra-ui/react";
-import { AddIcon, SearchIcon } from "@chakra-ui/icons";
+import { Button, Flex, Text } from "@chakra-ui/react";
+import { AddIcon, SearchIcon, ViewIcon } from "@chakra-ui/icons";
 import YourTasks, { YourTasksProps } from "@/components/YourTasks";
 import FriendsTasks from "@/components/FriendsTasks";
 import { useDispatch } from "react-redux";
@@ -20,17 +20,22 @@ type ContentProps = YourTasksProps & {
   admin: boolean;
 };
 
-function AddFriendsButton() {
+type FriendsButtonProps = {
+  add: boolean;
+}
+
+function FriendsButton({ add }: FriendsButtonProps) {
   const router = useRouter();
 
-  const handleClick = () => {
-    router.push("/addFriends");
+  const handleClick = (add: boolean) => {
+    const URI = add ? "/addFriends" : "/viewFriends";
+    router.push(URI);
   };
 
   return (
-    <Button display={"flex"} onClick={handleClick} mb={5} w={200}>
-      <Text m={2.5}>Add Friends</Text>
-      <SearchIcon m={2.5} />
+    <Button display={"flex"} onClick={() => handleClick(add)} mb={5} w={200}>
+      <Text w={"75%"} m={2.5}>{add ? "Add Friends" : "View Friends"}</Text>
+      {add ? <SearchIcon m={2.5} /> : <ViewIcon m={2.5} />}
     </Button>
   );
 }
@@ -83,7 +88,7 @@ function AddTaskButton() {
 
   return (
     <Button display={"flex"} onClick={handleClick} w={200}>
-      <Text m={2.5}>Add Task</Text>
+      <Text w={"75%"} m={2.5}>Add Task</Text>
       <AddIcon m={2.5} />
     </Button>
   );
@@ -109,7 +114,8 @@ function Content({ username, points, friends, admin }: ContentProps) {
       >
         <LogoutButton admin={admin} />
         <FnshrPoints points={points} />
-        <AddFriendsButton />
+        <FriendsButton add={false} />
+        <FriendsButton add />
         <AddTaskButton />
         <YourTasks username={username} />
         <FriendsTasks friends={friends} />
