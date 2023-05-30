@@ -7,6 +7,7 @@ import {
   CardFooter,
   CardHeader,
   Center,
+  Divider,
   Flex,
   Heading,
   Text,
@@ -47,7 +48,7 @@ function PromptButton({
   const globalUser = useSelector(selectGlobalUser);
   const { username: prompter } = globalUser;
   const penalty = 2;
-  const [ submitting, setSubmitting ] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   async function handleClick(id: string) {
     setSubmitting(true);
@@ -131,17 +132,15 @@ function TaskCard({
             <Heading fontSize={20}>Deadline</Heading>
             <Text>{convertedDeadline}</Text>
           </CardBody>
-          <CardFooter display={"flex"} flexDir={"column"}>
-            <Heading fontSize={20}>Task Status:</Heading>
-            <Text>{status}</Text>
+          <CardFooter>
+            <PromptButton
+              promptee={username}
+              status={status}
+              id={id}
+              globalUsername={globalUsername}
+              prompts={prompts}
+            />
           </CardFooter>
-          <PromptButton
-            promptee={username}
-            status={status}
-            id={id}
-            globalUsername={globalUsername}
-            prompts={prompts}
-          />
           {expand ? (
             <Button onClick={() => setExpand(false)}>Collapse</Button>
           ) : null}
