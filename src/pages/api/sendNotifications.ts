@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { initDb, closeDb } from "./repository";
-import { User } from "./schemas";
+import { Notification, User } from "./schemas";
 
 type UpdateStatus = "success" | "failure";
 
@@ -10,7 +10,10 @@ type Data = {
   status: UpdateStatus;
 };
 
-const notifyFriend = async (friendUsername: string, notification: string) => {
+const notifyFriend = async (
+  friendUsername: string,
+  notification: typeof Notification
+) => {
   const friend = await User.findOne({ username: friendUsername });
   const { notifications } = friend;
   notifications.push(notification);
@@ -25,10 +28,11 @@ export default async function handler(
     const { username, notification } = req.body;
     try {
       await initDb();
+      const notificationObj = new Notification(notification);
       const user = await User.findOne({ username });
       const { friends } = user;
       for (let friend of friends) {
-        await notifyFriend(friend, notification);
+        await notifyFriend(friend, notificationObj);
       }
       await closeDb();
       res.status(200).json({ username, friends, status: "success" });
