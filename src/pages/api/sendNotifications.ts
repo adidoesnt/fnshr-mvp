@@ -17,7 +17,7 @@ const notifyFriend = async (
   const friend = await User.findOne({ username: friendUsername });
   const { notifications } = friend;
   notifications.unshift(notification);
-  await User.updateOne({ username: friendUsername, notifications });
+  await User.updateOne({ username: friendUsername }, { notifications });
 };
 
 export default async function handler(
