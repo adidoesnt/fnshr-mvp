@@ -1,7 +1,6 @@
-import { selectAllTasks } from "@/app/features/tasks/tasksSlice";
 import { fetchUsers, selectAllUsers } from "@/app/features/users/usersSlice";
 import { store } from "@/app/store";
-import { BellIcon, CheckIcon, WarningIcon } from "@chakra-ui/icons";
+import { BellIcon, CheckIcon } from "@chakra-ui/icons";
 import {
   Button,
   Text,
@@ -19,8 +18,9 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
+import { showNotification } from "../../public/browserNotifications";
 
 export type Notification = {
   _id?: string;
@@ -132,6 +132,28 @@ export default function Notifications({ username }: NotificationsProps) {
     (notification: Notification) => !notification.acknowledged
   );
   const numNotifications = filteredNotifications?.length || 0;
+  const previousLengthRef = useRef(
+    filteredNotifications ? filteredNotifications.length : 0
+  );
+
+  useEffect(() => {
+    if (
+      filteredNotifications &&
+      filteredNotifications.length > previousLengthRef.current
+    ) {
+      const latestNotification = filteredNotifications[0];
+      const { message } = latestNotification;
+
+      console.log("notifying...")
+      showNotification("New Notification", {
+        body: message,
+        icon: "/Logo_192x192.png",
+      });
+    }
+    previousLengthRef.current = filteredNotifications
+      ? filteredNotifications.length
+      : 0;
+  }, [filteredNotifications]);
 
   return (
     <Button w={"100px"} onClick={onOpen}>
