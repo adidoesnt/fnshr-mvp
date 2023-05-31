@@ -4,6 +4,7 @@ import { Task } from "./schemas";
 import axios from "axios";
 import { fetchUsers } from "@/app/features/users/usersSlice";
 import { store } from "@/app/store";
+import { Notification } from "@/components/Notifications";
 
 type UpdateStatus = "success" | "failure";
 
@@ -13,11 +14,12 @@ type Data = {
   points?: number;
 };
 
+const API_PREFIX =
+  process.env.ENV === "PROD"
+    ? process.env.CLOUD_API_PREFIX
+    : process.env.LOCAL_API_PREFIX;
+
 async function creditPledgeAmount(username: string, pledge: number) {
-  const API_PREFIX =
-    process.env.ENV === "PROD"
-      ? process.env.CLOUD_API_PREFIX
-      : process.env.LOCAL_API_PREFIX;
   const URI = `${API_PREFIX}creditPoints`;
 
   try {
@@ -25,6 +27,17 @@ async function creditPledgeAmount(username: string, pledge: number) {
     console.log(response.data);
     await store.dispatch(fetchUsers());
     return response.data;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function notifyFriends(username: string, notification: Notification) {
+  const URI = `${API_PREFIX}sendNotifications`;
+
+  try {
+    const response = await axios.post(URI, { username, notification });
+    console.log(response.data);
   } catch (err) {
     console.log(err);
   }
@@ -40,11 +53,16 @@ export default async function handler(
     const status = "completed";
     try {
       const task = await Task.findOne({ _id: id });
-      const { username, pledge } = task;
+      const { username, pledge, name } = task;
       await Task.updateOne({ _id: id }, { status });
       await closeDb();
       const data = await creditPledgeAmount(username, pledge);
       const { points } = data;
+      const notification: Notification = {
+        content: `${username} has completed their task: ${name}`,
+        acknowledged: false,
+      }
+      await notifyFriends(username, notification);
       res.status(200).json({ id, status: "success", points });
     } catch {
       await closeDb();
