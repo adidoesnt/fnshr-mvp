@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { useWindowSize } from "@/app/hooks";
 import { useState } from "react";
 import { store } from "@/app/store";
+import { fetchUsers } from "@/app/features/users/usersSlice";
 
 export default function LoginPage() {
   const URI = "/api/login";
@@ -22,6 +23,7 @@ export default function LoginPage() {
         username,
         password,
       });
+      await store.dispatch(fetchUsers());
       await store.dispatch(fetchGlobalUser(username));
       console.log(response.data);
       router.push("/home");

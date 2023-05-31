@@ -69,7 +69,7 @@ export default function Callouts() {
   const numPrompts = mappedTasks.reduce((a: number, b: number) => a + b, 0);
 
   return (
-    <Button onClick={onOpen}>
+    <Button w={"100px"} onClick={onOpen}>
       <CalloutModal isOpen={isOpen} onClose={onClose} />
       <WarningIcon mr={2.5} />
       <Text ml={2.5}>{numPrompts}</Text>

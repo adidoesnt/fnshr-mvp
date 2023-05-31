@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
 const { model, Schema } = mongoose;
 
+export const notificationSchema = new Schema({
+  content: { type: String, required: true },
+  acknowledged: { type: Boolean, required: true },
+});
+
 export const userSchema = new Schema({
   username: { type: String, required: true },
   salt: { type: String, required: true },
@@ -8,6 +13,7 @@ export const userSchema = new Schema({
   points: { type: Number, required: true },
   friends: { type: [String], required: true },
   admin: { type: Boolean, required: true },
+  notifications: { type: [notificationSchema], required: true },
 });
 
 export const taskSchema = new Schema({
@@ -37,3 +43,5 @@ export const User = mongoose.models.User || model("User", userSchema);
 export const Task = mongoose.models.Task || model("Task", taskSchema);
 export const Payment =
   mongoose.models.Payment || model("Payment", paymentSchema);
+export const Notification =
+  mongoose.models.Notification || model("Notification", notificationSchema);

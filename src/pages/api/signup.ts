@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { initDb, closeDb } from "./repository";
 import bcrypt from "bcrypt";
-import { User } from "./schemas";
+import { Notification, User } from "./schemas";
 
 type SignupStatus = "success" | "failure" | "user already exists";
 
@@ -28,6 +28,7 @@ export default async function handler(
     const testUser = await User.findOne({ username });
     const friends: string[] = [];
     const admin = false;
+    const notifications: (typeof Notification)[] = [];
     if (testUser) {
       await closeDb();
       res.status(409).json({ username, status: "user already exists" });
@@ -40,6 +41,7 @@ export default async function handler(
           points,
           friends,
           admin,
+          notifications
         }).save();
         await closeDb();
         res
