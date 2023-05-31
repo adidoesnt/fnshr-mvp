@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { initDb, closeDb } from "./repository";
-import { User, Notification } from "./schemas";
+import { User } from "./schemas";
 
 type UpdateStatus = "success" | "failure";
 

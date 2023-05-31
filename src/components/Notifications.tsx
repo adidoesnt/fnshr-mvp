@@ -132,28 +132,28 @@ export default function Notifications({ username }: NotificationsProps) {
     (notification: Notification) => !notification.acknowledged
   );
   const numNotifications = filteredNotifications?.length || 0;
-  const previousLengthRef = useRef(
-    filteredNotifications ? filteredNotifications.length : 0
-  );
+  // const previousLengthRef = useRef(
+  //   filteredNotifications ? filteredNotifications.length : 0
+  // );
 
-  useEffect(() => {
-    if (
-      filteredNotifications &&
-      filteredNotifications.length > previousLengthRef.current
-    ) {
-      const latestNotification = filteredNotifications[0];
-      const { message } = latestNotification;
+  // useEffect(() => {
+  //   if (
+  //     filteredNotifications &&
+  //     filteredNotifications.length > previousLengthRef.current
+  //   ) {
+  //     const latestNotification = filteredNotifications[0];
+  //     const { message } = latestNotification;
 
-      console.log("notifying...")
-      showNotification("New Notification", {
-        body: message,
-        icon: "/Logo_192x192.png",
-      });
-    }
-    previousLengthRef.current = filteredNotifications
-      ? filteredNotifications.length
-      : 0;
-  }, [filteredNotifications]);
+  //     console.log("notifying...")
+  //     showNotification("New Notification", {
+  //       body: message,
+  //       icon: "/Logo_192x192.png",
+  //     });
+  //   }
+  //   previousLengthRef.current = filteredNotifications
+  //     ? filteredNotifications.length
+  //     : 0;
+  // }, [filteredNotifications]);  // TODO: fix
 
   return (
     <Button w={"100px"} onClick={onOpen}>
