@@ -1,6 +1,6 @@
 import { selectAllTasks } from "@/app/features/tasks/tasksSlice";
-import { selectGlobalUser } from "@/app/features/user/userSlice";
-import { WarningIcon } from "@chakra-ui/icons";
+import { selectAllUsers } from "@/app/features/users/usersSlice";
+import { BellIcon, WarningIcon } from "@chakra-ui/icons";
 import {
   Button,
   Text,
@@ -16,12 +16,12 @@ import {
 } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 
-type CalloutModalProps = {
+type NotificationsModalProps = {
   isOpen: boolean;
   onClose: () => void;
 };
 
-function CalloutModal({ isOpen, onClose }: CalloutModalProps) {
+function NotificationsModal({ isOpen, onClose }: NotificationsModalProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside">
       <ModalOverlay backdropFilter="blur(10px) hue-rotate(10deg)" />
@@ -32,18 +32,14 @@ function CalloutModal({ isOpen, onClose }: CalloutModalProps) {
         maxH={"90%"}
         overflowY={"scroll"}
       >
-        <ModalHeader>Callouts</ModalHeader>
+        <ModalHeader>Notifications</ModalHeader>
         <ModalBody>
           <Center flexDir={"column"}>
             <Heading fontSize={20} mt={2.5} mb={2.5}>
-              What are these alerts?
+              What is this?
             </Heading>
             <Text>
-              These alerts are prompts, or callouts. Your friends are able to
-              call you out when you have a task overdue.
-              <br /> The number displayed here is the total number of callouts
-              you have received.
-              <br /> The penalty for each callout is 2 FNSHR points.
+              This feature is a work in progress.
             </Text>
           </Center>
         </ModalBody>
@@ -58,21 +54,22 @@ function CalloutModal({ isOpen, onClose }: CalloutModalProps) {
   );
 }
 
-export default function Callouts() {
+export type NotificationsProps = {
+    username: string;
+}
+
+export default function Notifications({ username }: NotificationsProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const user = useSelector(selectGlobalUser);
-  const tasks = useSelector(selectAllTasks);
-  const filteredTasks = tasks.filter(
-    (task: any) => task.username === user.username
-  );
-  const mappedTasks = filteredTasks.map((task: any) => task.prompts.length);
-  const numPrompts = mappedTasks.reduce((a: number, b: number) => a + b, 0);
+  const users = useSelector(selectAllUsers);
+  const user: any = users.find((item: any) => item.username === username);
+  const { notifications } = user;
+  const numNotifications = notifications.length;
 
   return (
     <Button w={"100px"} onClick={onOpen}>
-      <CalloutModal isOpen={isOpen} onClose={onClose} />
-      <WarningIcon mr={2.5} />
-      <Text ml={2.5}>{numPrompts}</Text>
+      <NotificationsModal isOpen={isOpen} onClose={onClose} />
+      <BellIcon mr={2.5} />
+      <Text ml={2.5}>{numNotifications}</Text>
     </Button>
   );
 }

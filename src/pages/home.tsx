@@ -5,7 +5,7 @@ import FnshrPoints from "@/components/FnshrPoints";
 import { useRouter } from "next/router";
 import Loading from "@/components/Loading";
 import { Button, Flex, Text } from "@chakra-ui/react";
-import { AddIcon, SearchIcon, ViewIcon } from "@chakra-ui/icons";
+import { AddIcon, LockIcon, SearchIcon, ViewIcon } from "@chakra-ui/icons";
 import YourTasks, { YourTasksProps } from "@/components/YourTasks";
 import FriendsTasks from "@/components/FriendsTasks";
 import { useDispatch } from "react-redux";
@@ -13,6 +13,7 @@ import { clearGlobalUser } from "@/app/features/user/userSlice";
 import { useWindowSize } from "@/app/hooks";
 import Callouts from "@/components/Callouts";
 import { persistor } from "@/app/store";
+import Notifications from "@/components/Notifications";
 
 type ContentProps = YourTasksProps & {
   points: number;
@@ -22,7 +23,7 @@ type ContentProps = YourTasksProps & {
 
 type FriendsButtonProps = {
   add: boolean;
-}
+};
 
 function FriendsButton({ add }: FriendsButtonProps) {
   const router = useRouter();
@@ -34,23 +35,21 @@ function FriendsButton({ add }: FriendsButtonProps) {
 
   return (
     <Button display={"flex"} onClick={() => handleClick(add)} mb={5} w={200}>
-      <Text w={"75%"} m={2.5}>{add ? "Add Friends" : "View Friends"}</Text>
+      <Text w={"75%"} m={2.5}>
+        {add ? "Add Friends" : "View Friends"}
+      </Text>
       {add ? <SearchIcon m={2.5} /> : <ViewIcon m={2.5} />}
     </Button>
   );
 }
 
 type LogoutButtonProps = {
-  admin: boolean;
+  username: string;
 };
 
-function LogoutButton({ admin }: LogoutButtonProps) {
+function LogoutButton({ username }: LogoutButtonProps) {
   const dispatch = useDispatch();
   const router = useRouter();
-
-  const handleClick = () => {
-    router.push("/admin");
-  };
 
   const handleLogout = () => {
     dispatch(clearGlobalUser);
@@ -60,7 +59,7 @@ function LogoutButton({ admin }: LogoutButtonProps) {
 
   return (
     <Flex w={"90%"} mt={"5%"}>
-      <Flex justifyContent={"flex-start"} w={admin ? `${100 / 3}%` : "100%"}>
+      <Flex justifyContent={"flex-start"} w={`${100 / 3}%`}>
         <Button w={"100px"} onClick={handleLogout}>
           Logout
         </Button>
@@ -68,15 +67,32 @@ function LogoutButton({ admin }: LogoutButtonProps) {
       <Flex justifyContent={"center"} alignItems={"center"} w={`${100 / 3}%`}>
         <Callouts />
       </Flex>
-      {admin ? (
-        <Flex justifyContent={"flex-end"} w={`${100 / 3}%`}>
-          <Button display={"flex"} w={"100px"} onClick={handleClick}>
-            Admin
-          </Button>
-        </Flex>
-      ) : null}
+      <Flex justifyContent={"flex-end"} alignItems={"center"} w={`${100 / 3}%`}>
+        <Notifications username={username} />
+      </Flex>
     </Flex>
   );
+}
+
+type AdminButtonProps = {
+  admin: boolean;
+};
+
+function AdminButton({ admin }: AdminButtonProps) {
+  const router = useRouter();
+
+  const handleClick = () => {
+    router.push("/admin");
+  };
+
+  return admin ? (
+    <Button display={"flex"} w={200} onClick={handleClick} mb={5}>
+      <Text w={"75%"} m={2.5}>
+        Admin
+      </Text>
+      <LockIcon m={2.5} />
+    </Button>
+  ) : null;
 }
 
 function AddTaskButton() {
@@ -88,7 +104,9 @@ function AddTaskButton() {
 
   return (
     <Button display={"flex"} onClick={handleClick} w={200}>
-      <Text w={"75%"} m={2.5}>Add Task</Text>
+      <Text w={"75%"} m={2.5}>
+        Add Task
+      </Text>
       <AddIcon m={2.5} />
     </Button>
   );
@@ -112,8 +130,9 @@ function Content({ username, points, friends, admin }: ContentProps) {
           height: size.height,
         }}
       >
-        <LogoutButton admin={admin} />
+        <LogoutButton username={username} />
         <FnshrPoints points={points} />
+        <AdminButton admin={admin} />
         <FriendsButton add={false} />
         <FriendsButton add />
         <AddTaskButton />
