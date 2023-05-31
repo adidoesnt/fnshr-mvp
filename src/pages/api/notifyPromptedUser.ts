@@ -25,7 +25,7 @@ export default async function handler(
         content: `${username} called you out for the following task: ${name}!`,
         acknowledged: false,
       };
-      notifications.push(notification);
+      notifications.unshift(notification);
       await User.updateOne({ username: friend }, { notifications });
       await closeDb();
       res.status(200).json({
