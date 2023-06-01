@@ -32,17 +32,6 @@ async function creditPledgeAmount(username: string, pledge: number) {
   }
 }
 
-async function notifyFriends(username: string, notification: Notification) {
-  const URI = `${API_PREFIX}sendNotifications`;
-
-  try {
-    const response = await axios.post(URI, { username, notification });
-    console.log(response.data);
-  } catch (err) {
-    console.log(err);
-  }
-}
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
@@ -58,11 +47,6 @@ export default async function handler(
       await closeDb();
       const data = await creditPledgeAmount(username, pledge);
       const { points } = data;
-      const notification: Notification = {
-        content: `${username} has completed their task: ${name}`,
-        acknowledged: false,
-      }
-      await notifyFriends(username, notification);
       res.status(200).json({ id, status: "success", points });
     } catch {
       await closeDb();

@@ -38,17 +38,6 @@ async function deductPledgeAmount(username: string, pledge: number) {
   }
 }
 
-async function notifyFriends(username: string, notification: Notification) {
-  const URI = `${API_PREFIX}sendNotifications`;
-
-  try {
-    const response = await axios.post(URI, { username, notification });
-    console.log(response.data);
-  } catch (err) {
-    console.log(err);
-  }
-}
-
 const calculateTimeout = (deadline: string) => {
   const parsedDeadline: Date = parseISO(deadline);
   const now = parseISO(new Date().toISOString());
@@ -85,7 +74,6 @@ export default async function handler(
         content: `${username} has created a new task: ${name}`,
         acknowledged: false,
       }
-      await notifyFriends(username, notification);
       const data = await deductPledgeAmount(username, pledge);
       const { points } = data;
       res.status(201).json({
