@@ -1,4 +1,7 @@
-import { fetchUsers, selectAllUsers } from "@/app/features/users/usersSlice";
+import {
+  fetchNotifications,
+  selectAllNotifications,
+} from "@/app/features/notifications/notificationsSlice";
 import { store } from "@/app/store";
 import { BellIcon, CheckIcon } from "@chakra-ui/icons";
 import {
@@ -21,11 +24,12 @@ import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { showNotification } from "../../public/browserNotifications";
+import { selectGlobalUser } from "@/app/features/user/userSlice";
 
 export type Notification = {
   _id?: string;
   content: string;
-  acknowledged: boolean;
+  toAcknowledge: string[];
 };
 
 type NotificationsModalProps = {
@@ -49,7 +53,6 @@ function NotificationCard({ username, notification }: NotificationCardProps) {
     const URI = "api/acknowledgeNotification";
     try {
       const response = await axios.post(URI, { username, id });
-      await store.dispatch(fetchUsers());
       console.log(response.data);
     } catch (err) {
       console.log(err);
@@ -125,13 +128,15 @@ export type NotificationsProps = {
 
 export default function Notifications({ username }: NotificationsProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const users = useSelector(selectAllUsers);
-  const user: any = users.find((item: any) => item.username === username);
-  const { notifications } = user;
+  const notifications = useSelector(selectAllNotifications);
   const filteredNotifications = notifications?.filter(
-    (notification: Notification) => !notification.acknowledged
+    (notification: Notification) =>
+      notification.toAcknowledge.findIndex(
+        (item: string) => item === username
+      ) !== -1
   );
   const numNotifications = filteredNotifications?.length || 0;
+  
   // const previousLengthRef = useRef(
   //   filteredNotifications ? filteredNotifications.length : 0
   // );

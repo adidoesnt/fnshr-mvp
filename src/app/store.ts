@@ -2,6 +2,7 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import userReducer from "@/app/features/user/userSlice";
 import tasksReducer from "@/app/features/tasks/tasksSlice";
 import usersReducer from "@/app/features/users/usersSlice";
+import notificationsReducer from "@/app/features/notifications/notificationsSlice";
 import {
   persistReducer,
   persistStore,
@@ -23,6 +24,7 @@ const rootReducer = combineReducers({
   user: userReducer,
   users: usersReducer,
   tasks: tasksReducer,
+  notifications: notificationsReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
