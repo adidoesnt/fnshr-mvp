@@ -37,6 +37,17 @@ function FriendCard({ username }: FriendCardProps) {
   const [submitting, setSubmitting] = useState(false);
   const { username: ownUsername } = useSelector(selectGlobalUser);
 
+  async function notifyFriend(username: string, friend: string) {
+    const URI = `/api/notifyFriend`;
+    const content = `${username} has added you as a friend!`;
+    try {
+      const response = await axios.post(URI, { content, friend });
+      console.log(response.data);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   async function handleRemoveFriend(friend: string) {
     setSubmitting(true);
     try {
@@ -47,6 +58,7 @@ function FriendCard({ username }: FriendCardProps) {
       console.log(response.data);
       const { friends } = response.data;
       dispatch(setFriends(friends));
+      await notifyFriend(ownUsername, friend);
     } catch (err) {
       console.log(err);
     }

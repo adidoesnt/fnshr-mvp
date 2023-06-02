@@ -24,7 +24,8 @@ import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { showNotification } from "../../public/browserNotifications";
-import { selectGlobalUser } from "@/app/features/user/userSlice";
+import { fetchTasks } from "@/app/features/tasks/tasksSlice";
+import { fetchUsers } from "@/app/features/users/usersSlice";
 
 export type Notification = {
   _id?: string;
@@ -129,37 +130,41 @@ export type NotificationsProps = {
 
 export default function Notifications({ username }: NotificationsProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const notifications = useSelector(selectAllNotifications);
-  const filteredNotifications = notifications?.filter(
-    (notification: Notification) =>
-      notification.toAcknowledge.findIndex(
-        (item: string) => item === username
-      ) !== -1
-  ).reverse();
+  const notifications: Notification[] = useSelector(selectAllNotifications);
+  const filteredNotifications = notifications
+    ?.filter(
+      (notification: Notification) =>
+        notification.toAcknowledge.findIndex(
+          (item: string) => item === username
+        ) !== -1
+    )
+    .reverse();
   const numNotifications = filteredNotifications?.length || 0;
-  
-  // const previousLengthRef = useRef(
-  //   filteredNotifications ? filteredNotifications.length : 0
-  // );
 
-  // useEffect(() => {
-  //   if (
-  //     filteredNotifications &&
-  //     filteredNotifications.length > previousLengthRef.current
-  //   ) {
-  //     const latestNotification = filteredNotifications[0];
-  //     const { message } = latestNotification;
+  const previousLengthRef = useRef(
+    filteredNotifications ? filteredNotifications.length : 0
+  );
 
-  //     console.log("notifying...")
-  //     showNotification("New Notification", {
-  //       body: message,
-  //       icon: "/Logo_192x192.png",
-  //     });
-  //   }
-  //   previousLengthRef.current = filteredNotifications
-  //     ? filteredNotifications.length
-  //     : 0;
-  // }, [filteredNotifications]);  // TODO: fix
+  useEffect(() => {
+    if (
+      filteredNotifications &&
+      filteredNotifications.length > previousLengthRef.current
+    ) {
+      // const latestNotification = filteredNotifications[0];
+      // const { content: message } = latestNotification;
+
+      // console.log("notifying...")
+      // showNotification("New Notification", {
+      //   body: message,
+      //   icon: "/Logo_192x192.png",
+      // }); // TODO: fix
+      
+      store.dispatch(fetchUsers()).then(() => store.dispatch(fetchTasks()));
+    }
+    previousLengthRef.current = filteredNotifications
+      ? filteredNotifications.length
+      : 0;
+  }, [filteredNotifications]);
 
   return (
     <Button w={"100px"} onClick={onOpen}>

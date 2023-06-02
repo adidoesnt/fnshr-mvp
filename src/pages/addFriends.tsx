@@ -58,7 +58,7 @@ function FriendCard({ username }: FriendCardProps) {
       console.log(addResponse.data);
       const { friends } = addResponse.data;
       dispatch(setFriends(friends));
-      await notifyFriend(ownUsername, friend)
+      await notifyFriend(ownUsername, friend);
     } catch (err) {
       console.log(err);
     }
