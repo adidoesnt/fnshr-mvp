@@ -3,7 +3,6 @@ import { initDb, closeDb } from "./repository";
 import { Task } from "./schemas";
 import { differenceInMilliseconds, parseISO } from "date-fns";
 import axios from "axios";
-import { Notification } from "@/components/Notifications";
 
 type FindStatus = "success" | "failure";
 
@@ -16,11 +15,11 @@ const API_PREFIX =
     ? process.env.CLOUD_API_PREFIX
     : process.env.LOCAL_API_PREFIX;
 
-async function notifyFriends(username: string, notification: Notification) {
-  const URI = `${API_PREFIX}sendNotifications`;
-
+async function notifyFriends(username: string, name: string) {
+  const URI = `${API_PREFIX}notifyFriends`;
+  const content = `${username} has missed their task: "${name}"`;
   try {
-    const response = await axios.post(URI, { username, notification });
+    const response = await axios.post(URI, { username, content });
     console.log(response.data);
   } catch (err) {
     console.log(err);
@@ -34,11 +33,7 @@ const checkTaskOverdue = async (task: any) => {
   const diff = differenceInMilliseconds(now, convertedDeadline);
   if (diff > 0) {
     await Task.updateOne({ _id }, { status: "missed" });
-    const notification: Notification = {
-      content: `${username} missed their task: ${name}`,
-      acknowledged: false,
-    }
-    await notifyFriends(username, notification);
+    await notifyFriends(username, name);
   }
 };
 

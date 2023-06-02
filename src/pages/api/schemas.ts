@@ -3,7 +3,7 @@ const { model, Schema } = mongoose;
 
 export const notificationSchema = new Schema({
   content: { type: String, required: true },
-  acknowledged: { type: Boolean, required: true },
+  toAcknowledge: { type: [String], required: true },
 });
 
 export const userSchema = new Schema({
@@ -13,7 +13,6 @@ export const userSchema = new Schema({
   points: { type: Number, required: true },
   friends: { type: [String], required: true },
   admin: { type: Boolean, required: true },
-  notifications: { type: [notificationSchema], required: true },
 });
 
 export const taskSchema = new Schema({

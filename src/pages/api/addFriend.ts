@@ -17,9 +17,10 @@ const API_PREFIX =
     : process.env.LOCAL_API_PREFIX;
 
 async function notifyFriend(username: string, friend: string) {
-  const URI = `${API_PREFIX}notifyNewFriend`;
+  const URI = `${API_PREFIX}notifyFriend`;
+  const content = `${username} has added you as a friend!`;
   try {
-    const response = await axios.post(URI, { username, friend });
+    const response = await axios.post(URI, { content, friend });
     console.log(response.data);
   } catch (err) {
     console.log(err);

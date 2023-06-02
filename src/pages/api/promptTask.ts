@@ -16,10 +16,11 @@ const API_PREFIX =
     ? process.env.CLOUD_API_PREFIX
     : process.env.LOCAL_API_PREFIX;
 
-async function notifyFriend(username: string, friend: string, name: string) {
-  const URI = `${API_PREFIX}notifyPromptedUser`;
+async function notifyFriend(username: string, name: string, friend: string) {
+  const URI = `${API_PREFIX}notifyFriend`;
+  const content = `${username} has called you out for missing your task: "${name}"`;
   try {
-    const response = await axios.post(URI, { username, friend, name });
+    const response = await axios.post(URI, { friend, content });
     console.log(response.data);
   } catch (err) {
     console.log(err);
@@ -35,11 +36,11 @@ export default async function handler(
     const { id, prompter } = req.body;
     try {
       const task = await Task.findOne({ _id: id });
-      const { username, name, prompts } = task;
+      const { name, prompts, username } = task;
       prompts.push(prompter);
       await Task.updateOne({ _id: id }, { prompts });
       await closeDb();
-      await notifyFriend(prompter, username, name);
+      await notifyFriend(prompter, name, username);
       res.status(200).json({ id, prompts, status: "success" });
     } catch {
       await closeDb();

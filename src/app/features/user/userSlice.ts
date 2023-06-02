@@ -1,14 +1,12 @@
 import { RootState, store } from "@/app/store";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import type { Notification } from "@/components/Notifications";
 
 const initialState = {
   username: "",
   points: 0,
   friends: [] as string[],
   admin: false,
-  notifications: [] as Notification[]
 };
 
 export const fetchGlobalUser = createAsyncThunk(
@@ -38,12 +36,11 @@ export const userSlice = createSlice({
   extraReducers(builder) {
     builder.addCase(fetchGlobalUser.fulfilled, (state, action) => {
       console.log(action.payload.user);
-      const { username, points, friends, admin, notifications } = action.payload.user;
+      const { username, points, friends, admin } = action.payload.user;
       state.username = username;
       state.points = points;
       state.friends = friends;
       state.admin = admin;
-      state.notifications = notifications
     });
   },
 });

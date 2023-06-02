@@ -17,9 +17,10 @@ const API_PREFIX =
     : process.env.LOCAL_API_PREFIX;
 
 async function notifyFriend(username: string, friend: string) {
-  const URI = `${API_PREFIX}notifyRemovedFriend`;
+  const URI = `${API_PREFIX}notifyFriend`;
+  const content = `${username} has removed you as a friend.`;
   try {
-    const response = await axios.post(URI, { username, friend });
+    const response = await axios.post(URI, { content, friend });
     console.log(response.data);
   } catch (err) {
     console.log(err);
@@ -37,20 +38,17 @@ export default async function handler(
       const user = await User.findOne({ username });
       const { friends } = user;
       const friendIndex = friends.findIndex((item: any) => item === friend);
-      if(friendIndex > -1) {
+      if (friendIndex > -1) {
         friends.splice(friendIndex, 1);
       }
       await User.updateOne({ username }, { friends });
       const otherUser = await User.findOne({ username: friend });
       const { friends: otherFriends } = otherUser;
       const ownIndex = otherFriends.findIndex((item: any) => item === username);
-      if(ownIndex > -1) {
+      if (ownIndex > -1) {
         otherFriends.splice(ownIndex, 1);
       }
-      await User.updateOne(
-        { username: friend },
-        { friends: otherFriends }
-      );
+      await User.updateOne({ username: friend }, { friends: otherFriends });
       await closeDb();
       await notifyFriend(username, friend);
       res.status(200).json({ username, friends, status: "success" });

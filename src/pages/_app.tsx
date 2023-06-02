@@ -8,19 +8,22 @@ import { fetchTasks, markTasksOverdue } from "@/app/features/tasks/tasksSlice";
 import { fetchUsers } from "@/app/features/users/usersSlice";
 import { useWindowSize } from "@/app/hooks";
 import theme from "@/app/theme";
-import {
-  requestNotificationPermission,
-} from "../../public/browserNotifications";
+import { requestNotificationPermission } from "../../public/browserNotifications";
+import { fetchNotifications } from "@/app/features/notifications/notificationsSlice";
 
 store.dispatch(markTasksOverdue()).then(() => {
   store.dispatch(fetchUsers()).then(() => {
-    store.dispatch(fetchTasks());
+    store.dispatch(fetchTasks()).then(() => {
+      store.dispatch(fetchNotifications());
+    });
   });
 });
 setInterval(() => {
   store.dispatch(markTasksOverdue()).then(() => {
     store.dispatch(fetchUsers()).then(() => {
-      store.dispatch(fetchTasks());
+      store.dispatch(fetchTasks()).then(() => {
+        store.dispatch(fetchNotifications());
+      });
     });
   });
 }, 60000);

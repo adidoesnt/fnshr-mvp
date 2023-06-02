@@ -1,12 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { initDb, closeDb } from "./repository";
-import { User } from "./schemas";
+import { Notification } from "./schemas";
 
 type UpdateStatus = "success" | "failure";
 
 type Data = {
   id: string;
-  prompts?: string[];
   status: UpdateStatus;
 };
 
@@ -16,26 +15,20 @@ export default async function handler(
 ) {
   if (req.method === "POST") {
     await initDb();
-    const { username, id } = req.body;
+    const { id, username } = req.body;
     try {
-      const user = await User.findOne({ username });
-      const { notifications } = user;
-      const notificationIndex = notifications.findIndex(
-        (item: any) =>  item._id.toString() === id
+      const notification = await Notification.findOne({ _id: id });
+      const { toAcknowledge } = notification;
+      const userIndex = toAcknowledge.findIndex(
+        (item: any) => item === username
       );
-      notifications[notificationIndex].acknowledged = true;
-      await User.updateOne({ username }, { notifications });
+      if (userIndex > -1) {
+        toAcknowledge.splice(userIndex, 1);
+      }
+      await Notification.updateOne({ _id: id }, { toAcknowledge });
       await closeDb();
-      res
-        .status(200)
-        .json({
-          id,
-          status: "success",
-          notifications,
-          type: typeof notifications,
-        } as any);
-    } catch(err) {
-        console.log(err)
+      res.status(200).json({ id, status: "success" });
+    } catch {
       await closeDb();
       res.status(500).json({ id, status: "failure" });
     }
