@@ -55,7 +55,6 @@ function NotificationCard({ username, notification }: NotificationCardProps) {
     try {
       const response = await axios.post(URI, { username, id });
       console.log(response.data);
-      store.dispatch(fetchNotifications());
     } catch (err) {
       console.log(err);
     }
@@ -158,7 +157,7 @@ export default function Notifications({ username }: NotificationsProps) {
       //   body: message,
       //   icon: "/Logo_192x192.png",
       // }); // TODO: fix
-      
+
       store.dispatch(fetchUsers()).then(() => store.dispatch(fetchTasks()));
     }
     previousLengthRef.current = filteredNotifications
