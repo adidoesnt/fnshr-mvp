@@ -32,14 +32,13 @@ type FriendCardProps = {
 };
 
 function FriendCard({ username }: FriendCardProps) {
-  const URI = "api/removeFriend";
   const dispatch = useDispatch();
   const [submitting, setSubmitting] = useState(false);
   const { username: ownUsername } = useSelector(selectGlobalUser);
 
   async function notifyFriend(username: string, friend: string) {
     const URI = `/api/notifyFriend`;
-    const content = `${username} has added you as a friend!`;
+    const content = `${username} has removed you as a friend!`;
     try {
       const response = await axios.post(URI, { content, friend });
       console.log(response.data);
@@ -49,6 +48,7 @@ function FriendCard({ username }: FriendCardProps) {
   }
 
   async function handleRemoveFriend(friend: string) {
+    const URI = "api/removeFriend";
     setSubmitting(true);
     try {
       const response = await axios.post(URI, {
