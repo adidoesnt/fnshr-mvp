@@ -5,7 +5,6 @@ import axios from "axios";
 import { differenceInMilliseconds, parseISO } from "date-fns";
 import { store } from "@/app/store";
 import { fetchUsers } from "@/app/features/users/usersSlice";
-import { Notification } from "@/components/Notifications";
 
 type CreationStatus = "success" | "failure";
 
@@ -24,6 +23,17 @@ const API_PREFIX =
   process.env.ENV === "PROD"
     ? process.env.CLOUD_API_PREFIX
     : process.env.LOCAL_API_PREFIX;
+
+async function notifyFriends(username: string, name: string) {
+  const URI = `${API_PREFIX}notifyFriends`;
+  const content = `${username} has created a new task: "${name}"`;
+  try {
+    const response = await axios.post(URI, { username, content });
+    console.log(response.data);
+  } catch (err) {
+    console.log(err);
+  }
+}
 
 async function deductPledgeAmount(username: string, pledge: number) {
   const URI = `${API_PREFIX}deductPoints`;
@@ -70,11 +80,8 @@ export default async function handler(
       await new Task(newTask).save();
       const { created, due, diff } = calculateTimeout(deadline);
       await closeDb();
-      const notification: Notification = {
-        content: `${username} has created a new task: ${name}`,
-        acknowledged: false,
-      }
       const data = await deductPledgeAmount(username, pledge);
+      await notifyFriends(username, name);
       const { points } = data;
       res.status(201).json({
         name,

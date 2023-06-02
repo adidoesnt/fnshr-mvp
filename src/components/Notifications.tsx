@@ -134,7 +134,7 @@ export default function Notifications({ username }: NotificationsProps) {
       notification.toAcknowledge.findIndex(
         (item: string) => item === username
       ) !== -1
-  );
+  ).reverse();
   const numNotifications = filteredNotifications?.length || 0;
   
   // const previousLengthRef = useRef(
