@@ -27,7 +27,17 @@ export default function TaskForm({ username }: TaskFormProps) {
   const { points } = globalUser;
 
   const router = useRouter();
-  const URI = "/api/addTask";
+
+  async function notifyFriends(username: string, name: string) {
+    const URI = "/api/notifyFriends";
+    const content = `${username} has created a new task: "${name}"`;
+    try {
+      const response = await axios.post(URI, { username, content });
+      console.log(response.data);
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   const [name, setName] = useState("");
   const [deadline, setDeadline] = useState(new Date());
@@ -50,6 +60,7 @@ export default function TaskForm({ username }: TaskFormProps) {
   };
 
   async function handleSubmit() {
+    const URI = "/api/addTask";
     setSubmitting(true);
     try {
       const response = await axios.post(URI, {
@@ -62,6 +73,7 @@ export default function TaskForm({ username }: TaskFormProps) {
       dispatch(setPoints(points));
       console.log(response.data);
       await store.dispatch(fetchTasks());
+      await notifyFriends(username, name);
       router.back();
     } catch (err) {
       console.log(err);
