@@ -18,17 +18,6 @@ const API_PREFIX =
     ? process.env.CLOUD_API_PREFIX
     : process.env.LOCAL_API_PREFIX;
 
-async function notifyFriends(username: string, name: string) {
-  const URI = `${API_PREFIX}notifyFriends`;
-  const content = `${username} has completed their task: "${name}"`;
-  try {
-    const response = await axios.post(URI, { username, content });
-    console.log(response.data);
-  } catch (err) {
-    console.log(err);
-  }
-}
-
 async function creditPledgeAmount(username: string, pledge: number) {
   const URI = `${API_PREFIX}creditPoints`;
 
@@ -56,7 +45,6 @@ export default async function handler(
       await Task.updateOne({ _id: id }, { status });
       await closeDb();
       const data = await creditPledgeAmount(username, pledge);
-      await notifyFriends(username, name);
       const { points } = data;
       res.status(200).json({ id, status: "success", points });
     } catch {

@@ -24,17 +24,6 @@ const API_PREFIX =
     ? process.env.CLOUD_API_PREFIX
     : process.env.LOCAL_API_PREFIX;
 
-async function notifyFriends(username: string, name: string) {
-  const URI = `${API_PREFIX}notifyFriends`;
-  const content = `${username} has created a new task: "${name}"`;
-  try {
-    const response = await axios.post(URI, { username, content });
-    console.log(response.data);
-  } catch (err) {
-    console.log(err);
-  }
-}
-
 async function deductPledgeAmount(username: string, pledge: number) {
   const URI = `${API_PREFIX}deductPoints`;
 
@@ -81,7 +70,6 @@ export default async function handler(
       const { created, due, diff } = calculateTimeout(deadline);
       await closeDb();
       const data = await deductPledgeAmount(username, pledge);
-      await notifyFriends(username, name);
       const { points } = data;
       res.status(201).json({
         name,

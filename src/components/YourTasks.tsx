@@ -34,6 +34,7 @@ export const convertISOToLocalTime = (deadline: string) => {
 
 type TaskCardProps = {
   id: string;
+  username: string;
   prompts: string[];
   status: "ongoing" | "completed" | "missed";
   name: string;
@@ -44,6 +45,7 @@ type TaskCardProps = {
 export type Color = "red" | "green" | "blue"
 
 function TaskCard({
+  username,
   id,
   prompts,
   status,
@@ -52,11 +54,22 @@ function TaskCard({
   convertedDeadline,
 }: TaskCardProps) {
   const [expand, setExpand] = useState(false);
-  const URI = "api/completeTask";
   const dispatch = useDispatch();
   const [submitting, setSubmitting] = useState(false);
 
+  async function notifyFriends(username: string, name: string) {
+    const URI = "/api/notifyFriends";
+    const content = `${username} has completed their task: "${name}"`;
+    try {
+      const response = await axios.post(URI, { username, content });
+      console.log(response.data);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   async function handleCompleteTask(id: string) {
+    const URI = "api/completeTask";
     setSubmitting(true);
     try {
       const response = await axios.post(URI, { id });
@@ -64,6 +77,7 @@ function TaskCard({
       dispatch(setPoints(points));
       console.log(response.data);
       await store.dispatch(fetchTasks());
+      await(notifyFriends(username, name))
     } catch (err) {
       console.log(err);
     }
@@ -159,6 +173,7 @@ export default function YourTasks({ username }: YourTasksProps) {
             return (
               <TaskCard
                 key={id}
+                username={username}
                 convertedDeadline={convertedDeadline}
                 id={id}
                 name={name}
