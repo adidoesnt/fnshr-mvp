@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { initDb, closeDb } from "./repository";
 import { Notification } from "./schemas";
+import { store } from "@/app/store";
+import { fetchNotifications } from "@/app/features/notifications/notificationsSlice";
 
 type UpdateStatus = "success" | "failure";
 
@@ -27,6 +29,7 @@ export default async function handler(
       }
       await Notification.updateOne({ _id: id }, { toAcknowledge });
       await closeDb();
+      await store.dispatch(fetchNotifications());
       res.status(200).json({ id, status: "success" });
     } catch {
       await closeDb();
