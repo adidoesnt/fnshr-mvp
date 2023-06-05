@@ -77,8 +77,8 @@ export default function TaskForm({ username }: TaskFormProps) {
       router.back();
     } catch (err) {
       console.log(err);
+      setSubmitting(false);
     }
-    setSubmitting(false);
   }
 
   let submissionDisabled =

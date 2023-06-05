@@ -7,6 +7,7 @@ import { useWindowSize } from "@/app/hooks";
 import { useState } from "react";
 import { store } from "@/app/store";
 import { fetchUsers } from "@/app/features/users/usersSlice";
+import type { AuthStatus } from "@/components/AuthForm";
 
 export default function LoginPage() {
   const URI = "/api/login";
@@ -15,6 +16,7 @@ export default function LoginPage() {
   const size = useWindowSize();
 
   const [ submitting, setSubmitting ] = useState(false);
+  const [error, setError] = useState<AuthStatus>("Success");
 
   const onSubmit = async (username: string, password: string) => {
     setSubmitting(true);
@@ -27,8 +29,10 @@ export default function LoginPage() {
       await store.dispatch(fetchGlobalUser(username));
       console.log(response.data);
       router.push("/home");
-    } catch (err) {
-      console.log(err);
+    } catch (err: any) {
+      const errMessage = err.response.data.status;
+      console.log(errMessage);
+      setError(errMessage);
     }
     setSubmitting(false);
   };
@@ -57,6 +61,8 @@ export default function LoginPage() {
           onSubmit={onSubmit}
           navigation={navigation}
           submitting={submitting}
+          error={error}
+          setError={setError}
         />
       </main>
     </>

@@ -63,8 +63,8 @@ function PromptButton({
       await store.dispatch(fetchTasks());
     } catch (err) {
       console.log(err);
+      setSubmitting(false);
     }
-    setSubmitting(false);
   }
 
   const show =

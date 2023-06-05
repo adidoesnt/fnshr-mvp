@@ -1,9 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { initDb, closeDb } from "./repository";
 import bcrypt from "bcrypt";
-import { Notification, User } from "./schemas";
+import { User } from "./schemas";
 
-type SignupStatus = "success" | "failure" | "user already exists";
+export type SignupStatus = "Success" | "Failure" | "User already exists";
 
 type Data = {
   username: string;
@@ -30,7 +30,7 @@ export default async function handler(
     const admin = false;
     if (testUser) {
       await closeDb();
-      res.status(409).json({ username, status: "user already exists" });
+      res.status(409).json({ username, status: "User already exists" });
     } else {
       try {
         await new User({
@@ -44,9 +44,9 @@ export default async function handler(
         await closeDb();
         res
           .status(201)
-          .json({ username, points, friends, admin, status: "success" });
+          .json({ username, points, friends, admin, status: "Success" });
       } catch (err) {
-        res.status(500).json({ username, status: "failure" });
+        res.status(500).json({ username, status: "Failure" });
       }
     }
   }

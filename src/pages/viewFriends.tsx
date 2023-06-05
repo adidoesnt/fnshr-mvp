@@ -61,8 +61,8 @@ function FriendCard({ username }: FriendCardProps) {
       await notifyFriend(ownUsername, friend);
     } catch (err) {
       console.log(err);
+      setSubmitting(false);
     }
-    setSubmitting(false);
   }
 
   return (

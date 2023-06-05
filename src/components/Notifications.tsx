@@ -58,8 +58,8 @@ function NotificationCard({ username, notification }: NotificationCardProps) {
       console.log(response.data);
     } catch (err) {
       console.log(err);
+      setSubmitting(false);
     }
-    setSubmitting(false);
   };
 
   return (

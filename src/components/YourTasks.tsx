@@ -80,8 +80,8 @@ function TaskCard({
       await(notifyFriends(username, name))
     } catch (err) {
       console.log(err);
+      setSubmitting(false);
     }
-    setSubmitting(false);
   }
 
   return (

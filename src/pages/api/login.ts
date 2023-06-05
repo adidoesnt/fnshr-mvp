@@ -3,7 +3,7 @@ import { initDb, closeDb } from "./repository";
 import bcrypt from "bcrypt";
 import { User } from "./schemas";
 
-type LoginStatus = "success" | "not found" | "incorrect password";
+export type LoginStatus = "Success" | "User not found" | "Incorrect password";
 
 type Data = {
   username: string;
@@ -23,16 +23,16 @@ export default async function handler(
     const user = await User.findOne({ username });
     if (!user) {
       await closeDb();
-      return res.status(404).json({ username, status: "not found", body: req.body } as any);
+      return res.status(404).json({ username, status: "User not found" } as any);
     } else {
       await closeDb();
       const { hash, points, friends, admin } = user;
       if (await bcrypt.compare(password, hash)) {
-        return res.status(200).json({ username, points, friends, admin, status: "success" });
+        return res.status(200).json({ username, points, friends, admin, status: "Success" });
       } else {
         return res
           .status(401)
-          .json({ username, status: "incorrect password" } as any);
+          .json({ username, status: "Incorrect password" } as any);
       }
     }
   }

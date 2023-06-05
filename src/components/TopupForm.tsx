@@ -73,8 +73,8 @@ export default function TopupForm() {
       }, 1000);
     } catch (err) {
       console.log(err);
+      setSubmitting(false);
     }
-    setSubmitting(false);
   };
 
   const submissionDisabled = !validate() || submitting;
