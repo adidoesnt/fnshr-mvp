@@ -9,6 +9,7 @@ import { fetchUsers } from "@/app/features/users/usersSlice";
 import { useWindowSize } from "@/app/hooks";
 import theme from "@/app/theme";
 import { fetchNotifications } from "@/app/features/notifications/notificationsSlice";
+import { Toaster } from "react-hot-toast";
 
 store.dispatch(markTasksOverdue()).then(() => {
   store.dispatch(fetchUsers()).then(() => {
@@ -52,6 +53,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
+        <Toaster/>
         <ChakraProvider theme={theme}>
           {isMobile && isPortrait ? (
             <div

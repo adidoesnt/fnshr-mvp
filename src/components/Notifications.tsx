@@ -19,6 +19,8 @@ import {
   CardBody,
   IconButton,
   Spinner,
+  Flex,
+  Heading,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
@@ -42,6 +44,22 @@ type NotificationsModalProps = {
 type NotificationCardProps = {
   username: string;
   notification: Notification;
+};
+
+export const notify = (content: string) => {
+  toast(
+    (t) => (
+      <Flex fontSize={20} pl={"10px"} pr={"10px"} flexDir={"column"}>
+        <b>FNSHR</b>
+        <Text onClick={() => toast.dismiss(t.id)}>
+          {content}
+        </Text>
+      </Flex>
+    ),
+    {
+      icon: <BellIcon />,
+    }
+  );
 };
 
 function NotificationCard({ username, notification }: NotificationCardProps) {
@@ -148,10 +166,6 @@ export default function Notifications({ username }: NotificationsProps) {
     filteredNotifications ? filteredNotifications.length : 0
   );
 
-  const notify = (content: string) => {
-    toast(content);
-  }
-
   useEffect(() => {
     if (
       filteredNotifications &&
@@ -167,15 +181,15 @@ export default function Notifications({ username }: NotificationsProps) {
   }, [filteredNotifications]);
 
   return (
-    <Button w={"100px"} onClick={onOpen}>
-      <NotificationsModal
-        isOpen={isOpen}
-        onClose={onClose}
-        notifications={filteredNotifications}
-        username={username}
-      />
-      <BellIcon mr={2.5} />
-      <Text ml={2.5}>{numNotifications}</Text>
-    </Button>
+      <Button w={"100px"} onClick={onOpen}>
+        <NotificationsModal
+          isOpen={isOpen}
+          onClose={onClose}
+          notifications={filteredNotifications}
+          username={username}
+        />
+        <BellIcon mr={2.5} />
+        <Text ml={2.5}>{numNotifications}</Text>
+      </Button>
   );
 }
