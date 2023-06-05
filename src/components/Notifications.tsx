@@ -26,9 +26,6 @@ import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { defaultReqConfig } from "@/pages/api/preflight";
 import { toast } from "react-hot-toast";
-import { fetchGlobalUser } from "@/app/features/user/userSlice";
-import { fetchUsers } from "@/app/features/users/usersSlice";
-import { fetchTasks } from "@/app/features/tasks/tasksSlice";
 
 export type Notification = {
   _id?: string;
@@ -75,7 +72,7 @@ function NotificationCard({ username, notification }: NotificationCardProps) {
         { username, id },
         defaultReqConfig
       );
-      store.dispatch(fetchNotifications());
+      await store.dispatch(fetchNotifications());
       console.log(response.data);
     } catch (err) {
       console.log(err);
