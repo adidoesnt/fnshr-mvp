@@ -167,11 +167,6 @@ export default function Notifications({ username }: NotificationsProps) {
   );
 
   useEffect(() => {
-    store.dispatch(fetchGlobalUser(username)).then(() => {
-      store.dispatch(fetchUsers()).then(() => {
-        store.dispatch(fetchTasks());
-      });
-    });
     if (
       filteredNotifications &&
       filteredNotifications.length > previousLengthRef.current
@@ -183,7 +178,7 @@ export default function Notifications({ username }: NotificationsProps) {
     previousLengthRef.current = filteredNotifications
       ? filteredNotifications.length
       : 0;
-  }, [filteredNotifications, username]);
+  }, [filteredNotifications]);
 
   return (
     <Button w={"100px"} onClick={onOpen}>
