@@ -146,43 +146,6 @@ export default function Notifications({ username }: NotificationsProps) {
     .reverse();
   const numNotifications = filteredNotifications?.length || 0;
 
-  const previousLengthRef = useRef(
-    filteredNotifications ? filteredNotifications.length : 0
-  );
-
-  useEffect(() => {
-    if (
-      filteredNotifications &&
-      filteredNotifications.length > previousLengthRef.current
-    ) {
-      const latestNotification = filteredNotifications[0];
-      const { content: message } = latestNotification;
-
-      if (Notification.permission === "granted") {
-        console.log("notifying...");
-        showNotification("New Notification", {
-          body: message,
-          icon: "/Logo_192x192.png",
-        });
-      } else if (Notification.permission !== "denied") {
-        console.log("no notification permission.");
-        Notification.requestPermission().then((permission) => {
-          if (permission === "granted") {
-            showNotification("New Notification", {
-              body: message,
-              icon: "/Logo_192x192.png",
-            });
-          }
-        });
-      }
-
-      store.dispatch(fetchUsers()).then(() => store.dispatch(fetchTasks()));
-    }
-    previousLengthRef.current = filteredNotifications
-      ? filteredNotifications.length
-      : 0;
-  }, [filteredNotifications]);
-
   return (
     <Button w={"100px"} onClick={onOpen}>
       <NotificationsModal

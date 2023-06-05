@@ -8,7 +8,6 @@ import { fetchTasks, markTasksOverdue } from "@/app/features/tasks/tasksSlice";
 import { fetchUsers } from "@/app/features/users/usersSlice";
 import { useWindowSize } from "@/app/hooks";
 import theme from "@/app/theme";
-import { requestNotificationPermission } from "../../public/browserNotifications";
 import { fetchNotifications } from "@/app/features/notifications/notificationsSlice";
 
 store.dispatch(markTasksOverdue()).then(() => {
@@ -45,7 +44,6 @@ export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     handleResize();
     window.addEventListener("resize", handleResize);
-    requestNotificationPermission(); // TODO: fix
     return () => {
       window.removeEventListener("resize", handleResize);
     };
