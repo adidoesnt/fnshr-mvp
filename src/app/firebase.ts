@@ -1,6 +1,5 @@
 import "firebase/storage";
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
@@ -13,17 +12,6 @@ const firebaseConfig = {
   measurementId: process.env.FB_MESID,
 };
 
-let app;
-export let analytics: any;
-export let storage: any;
-
-if (firebaseConfig?.projectId) {
-  app = initializeApp(firebaseConfig);
-  if (app.name && typeof window !== "undefined") {
-    analytics = getAnalytics(app);
-  }
-
-  // Access Firebase services using shorthand notation
-  storage = getStorage();
-}
+const app = initializeApp(firebaseConfig);
+export const storage = getStorage();
 export default app;
