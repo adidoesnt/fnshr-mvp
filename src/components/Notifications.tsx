@@ -54,7 +54,11 @@ function NotificationCard({ username, notification }: NotificationCardProps) {
     setSubmitting(true);
     const URI = "api/acknowledgeNotification";
     try {
-      const response = await axios.post(URI, { username, id }, defaultReqConfig);
+      const response = await axios.post(
+        URI,
+        { username, id },
+        defaultReqConfig
+      );
       store.dispatch(fetchNotifications());
       console.log(response.data);
     } catch (err) {
@@ -151,14 +155,26 @@ export default function Notifications({ username }: NotificationsProps) {
       filteredNotifications &&
       filteredNotifications.length > previousLengthRef.current
     ) {
-      // const latestNotification = filteredNotifications[0];
-      // const { content: message } = latestNotification;
+      const latestNotification = filteredNotifications[0];
+      const { content: message } = latestNotification;
 
-      // console.log("notifying...")
-      // showNotification("New Notification", {
-      //   body: message,
-      //   icon: "/Logo_192x192.png",
-      // }); // TODO: fix
+      if (Notification.permission === "granted") {
+        console.log("notifying...");
+        showNotification("New Notification", {
+          body: message,
+          icon: "/Logo_192x192.png",
+        });
+      } else if (Notification.permission !== "denied") {
+        console.log("no notification permission.");
+        Notification.requestPermission().then((permission) => {
+          if (permission === "granted") {
+            showNotification("New Notification", {
+              body: message,
+              icon: "/Logo_192x192.png",
+            });
+          }
+        });
+      }
 
       store.dispatch(fetchUsers()).then(() => store.dispatch(fetchTasks()));
     }

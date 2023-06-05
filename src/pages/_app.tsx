@@ -45,7 +45,7 @@ export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     handleResize();
     window.addEventListener("resize", handleResize);
-    // requestNotificationPermission(); TODO: fix
+    requestNotificationPermission(); // TODO: fix
     return () => {
       window.removeEventListener("resize", handleResize);
     };
