@@ -39,7 +39,7 @@ function FriendCard({ username }: FriendCardProps) {
 
   async function notifyFriend(username: string, friend: string) {
     const URI = `/api/notifyFriend`;
-    const content = `${username} has removed you as a friend!`;
+    const content = `${username} has removed you as a friend.`;
     try {
       const response = await axios.post(URI, { content, friend }, defaultReqConfig);
       console.log(response.data);

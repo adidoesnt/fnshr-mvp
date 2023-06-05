@@ -21,9 +21,10 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { defaultReqConfig } from "@/pages/api/preflight";
+import { toast } from "react-hot-toast";
 
 export type Notification = {
   _id?: string;
@@ -142,6 +143,28 @@ export default function Notifications({ username }: NotificationsProps) {
     )
     .reverse();
   const numNotifications = filteredNotifications?.length || 0;
+
+  const previousLengthRef = useRef(
+    filteredNotifications ? filteredNotifications.length : 0
+  );
+
+  const notify = (content: string) => {
+    toast(content);
+  }
+
+  useEffect(() => {
+    if (
+      filteredNotifications &&
+      filteredNotifications.length > previousLengthRef.current
+    ) {
+      const latestNotification = filteredNotifications[0];
+      const { content } = latestNotification;
+      notify(content);
+    }
+    previousLengthRef.current = filteredNotifications
+      ? filteredNotifications.length
+      : 0;
+  }, [filteredNotifications]);
 
   return (
     <Button w={"100px"} onClick={onOpen}>

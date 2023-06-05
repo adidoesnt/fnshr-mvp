@@ -1,8 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { initDb, closeDb } from "./repository";
 import { User } from "./schemas";
-import axios from "axios";
-import { defaultReqConfig, preflight } from "./preflight";
+import { preflight } from "./preflight";
 
 type UpdateStatus = "success" | "failure";
 
@@ -11,22 +10,6 @@ type Data = {
   friends?: string[];
   status: UpdateStatus;
 };
-
-const API_PREFIX =
-  process.env.ENV === "PROD"
-    ? process.env.CLOUD_API_PREFIX
-    : process.env.LOCAL_API_PREFIX;
-
-async function notifyFriend(username: string, friend: string) {
-  const URI = `${API_PREFIX}notifyFriend`;
-  const content = `${username} has removed you as a friend.`;
-  try {
-    const response = await axios.post(URI, { content, friend }, defaultReqConfig);
-    console.log(response.data);
-  } catch (err) {
-    console.log(err);
-  }
-}
 
 export default async function handler(
   req: NextApiRequest,
@@ -54,7 +37,6 @@ export default async function handler(
       }
       await User.updateOne({ username: friend }, { friends: otherFriends });
       await closeDb();
-      await notifyFriend(username, friend);
       res.status(200).json({ username, friends, status: "success" });
     } catch {
       await closeDb();
