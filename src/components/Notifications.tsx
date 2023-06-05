@@ -54,6 +54,7 @@ function NotificationCard({ username, notification }: NotificationCardProps) {
     const URI = "api/acknowledgeNotification";
     try {
       const response = await axios.post(URI, { username, id });
+      store.dispatch(fetchNotifications());
       console.log(response.data);
     } catch (err) {
       console.log(err);
