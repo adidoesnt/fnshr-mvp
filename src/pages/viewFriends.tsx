@@ -124,8 +124,8 @@ function Content({ username, users, friends }: ContentProps) {
             placeholder={"Search username..."}
             m={5}
           />
-          {filteredUsers.map((user: any, index: number) => {
-            return <FriendCard username={user.username} key={index} />;
+          {filteredUsers.map((user: any) => {
+            return <FriendCard username={user.username} key={user.username} />;
           })}
         </Center>
       </main>

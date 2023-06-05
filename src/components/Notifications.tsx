@@ -26,6 +26,9 @@ import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { defaultReqConfig } from "@/pages/api/preflight";
 import { toast } from "react-hot-toast";
+import { fetchGlobalUser } from "@/app/features/user/userSlice";
+import { fetchUsers } from "@/app/features/users/usersSlice";
+import { fetchTasks } from "@/app/features/tasks/tasksSlice";
 
 export type Notification = {
   _id?: string;
@@ -50,9 +53,7 @@ export const notify = (content: string) => {
     (t) => (
       <Flex fontSize={20} pl={"10px"} pr={"10px"} flexDir={"column"}>
         <b>FNSHR</b>
-        <Text onClick={() => toast.dismiss(t.id)}>
-          {content}
-        </Text>
+        <Text onClick={() => toast.dismiss(t.id)}>{content}</Text>
       </Flex>
     ),
     {
@@ -166,6 +167,11 @@ export default function Notifications({ username }: NotificationsProps) {
   );
 
   useEffect(() => {
+    store.dispatch(fetchGlobalUser(username)).then(() => {
+      store.dispatch(fetchUsers()).then(() => {
+        store.dispatch(fetchTasks());
+      });
+    });
     if (
       filteredNotifications &&
       filteredNotifications.length > previousLengthRef.current
@@ -177,18 +183,18 @@ export default function Notifications({ username }: NotificationsProps) {
     previousLengthRef.current = filteredNotifications
       ? filteredNotifications.length
       : 0;
-  }, [filteredNotifications]);
+  }, [filteredNotifications, username]);
 
   return (
-      <Button w={"100px"} onClick={onOpen}>
-        <NotificationsModal
-          isOpen={isOpen}
-          onClose={onClose}
-          notifications={filteredNotifications}
-          username={username}
-        />
-        <BellIcon mr={2.5} />
-        <Text ml={2.5}>{numNotifications}</Text>
-      </Button>
+    <Button w={"100px"} onClick={onOpen}>
+      <NotificationsModal
+        isOpen={isOpen}
+        onClose={onClose}
+        notifications={filteredNotifications}
+        username={username}
+      />
+      <BellIcon mr={2.5} />
+      <Text ml={2.5}>{numNotifications}</Text>
+    </Button>
   );
 }
