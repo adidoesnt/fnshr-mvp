@@ -1,17 +1,9 @@
 import {
   Center,
   Heading,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
   Button,
-  useDisclosure,
   Text,
 } from "@chakra-ui/react";
-import PaymentQR from "./PaymentQR";
 import { useRouter } from "next/router";
 
 export type FnshrPointsProps = {

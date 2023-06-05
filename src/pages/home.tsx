@@ -18,7 +18,6 @@ import Notifications from "@/components/Notifications";
 type ContentProps = YourTasksProps & {
   points: number;
   friends: string[];
-  admin: boolean;
 };
 
 type FriendsButtonProps = {
@@ -91,7 +90,7 @@ function AddTaskButton() {
   );
 }
 
-function Content({ username, points, friends, admin }: ContentProps) {
+function Content({ username, points, friends }: ContentProps) {
   const size = useWindowSize();
 
   return (
@@ -124,7 +123,7 @@ function Content({ username, points, friends, admin }: ContentProps) {
 export default function Home() {
   const router = useRouter();
   const user = useSelector(selectGlobalUser);
-  const { username, points, friends, admin } = user;
+  const { username, points, friends } = user;
 
   const auth = user.username !== "";
 
@@ -137,7 +136,6 @@ export default function Home() {
       username={username}
       points={points}
       friends={friends}
-      admin={admin}
     />
   ) : (
     <Loading />
