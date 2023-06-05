@@ -12,12 +12,13 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import LoadingSpinner from "./LoadingSpinner";
-import { selectGlobalUser } from "@/app/features/user/userSlice";
+import { fetchGlobalUser, selectGlobalUser } from "@/app/features/user/userSlice";
 import { useSelector } from "react-redux";
 import HelpCard from "./HelpCard";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "@/app/firebase";
 import { defaultReqConfig } from "@/pages/api/preflight";
+import { store } from "@/app/store";
 
 export default function TopupForm() {
   const user = useSelector(selectGlobalUser);
@@ -59,16 +60,23 @@ export default function TopupForm() {
 
   const handleSubmit = async () => {
     setSubmitting(true);
-    const URI = "api/addPayment";
+    const paymentURI = "api/addPayment";
+    const creditURI = "api/creditPoints";
     try {
       const URL = await handleUpload();
-      const response = await axios.post(URI, {
+      const paymentResponse = await axios.post(paymentURI, {
         username,
         points,
         screenshot: URL,
       }, defaultReqConfig);
-      console.log(response.data);
+      console.log(paymentResponse.data);
       setPaymentSuccess(true);
+      const creditResponse = await axios.post(creditURI, {
+        username,
+        pledge: points
+      }, defaultReqConfig);
+      console.log(creditResponse.data);
+      await store.dispatch(fetchGlobalUser(username));
       setTimeout(() => {
         router.back();
       }, 1000);
