@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 
 export type BackButtonProps = {
   w: number | string;
-  mt: number | string;
+  mt?: number | string;
 };
 
 export default function BackButton({ w, mt }: BackButtonProps) {

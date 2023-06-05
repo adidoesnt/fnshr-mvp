@@ -8,6 +8,7 @@ import {
   Card,
   CardBody,
   Center,
+  Flex,
   Heading,
   IconButton,
   Input,
@@ -21,6 +22,7 @@ import BackButton from "@/components/BackButton";
 import Head from "next/head";
 import { useWindowSize } from "@/app/hooks";
 import { defaultReqConfig } from "./api/preflight";
+import Notifications from "@/components/Notifications";
 
 type ContentProps = {
   username: string;
@@ -112,7 +114,10 @@ function Content({ username, users, friends }: ContentProps) {
           height: size.height,
         }}
       >
-        <BackButton w={"90%"} mt={"5%"} />
+        <Flex w={"90%"} alignItems={"center"} mt={"5%"}>
+          <BackButton w={"90%"} />
+          <Notifications username={username} />
+        </Flex>
         <Center flexDir={"column"} m={25}>
           <Heading>Add Friends</Heading>
           <Input

@@ -6,8 +6,14 @@ import Head from "next/head";
 import { useWindowSize } from "@/app/hooks";
 import BackButton from "@/components/BackButton";
 import TopupForm from "@/components/TopupForm";
+import { Flex } from "@chakra-ui/react";
+import Notifications from "@/components/Notifications";
 
-function Content() {
+type ContentProps = {
+  username: string;
+};
+
+function Content({ username }: ContentProps) {
   const size = useWindowSize();
 
   return (
@@ -25,7 +31,10 @@ function Content() {
           height: size.height,
         }}
       >
-        <BackButton w={"90%"} mt={"5%"} />
+        <Flex w={"90%"} alignItems={"center"} mt={"5%"}>
+          <BackButton w={"90%"} />
+          <Notifications username={username} />
+        </Flex>
         <TopupForm />
       </main>
     </>
@@ -43,5 +52,5 @@ export default function Topup() {
     router.push("/login");
   }
 
-  return auth ? <Content /> : <Loading />;
+  return auth ? <Content username={username} /> : <Loading />;
 }

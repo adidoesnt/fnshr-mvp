@@ -8,6 +8,7 @@ import {
   Card,
   CardBody,
   Center,
+  Flex,
   Heading,
   IconButton,
   Input,
@@ -21,6 +22,7 @@ import BackButton from "@/components/BackButton";
 import Head from "next/head";
 import { useWindowSize } from "@/app/hooks";
 import { defaultReqConfig } from "./api/preflight";
+import Notifications from "@/components/Notifications";
 
 type ContentProps = {
   username: string;
@@ -41,7 +43,11 @@ function FriendCard({ username }: FriendCardProps) {
     const URI = `/api/notifyFriend`;
     const content = `${username} has removed you as a friend.`;
     try {
-      const response = await axios.post(URI, { content, friend }, defaultReqConfig);
+      const response = await axios.post(
+        URI,
+        { content, friend },
+        defaultReqConfig
+      );
       console.log(response.data);
     } catch (err) {
       console.log(err);
@@ -52,10 +58,14 @@ function FriendCard({ username }: FriendCardProps) {
     const URI = "api/removeFriend";
     setSubmitting(true);
     try {
-      const response = await axios.post(URI, {
-        username: ownUsername,
-        friend,
-      }, defaultReqConfig);
+      const response = await axios.post(
+        URI,
+        {
+          username: ownUsername,
+          friend,
+        },
+        defaultReqConfig
+      );
       console.log(response.data);
       const { friends } = response.data;
       dispatch(setFriends(friends));
@@ -112,7 +122,10 @@ function Content({ username, users, friends }: ContentProps) {
           height: size.height,
         }}
       >
-        <BackButton w={"90%"} mt={"5%"} />
+        <Flex w={"90%"} alignItems={"center"} mt={"5%"}>
+          <BackButton w={"90%"} />
+          <Notifications username={username} />
+        </Flex>
         <Center flexDir={"column"} m={25}>
           <Heading>View Friends</Heading>
           <Input

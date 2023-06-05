@@ -7,6 +7,8 @@ import Head from "next/head";
 import FnshrPoints, { FnshrPointsProps } from "@/components/FnshrPoints";
 import BackButton from "@/components/BackButton";
 import { useWindowSize } from "@/app/hooks";
+import { Flex } from "@chakra-ui/react";
+import Notifications from "@/components/Notifications";
 
 type ContentProps = TaskFormProps & FnshrPointsProps;
 
@@ -29,7 +31,10 @@ function Content({ username, points }: ContentProps) {
           overflowX: "hidden"
         }}
       >
-        <BackButton w={"90%"} mt={"5%"} />
+        <Flex w={"90%"} alignItems={"center"} mt={"5%"}>
+          <BackButton w={"90%"} />
+          <Notifications username={username} />
+        </Flex>
         <FnshrPoints points={points} />
         <TaskForm username={username} />
       </main>
