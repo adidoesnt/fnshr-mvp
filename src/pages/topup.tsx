@@ -5,7 +5,7 @@ import Loading from "@/components/Loading";
 import Head from "next/head";
 import { useWindowSize } from "@/app/hooks";
 import BackButton from "@/components/BackButton";
-import AdminForm from "@/components/AdminForm";
+import TopupForm from "@/components/TopupForm";
 
 function Content() {
   const size = useWindowSize();
@@ -13,7 +13,7 @@ function Content() {
   return (
     <>
       <Head>
-        <title>Fnshr - Add Payment</title>
+        <title>Fnshr - Top Up</title>
       </Head>
       <main
         style={{
@@ -26,18 +26,18 @@ function Content() {
         }}
       >
         <BackButton w={"90%"} mt={"5%"} />
-        <AdminForm />
+        <TopupForm />
       </main>
     </>
   );
 }
 
-export default function Admin() {
+export default function Topup() {
   const router = useRouter();
   const user = useSelector(selectGlobalUser);
-  const { username, admin } = user;
+  const { username } = user;
 
-  const auth = username !== "" || admin;
+  const auth = username !== "";
 
   if (!auth) {
     router.push("/login");
