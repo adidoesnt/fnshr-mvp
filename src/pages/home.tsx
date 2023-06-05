@@ -5,7 +5,7 @@ import FnshrPoints from "@/components/FnshrPoints";
 import { useRouter } from "next/router";
 import Loading from "@/components/Loading";
 import { Button, Flex, Text } from "@chakra-ui/react";
-import { AddIcon, LockIcon, SearchIcon, ViewIcon } from "@chakra-ui/icons";
+import { AddIcon, SearchIcon, ViewIcon } from "@chakra-ui/icons";
 import YourTasks, { YourTasksProps } from "@/components/YourTasks";
 import FriendsTasks from "@/components/FriendsTasks";
 import { useDispatch } from "react-redux";
@@ -74,27 +74,6 @@ function LogoutButton({ username }: LogoutButtonProps) {
   );
 }
 
-type AdminButtonProps = {
-  admin: boolean;
-};
-
-function AdminButton({ admin }: AdminButtonProps) {
-  const router = useRouter();
-
-  const handleClick = () => {
-    router.push("/admin");
-  };
-
-  return admin ? (
-    <Button display={"flex"} w={200} onClick={handleClick} mb={5}>
-      <Text w={"75%"} m={2.5}>
-        Admin
-      </Text>
-      <LockIcon m={2.5} />
-    </Button>
-  ) : null;
-}
-
 function AddTaskButton() {
   const router = useRouter();
 
@@ -132,7 +111,6 @@ function Content({ username, points, friends, admin }: ContentProps) {
       >
         <LogoutButton username={username} />
         <FnshrPoints points={points} />
-        <AdminButton admin={admin} />
         <FriendsButton add={false} />
         <FriendsButton add />
         <AddTaskButton />
