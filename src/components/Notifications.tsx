@@ -21,11 +21,8 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
-import { showNotification } from "../../public/browserNotifications";
-import { fetchTasks } from "@/app/features/tasks/tasksSlice";
-import { fetchUsers } from "@/app/features/users/usersSlice";
 import { defaultReqConfig } from "@/pages/api/preflight";
 
 export type Notification = {
