@@ -3,8 +3,9 @@ import { initDb, closeDb } from "./repository";
 import { Notification } from "./schemas";
 import { store } from "@/app/store";
 import { fetchNotifications } from "@/app/features/notifications/notificationsSlice";
+import { preflight } from "./preflight";
 
-type UpdateStatus = "success" | "failure";
+type UpdateStatus = "success" | "failure" | "unauthorised";
 
 type Data = {
   id: string;
@@ -15,6 +16,9 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
+  if(!preflight(req)) {
+    res.status(403).json({status: "unauthorised"} as any)
+  }
   if (req.method === "POST") {
     await initDb();
     const { id, username } = req.body;

@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { initDb, closeDb } from "./repository";
 import bcrypt from "bcrypt";
 import { User } from "./schemas";
+import { preflight } from "./preflight";
 
 export type LoginStatus = "Success" | "User not found" | "Incorrect password";
 
@@ -17,6 +18,9 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
+  if(!preflight(req)) {
+    res.status(403).json({status: "unauthorised"} as any)
+  }
   if (req.method === "POST") {
     await initDb();
     const { username, password } = req.body;

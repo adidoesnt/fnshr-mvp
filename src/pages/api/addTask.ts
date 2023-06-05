@@ -5,6 +5,7 @@ import axios from "axios";
 import { differenceInMilliseconds, parseISO } from "date-fns";
 import { store } from "@/app/store";
 import { fetchUsers } from "@/app/features/users/usersSlice";
+import { preflight } from "./preflight";
 
 type CreationStatus = "success" | "failure";
 
@@ -52,6 +53,9 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
+  if(!preflight(req)) {
+    res.status(403).json({status: "unauthorised"} as any)
+  }
   if (req.method === "POST") {
     await initDb();
     const { username, name, deadline, pledge } = req.body;

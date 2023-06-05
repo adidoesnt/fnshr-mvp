@@ -4,6 +4,7 @@ import { Task } from "./schemas";
 import axios from "axios";
 import { fetchUsers } from "@/app/features/users/usersSlice";
 import { store } from "@/app/store";
+import { preflight } from "./preflight";
 
 type UpdateStatus = "success" | "failure";
 
@@ -35,13 +36,16 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
+  if(!preflight(req)) {
+    res.status(403).json({status: "unauthorised"} as any)
+  }
   if (req.method === "POST") {
     await initDb();
     const { id } = req.body;
     const status = "completed";
     try {
       const task = await Task.findOne({ _id: id });
-      const { username, pledge, name } = task;
+      const { username, pledge } = task;
       await Task.updateOne({ _id: id }, { status });
       await closeDb();
       const data = await creditPledgeAmount(username, pledge);

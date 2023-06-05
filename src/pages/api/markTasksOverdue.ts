@@ -3,6 +3,7 @@ import { initDb, closeDb } from "./repository";
 import { Task } from "./schemas";
 import { differenceInMilliseconds, parseISO } from "date-fns";
 import axios from "axios";
+import { preflight } from "./preflight";
 
 type FindStatus = "success" | "failure";
 
@@ -41,6 +42,9 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
+  if(!preflight(req)) {
+    res.status(403).json({status: "unauthorised"} as any)
+  }
   if (req.method === "POST") {
     try {
       await initDb();

@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { initDb, closeDb } from "./repository";
 import { Payment } from "./schemas";
+import { preflight } from "./preflight";
 
 type PaymentCreationStatus = "success" | "failure";
 
@@ -16,6 +17,9 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
+  if(!preflight(req)) {
+    res.status(403).json({status: "unauthorised"} as any)
+  }
   if (req.method === "POST") {
     await initDb();
     const { username, points, screenshot } = req.body;
