@@ -33,8 +33,8 @@ export const taskSchema = new Schema({
 
 export const paymentSchema = new Schema({
   username: { type: String, required: true },
-  amount: { type: Number, required: true },
-  refNumber: { type: String, required: true },
+  points: { type: Number, required: true },
+  screenshot: { type: String, required: true },
   date: { type: String, required: true },
 });
 

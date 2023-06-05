@@ -7,7 +7,7 @@ type PaymentCreationStatus = "success" | "failure";
 type Data = {
   username: string;
   amount: number;
-  refNumber: string;
+  screenshot: string;
   date: Date;
   status: PaymentCreationStatus;
 };
@@ -18,20 +18,21 @@ export default async function handler(
 ) {
   if (req.method === "POST") {
     await initDb();
-    const { username, amount, refNumber, date } = req.body;
-    const numericAmount = parseInt(amount);
+    const { username, points, screenshot } = req.body;
+    const numericPoints = parseInt(points);
+    const date = new Date();
     try {
       await new Payment({
         username,
-        amount: numericAmount,
-        refNumber,
+        points: numericPoints,
+        screenshot,
         date,
       }).save();
       await closeDb();
       return res.status(201).json({
         username,
-        amount: numericAmount,
-        refNumber,
+        amount: numericPoints,
+        screenshot,
         date,
         status: "success",
       });
@@ -39,11 +40,12 @@ export default async function handler(
       await closeDb();
       res.status(500).json({
         username,
-        amount: numericAmount,
-        refNumber,
+        amount: numericPoints,
+        screenshot,
         date,
         status: "failure",
-      });
+        err
+      } as any);
     }
   }
 }
