@@ -113,7 +113,7 @@ export default function TopupForm() {
             const file = e.target?.files[0];
             setFile(file);
           }}
-          disabled={isNaN(points)}
+          disabled={isNaN(points) || points < 1}
         />
         <Flex
           mt={"20px"}
