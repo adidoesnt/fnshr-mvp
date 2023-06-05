@@ -11,7 +11,7 @@ import {
   Heading,
   Text,
 } from "@chakra-ui/react";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { store } from "@/app/store";
 import { parseISO } from "date-fns";
