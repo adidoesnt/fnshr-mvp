@@ -2,6 +2,7 @@ import { RootState } from "@/app/store";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import type { Notification } from "@/components/Notifications";
+import { defaultReqConfig } from "@/pages/api/preflight";
 
 const initialState: Notification[] = [];
 
@@ -9,7 +10,7 @@ export const fetchNotifications = createAsyncThunk(
   "notifications/getAllNotifications",
   async () => {
     const URI = "/api/getNotifications";
-    const response = await axios.get(URI);
+    const response = await axios.get(URI, defaultReqConfig);
     return response.data;
   }
 );

@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { initDb, closeDb } from "./repository";
 import { User } from "./schemas";
 import axios from "axios";
-import { preflight } from "./preflight";
+import { defaultReqConfig, preflight } from "./preflight";
 
 type UpdateStatus = "success" | "failure";
 
@@ -21,7 +21,7 @@ async function notifyFriend(username: string, friend: string) {
   const URI = `${API_PREFIX}notifyFriend`;
   const content = `${username} has removed you as a friend.`;
   try {
-    const response = await axios.post(URI, { content, friend });
+    const response = await axios.post(URI, { content, friend }, defaultReqConfig);
     console.log(response.data);
   } catch (err) {
     console.log(err);

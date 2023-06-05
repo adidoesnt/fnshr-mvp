@@ -4,7 +4,7 @@ import { Task } from "./schemas";
 import axios from "axios";
 import { fetchUsers } from "@/app/features/users/usersSlice";
 import { store } from "@/app/store";
-import { preflight } from "./preflight";
+import { defaultReqConfig, preflight } from "./preflight";
 
 type UpdateStatus = "success" | "failure";
 
@@ -23,7 +23,7 @@ async function creditPledgeAmount(username: string, pledge: number) {
   const URI = `${API_PREFIX}creditPoints`;
 
   try {
-    const response = await axios.post(URI, { username, pledge });
+    const response = await axios.post(URI, { username, pledge }, defaultReqConfig);
     console.log(response.data);
     await store.dispatch(fetchUsers());
     return response.data;

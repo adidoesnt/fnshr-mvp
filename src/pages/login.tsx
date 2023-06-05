@@ -8,6 +8,7 @@ import { useState } from "react";
 import { store } from "@/app/store";
 import { fetchUsers } from "@/app/features/users/usersSlice";
 import type { AuthStatus } from "@/components/AuthForm";
+import { defaultReqConfig } from "./api/preflight";
 
 export default function LoginPage() {
   const URI = "/api/login";
@@ -24,7 +25,7 @@ export default function LoginPage() {
       const response = await axios.post(URI, {
         username,
         password,
-      });
+      }, defaultReqConfig);
       await store.dispatch(fetchUsers());
       await store.dispatch(fetchGlobalUser(username));
       console.log(response.data);

@@ -20,6 +20,7 @@ import { setPoints } from "@/app/features/user/userSlice";
 import TaskFilterMenu from "./TaskFilterMenu";
 import LoadingSpinner from "./LoadingSpinner";
 import TaskPill from "./TaskPill";
+import { defaultReqConfig } from "@/pages/api/preflight";
 
 export type YourTasksProps = {
   username: string;
@@ -61,7 +62,7 @@ function TaskCard({
     const URI = "/api/notifyFriends";
     const content = `${username} has completed their task: "${name}"`;
     try {
-      const response = await axios.post(URI, { username, content });
+      const response = await axios.post(URI, { username, content }, defaultReqConfig);
       console.log(response.data);
     } catch (err) {
       console.log(err);
@@ -72,7 +73,7 @@ function TaskCard({
     const URI = "api/completeTask";
     setSubmitting(true);
     try {
-      const response = await axios.post(URI, { id });
+      const response = await axios.post(URI, { id }, defaultReqConfig);
       const { points } = response.data;
       dispatch(setPoints(points));
       console.log(response.data);

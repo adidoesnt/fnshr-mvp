@@ -3,7 +3,7 @@ import { initDb, closeDb } from "./repository";
 import { Task } from "./schemas";
 import { differenceInMilliseconds, parseISO } from "date-fns";
 import axios from "axios";
-import { preflight } from "./preflight";
+import { defaultReqConfig, preflight } from "./preflight";
 
 type FindStatus = "success" | "failure";
 
@@ -20,7 +20,7 @@ async function notifyFriends(username: string, name: string) {
   const URI = `${API_PREFIX}notifyFriends`;
   const content = `${username} has missed their task: "${name}"`;
   try {
-    const response = await axios.post(URI, { username, content });
+    const response = await axios.post(URI, { username, content }, defaultReqConfig);
     console.log(response.data);
   } catch (err) {
     console.log(err);

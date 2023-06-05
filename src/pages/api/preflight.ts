@@ -1,6 +1,10 @@
 import { NextApiRequest } from "next";
 
-const API_KEY = process.env.NEXT_PUBLIC_FNSHR_API_KEY;
+export const API_KEY = process.env.NEXT_PUBLIC_FNSHR_API_KEY;
+
+export const defaultReqConfig = {
+  headers: { "x-api-key": API_KEY },
+};
 
 export function preflight(req: NextApiRequest) {
   if (!req?.headers) {

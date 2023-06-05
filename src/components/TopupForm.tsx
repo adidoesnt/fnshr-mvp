@@ -17,6 +17,7 @@ import { useSelector } from "react-redux";
 import HelpCard from "./HelpCard";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "@/app/firebase";
+import { defaultReqConfig } from "@/pages/api/preflight";
 
 export default function TopupForm() {
   const user = useSelector(selectGlobalUser);
@@ -65,7 +66,7 @@ export default function TopupForm() {
         username,
         points,
         screenshot: URL,
-      });
+      }, defaultReqConfig);
       console.log(response.data);
       setPaymentSuccess(true);
       setTimeout(() => {

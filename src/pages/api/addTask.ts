@@ -5,7 +5,7 @@ import axios from "axios";
 import { differenceInMilliseconds, parseISO } from "date-fns";
 import { store } from "@/app/store";
 import { fetchUsers } from "@/app/features/users/usersSlice";
-import { preflight } from "./preflight";
+import { defaultReqConfig, preflight } from "./preflight";
 
 type CreationStatus = "success" | "failure";
 
@@ -29,7 +29,7 @@ async function deductPledgeAmount(username: string, pledge: number) {
   const URI = `${API_PREFIX}deductPoints`;
 
   try {
-    const response = await axios.post(URI, { username, pledge });
+    const response = await axios.post(URI, { username, pledge }, defaultReqConfig);
     console.log(response.data);
     await store.dispatch(fetchUsers());
     return response.data;

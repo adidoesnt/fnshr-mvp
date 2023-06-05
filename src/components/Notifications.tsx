@@ -26,6 +26,7 @@ import { useSelector } from "react-redux";
 import { showNotification } from "../../public/browserNotifications";
 import { fetchTasks } from "@/app/features/tasks/tasksSlice";
 import { fetchUsers } from "@/app/features/users/usersSlice";
+import { defaultReqConfig } from "@/pages/api/preflight";
 
 export type Notification = {
   _id?: string;
@@ -53,7 +54,7 @@ function NotificationCard({ username, notification }: NotificationCardProps) {
     setSubmitting(true);
     const URI = "api/acknowledgeNotification";
     try {
-      const response = await axios.post(URI, { username, id });
+      const response = await axios.post(URI, { username, id }, defaultReqConfig);
       store.dispatch(fetchNotifications());
       console.log(response.data);
     } catch (err) {

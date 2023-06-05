@@ -7,7 +7,6 @@ import {
   CardFooter,
   CardHeader,
   Center,
-  Divider,
   Flex,
   Heading,
   Text,
@@ -23,6 +22,7 @@ import { convertISOToLocalTime } from "./YourTasks";
 import TaskFilterMenu from "./TaskFilterMenu";
 import LoadingSpinner from "./LoadingSpinner";
 import TaskPill from "./TaskPill";
+import { defaultReqConfig } from "@/pages/api/preflight";
 
 export type FriendsTasksProps = {
   friends: string[];
@@ -53,12 +53,12 @@ function PromptButton({
   async function handleClick(id: string) {
     setSubmitting(true);
     try {
-      const promptResponse = await axios.post(promptURI, { id, prompter });
+      const promptResponse = await axios.post(promptURI, { id, prompter }, defaultReqConfig);
       console.log(promptResponse.data);
       const deductionResponse = await axios.post(deductionURI, {
         username: promptee,
         pledge: penalty,
-      });
+      }, defaultReqConfig);
       console.log(deductionResponse.data);
       await store.dispatch(fetchTasks());
     } catch (err) {

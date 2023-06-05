@@ -16,6 +16,7 @@ import { store } from "@/app/store";
 import { useDispatch, useSelector } from "react-redux";
 import { selectGlobalUser, setPoints } from "@/app/features/user/userSlice";
 import LoadingSpinner from "./LoadingSpinner";
+import { defaultReqConfig } from "@/pages/api/preflight";
 
 export type TaskFormProps = {
   username: string;
@@ -32,7 +33,7 @@ export default function TaskForm({ username }: TaskFormProps) {
     const URI = "/api/notifyFriends";
     const content = `${username} has created a new task: "${name}"`;
     try {
-      const response = await axios.post(URI, { username, content });
+      const response = await axios.post(URI, { username, content }, defaultReqConfig);
       console.log(response.data);
     } catch (err) {
       console.log(err);
@@ -68,7 +69,7 @@ export default function TaskForm({ username }: TaskFormProps) {
         name,
         deadline,
         pledge,
-      });
+      }, defaultReqConfig);
       const { points } = response.data;
       dispatch(setPoints(points));
       console.log(response.data);

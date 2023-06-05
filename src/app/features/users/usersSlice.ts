@@ -1,10 +1,11 @@
 import { RootState } from "@/app/store";
+import { defaultReqConfig } from "@/pages/api/preflight";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export const fetchUsers = createAsyncThunk("users/getAllUsers", async () => {
   const URI = "/api/getUsers";
-  const response = await axios.get(URI);
+  const response = await axios.get(URI, defaultReqConfig);
   return response.data;
 });
 

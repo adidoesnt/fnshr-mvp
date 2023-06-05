@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { initDb, closeDb } from "./repository";
 import { Task } from "./schemas";
 import axios from "axios";
-import { preflight } from "./preflight";
+import { defaultReqConfig, preflight } from "./preflight";
 
 type UpdateStatus = "success" | "failure";
 
@@ -21,7 +21,7 @@ async function notifyFriend(username: string, name: string, friend: string) {
   const URI = `${API_PREFIX}notifyFriend`;
   const content = `${username} has called you out for missing your task: "${name}"`;
   try {
-    const response = await axios.post(URI, { friend, content });
+    const response = await axios.post(URI, { friend, content }, defaultReqConfig);
     console.log(response.data);
   } catch (err) {
     console.log(err);

@@ -20,6 +20,7 @@ import { useDispatch } from "react-redux";
 import BackButton from "@/components/BackButton";
 import Head from "next/head";
 import { useWindowSize } from "@/app/hooks";
+import { defaultReqConfig } from "./api/preflight";
 
 type ContentProps = {
   username: string;
@@ -41,7 +42,7 @@ function FriendCard({ username }: FriendCardProps) {
     const URI = `/api/notifyFriend`;
     const content = `${username} has added you as a friend!`;
     try {
-      const response = await axios.post(URI, { content, friend });
+      const response = await axios.post(URI, { content, friend }, defaultReqConfig);
       console.log(response.data);
     } catch (err) {
       console.log(err);
@@ -54,7 +55,7 @@ function FriendCard({ username }: FriendCardProps) {
       const addResponse = await axios.post(URI, {
         username: ownUsername,
         friend,
-      });
+      }, defaultReqConfig);
       console.log(addResponse.data);
       const { friends } = addResponse.data;
       dispatch(setFriends(friends));
