@@ -12,13 +12,17 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import LoadingSpinner from "./LoadingSpinner";
-import { fetchGlobalUser, selectGlobalUser } from "@/app/features/user/userSlice";
+import {
+  fetchGlobalUser,
+  selectGlobalUser,
+} from "@/app/features/user/userSlice";
 import { useSelector } from "react-redux";
 import HelpCard from "./HelpCard";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "@/app/firebase";
 import { defaultReqConfig } from "@/pages/api/preflight";
 import { store } from "@/app/store";
+import ImageCompressor from "image-compressor.js";
 
 export default function TopupForm() {
   const user = useSelector(selectGlobalUser);
@@ -33,28 +37,51 @@ export default function TopupForm() {
     return points > 0 && file !== null;
   };
 
+  const compressImage: any = async (file: any) => {
+    const maxSize = 1024 * 1024;
+
+    try {
+      const compressedFile = await new ImageCompressor().compress(file, {
+        maxWidth: 500,
+        quality: 0.5,
+        mimeType: "image/jpeg",
+      });
+      if (compressedFile.size <= maxSize) {
+        return compressedFile;
+      } else {
+        return compressImage(compressedFile);
+      }
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  };
+
   const handleUpload = async () => {
     if (file) {
+      const compressedFile = await compressImage(file);
       const storageRef = ref(
         storage,
         `payments/${username}/${file.name}_${new Date().toISOString()}`
       );
-      const uploadTask = uploadBytesResumable(storageRef, file);
-      return new Promise((resolve, reject) => {
-        uploadTask.on("state_changed", (snapshot) => {
-          const complete = snapshot.bytesTransferred >= snapshot.totalBytes;
-          if (complete) {
-            getDownloadURL(uploadTask.snapshot.ref)
-              .then((URL) => {
-                resolve(URL);
-              })
-              .catch((error) => {
-                console.error("Error retrieving URL:", error);
-                reject(error);
-              });
-          }
+      if (compressedFile) {
+        const uploadTask = uploadBytesResumable(storageRef, compressedFile);
+        return new Promise((resolve, reject) => {
+          uploadTask.on("state_changed", (snapshot) => {
+            const complete = snapshot.bytesTransferred >= snapshot.totalBytes;
+            if (complete) {
+              getDownloadURL(uploadTask.snapshot.ref)
+                .then((URL) => {
+                  resolve(URL);
+                })
+                .catch((error) => {
+                  console.error("Error retrieving URL:", error);
+                  reject(error);
+                });
+            }
+          });
         });
-      });
+      }
     }
   };
 
@@ -64,17 +91,25 @@ export default function TopupForm() {
     const creditURI = "api/creditPoints";
     try {
       const URL = await handleUpload();
-      const paymentResponse = await axios.post(paymentURI, {
-        username,
-        points,
-        screenshot: URL,
-      }, defaultReqConfig);
+      const paymentResponse = await axios.post(
+        paymentURI,
+        {
+          username,
+          points,
+          screenshot: URL,
+        },
+        defaultReqConfig
+      );
       console.log(paymentResponse.data);
       setPaymentSuccess(true);
-      const creditResponse = await axios.post(creditURI, {
-        username,
-        pledge: points
-      }, defaultReqConfig);
+      const creditResponse = await axios.post(
+        creditURI,
+        {
+          username,
+          pledge: points,
+        },
+        defaultReqConfig
+      );
       console.log(creditResponse.data);
       await store.dispatch(fetchGlobalUser(username));
       setTimeout(() => {
