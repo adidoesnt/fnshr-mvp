@@ -58,8 +58,8 @@ export default function HelpCard() {
               wallet with FNSHR Points. <br />
               Do remember to add your username as the payment reference/comment.
               <br />
-              Once the payment is received, the FNSHR team will top-up your
-              wallet for you.
+              Once the form below has been submitted, the points should be
+              automatically credited to your account!
             </Text>
             <ToggleButton mt={5} handleClick={handleClick} collapse={false} />
           </Center>
