@@ -22,7 +22,6 @@ import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "@/app/firebase";
 import { defaultReqConfig } from "@/pages/api/preflight";
 import { store } from "@/app/store";
-import ImageCompressor from "image-compressor.js";
 
 export default function TopupForm() {
   const user = useSelector(selectGlobalUser);
@@ -41,9 +40,10 @@ export default function TopupForm() {
     const maxSize = 1024 * 1024;
 
     try {
+      const { default: ImageCompressor } = await import("image-compressor.js");
       const compressedFile = await new ImageCompressor().compress(file, {
         maxWidth: 500,
-        quality: 0.5,
+        quality: 0.8,
         mimeType: "image/jpeg",
       });
       if (compressedFile.size <= maxSize) {
