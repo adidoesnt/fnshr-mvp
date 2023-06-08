@@ -8,6 +8,7 @@ const initialState = {
   points: 0,
   friends: [] as string[],
   admin: false,
+  customerID: ""
 };
 
 export const fetchGlobalUser = createAsyncThunk(
@@ -37,11 +38,12 @@ export const userSlice = createSlice({
   extraReducers(builder) {
     builder.addCase(fetchGlobalUser.fulfilled, (state, action) => {
       console.log(action.payload.user);
-      const { username, points, friends, admin } = action.payload.user;
+      const { username, points, friends, admin, customerID } = action.payload.user;
       state.username = username;
       state.points = points;
       state.friends = friends;
       state.admin = admin;
+      state.customerID = customerID;
     });
   },
 });

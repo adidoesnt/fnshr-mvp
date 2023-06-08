@@ -12,22 +12,57 @@ import { defaultReqConfig } from "./api/preflight";
 
 export default function SignupPage() {
   const size = useWindowSize();
-  const URI = "/api/signup";
   const router = useRouter();
 
-  const [ submitting, setSubmitting ] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<AuthStatus>("Success");
+
+  const createUser = async (username: string, password: string) => {
+    const URI = "/api/signup";
+    const response = await axios.post(
+      URI,
+      {
+        username,
+        password,
+      },
+      defaultReqConfig
+    );
+    console.log(response.data);
+  };
+
+  const createCustomer = async (username: string) => {
+    const URI = "/api/createCustomer";
+    const reponse = await axios.post(
+      URI,
+      { username },
+      defaultReqConfig
+    );
+    console.log(reponse.data);
+    const { customerID } = reponse.data;
+    return customerID;
+  };
+
+  const addCustomerID = async (username: string, customerID: string) => {
+    const URI = "/api/addCustomerID";
+    const response = await axios.post(
+      URI,
+      {
+        username,
+        customerID,
+      },
+      defaultReqConfig
+    );
+    console.log(response.data);
+  };
 
   const onSubmit = async (username: string, password: string) => {
     setSubmitting(true);
     try {
-      const response = await axios.post(URI, {
-        username,
-        password,
-      }, defaultReqConfig);
+      await createUser(username, password);
+      const customerID = await createCustomer(username);
+      await addCustomerID(username, customerID);
       await store.dispatch(fetchUsers());
       await store.dispatch(fetchGlobalUser(username));
-      console.log(response.data);
       router.push("/home");
     } catch (err: any) {
       const errMessage = err.response.data.status;
@@ -52,7 +87,7 @@ export default function SignupPage() {
           justifyContent: "center",
           alignItems: "center",
           width: size.width,
-          height: size.height
+          height: size.height,
         }}
       >
         <AuthForm

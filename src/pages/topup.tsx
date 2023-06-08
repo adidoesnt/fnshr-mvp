@@ -6,15 +6,98 @@ import Head from "next/head";
 import { useWindowSize } from "@/app/hooks";
 import BackButton from "@/components/BackButton";
 import TopupForm from "@/components/TopupForm";
-import { Flex } from "@chakra-ui/react";
-import Notifications from "@/components/Notifications";
+import FnshrPoints from "@/components/FnshrPoints";
+import { StripeElementsOptions, loadStripe } from "@stripe/stripe-js";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { Elements } from "@stripe/react-stripe-js";
+import {
+  Card,
+  CardHeader,
+  FormControl,
+  FormHelperText,
+  FormLabel,
+  Heading,
+  Input,
+  Text,
+} from "@chakra-ui/react";
 
-type ContentProps = {
-  username: string;
+export type ContentProps = {
+  points: number;
 };
 
-function Content({ username }: ContentProps) {
+const KEY =
+  process.env.NEXT_PUBLIC_ENV === "DEV"
+    ? process.env.NEXT_PUBLIC_STRIPE_TEST_PUBLIC_KEY
+    : process.env.NEXT_PUBLIC_STRIPE_PROD_PUBLIC_KEY;
+const stripePromise = loadStripe(KEY || "");
+
+type TopupAmountSelectorProps = {
+  amount: number;
+  setAmount: (amount: number) => void;
+};
+
+function TopupAmountSelector({ amount, setAmount }: TopupAmountSelectorProps) {
+  const points = amount * 10;
+
+  return (
+    <Card m={"5%"} w={"90%"} p={"5%"}>
+      <FormControl>
+        <CardHeader>
+          <Heading textAlign={"center"}>Top-up</Heading>
+        </CardHeader>
+        <FormLabel>Select Amount</FormLabel>
+        <FormHelperText mb={5}>
+          Select the top-up amount before proceeding to checkout.
+        </FormHelperText>
+        <Input
+          type={"range"}
+          min={1}
+          max={100}
+          onChange={(e) => setAmount(parseInt(e.target.value))}
+          defaultValue={1}
+        />
+        <Text textAlign={"center"}>
+          {amount} SGD = {points} FP
+        </Text>
+      </FormControl>
+    </Card>
+  );
+}
+
+function Content({ points }: ContentProps) {
   const size = useWindowSize();
+  const [amount, setAmount] = useState(1);
+  const amountInCents = amount * 100;
+
+  const [clientSecret, setClientSecret] = useState("");
+
+  const user = useSelector(selectGlobalUser);
+  const { username, customerID } = user;
+
+  useEffect(() => {
+    const URI = "/api/makePayment";
+    axios
+      .post(URI, {
+        username,
+        customerID,
+        amount: amountInCents,
+      })
+      .then((response) => {
+        const { data } = response;
+        const { clientSecret: newClientSecret } = data;
+        setClientSecret(newClientSecret);
+      });
+  }, [amountInCents, customerID, username]);
+
+  const appearance = {
+    theme: "stripe",
+  };
+
+  const options = {
+    clientSecret,
+    appearance,
+  };
 
   return (
     <>
@@ -31,11 +114,17 @@ function Content({ username }: ContentProps) {
           height: size.height,
         }}
       >
-        <Flex w={"90%"} alignItems={"center"} mt={"5%"}>
-          <BackButton w={"90%"} />
-          <Notifications username={username} />
-        </Flex>
-        <TopupForm />
+        <BackButton w={"90%"} mt={"5%"} />
+        <FnshrPoints points={points} noTopupButton />
+        <TopupAmountSelector amount={amount} setAmount={setAmount} />
+        {clientSecret !== "" ? (
+          <Elements
+            options={options as StripeElementsOptions}
+            stripe={stripePromise}
+          >
+            <TopupForm amount={amount} />
+          </Elements>
+        ) : null}
       </main>
     </>
   );
@@ -44,13 +133,13 @@ function Content({ username }: ContentProps) {
 export default function Topup() {
   const router = useRouter();
   const user = useSelector(selectGlobalUser);
-  const { username } = user;
+  const { username, admin, points } = user;
 
-  const auth = username !== "";
+  const auth = username !== "" || admin;
 
   if (!auth) {
     router.push("/login");
   }
 
-  return auth ? <Content username={username} /> : <Loading />;
+  return auth ? <Content points={points} /> : <Loading />;
 }

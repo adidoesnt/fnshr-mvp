@@ -32,6 +32,7 @@ export default async function handler(
     const testUser = await User.findOne({ username });
     const friends: string[] = [];
     const admin = false;
+    const customerID = "";
     if (testUser) {
       await closeDb();
       res.status(409).json({ username, status: "User already exists" });
@@ -44,11 +45,18 @@ export default async function handler(
           points,
           friends,
           admin,
+          customerID
         }).save();
         await closeDb();
         res
           .status(201)
-          .json({ username, points, friends, admin, status: "Success" });
+          .json({
+            username,
+            points,
+            friends,
+            admin,
+            status: "Success",
+          });
       } catch (err) {
         res.status(500).json({ username, status: "Failure" });
       }

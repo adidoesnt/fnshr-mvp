@@ -7,9 +7,11 @@ import {
   Heading,
   Text,
 } from "@chakra-ui/react";
-import { ExchangeRate } from "./FnshrPoints";
+import ExchangeRate from "./FnshrPoints";
 import PaymentQR from "./PaymentQR";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { selectGlobalUser } from "@/app/features/user/userSlice";
 
 type ToggleButtonProps = {
   handleClick: () => void;
@@ -28,6 +30,8 @@ function ToggleButton({ handleClick, collapse, mt }: ToggleButtonProps) {
 }
 
 export default function HelpCard() {
+  const user = useSelector(selectGlobalUser);
+  const { points } = user;
   const [collapse, setCollapse] = useState(true);
 
   const handleClick = () => {
@@ -42,13 +46,13 @@ export default function HelpCard() {
       <CardBody>
         {collapse ? (
           <Center flexDir={"column"}>
-            <ExchangeRate />
+            <ExchangeRate points={points} />
             <PaymentQR />
             <ToggleButton handleClick={handleClick} collapse />
           </Center>
         ) : (
           <Center flexDir={"column"}>
-            <ExchangeRate />
+            <ExchangeRate points={points} />
             <PaymentQR />
             <Heading fontSize={20} mt={2.5} mb={2.5}>
               How does this work?
