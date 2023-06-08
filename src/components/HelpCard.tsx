@@ -7,7 +7,7 @@ import {
   Heading,
   Text,
 } from "@chakra-ui/react";
-import { ExchangeRate } from "./FnshrPoints";
+import ExchangeRate from "./FnshrPoints";
 import PaymentQR from "./PaymentQR";
 import { useState } from "react";
 
