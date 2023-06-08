@@ -13,6 +13,7 @@ export const userSchema = new Schema({
   points: { type: Number, required: true },
   friends: { type: [String], required: true },
   admin: { type: Boolean, required: true },
+  customerID: { type: String, required: true }
 });
 
 export const taskSchema = new Schema({

@@ -22,12 +22,13 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   if (req.method === "POST") {
-    const { username, amount } = req.body;
+    const { username, customerID, amount } = req.body;
     try {
       const paymentIntent = await stripe.paymentIntents.create({
         amount,
         currency: "sgd",
         payment_method_types: ["card"],
+        customer: customerID
       });
       res.status(200).json({
         username,

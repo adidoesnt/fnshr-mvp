@@ -1,10 +1,10 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import {
   PaymentElement,
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
-import { PaymentIntent, StripePaymentElementOptions } from "@stripe/stripe-js";
+import { StripePaymentElementOptions } from "@stripe/stripe-js";
 import {
   Button,
   Card,
@@ -14,12 +14,6 @@ import {
   Text,
 } from "@chakra-ui/react";
 import LoadingSpinner from "./LoadingSpinner";
-import axios from "axios";
-import { selectGlobalUser } from "@/app/features/user/userSlice";
-import { useSelector } from "react-redux";
-import { store } from "@/app/store";
-import { fetchGlobalUser } from "@/app/features/user/userSlice";
-
 type TopupFormProps = {
   amount: number;
 };
@@ -30,8 +24,6 @@ export default function TopupForm({ amount }: TopupFormProps) {
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const points = amount * 10;
-  const user = useSelector(selectGlobalUser);
-  const { username } = user;
 
   useEffect(() => {
     if (!stripe) {
@@ -70,8 +62,6 @@ export default function TopupForm({ amount }: TopupFormProps) {
     e.preventDefault();
 
     if (!stripe || !elements) {
-      // Stripe.js hasn't yet loaded.
-      // Make sure to disable form submission until Stripe.js has loaded.
       return;
     }
 
@@ -80,16 +70,10 @@ export default function TopupForm({ amount }: TopupFormProps) {
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        // Make sure to change this to your payment completion page
         return_url: "http://localhost:3000/home",
       },
     });
 
-    // This point will only be reached if there is an immediate error when
-    // confirming the payment. Otherwise, your customer will be redirected to
-    // your `return_url`. For some payment methods like iDEAL, your customer will
-    // be redirected to an intermediate site first to authorize the payment, then
-    // redirected to the `return_url`.
     const DEFAULT_ERR_MESSAGE = "An unexpected error occurred.";
     if (error?.type === "card_error" || error?.type === "validation_error") {
       setMessage(error?.message || DEFAULT_ERR_MESSAGE);
@@ -128,7 +112,6 @@ export default function TopupForm({ amount }: TopupFormProps) {
               {isLoading ? <LoadingSpinner /> : "Pay now"}
             </span>
           </Button>
-          {/* Show any error or success messages */}
           {message && (
             <div id="payment-message" style={{ marginTop: "5px" }}>
               {message}

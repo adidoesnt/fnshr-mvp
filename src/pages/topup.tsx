@@ -27,13 +27,10 @@ export type ContentProps = {
 };
 
 const KEY =
-  process.env.ENV === "DEV"
-    ? process.env.STRIPE_TEST_PUBLIC_KEY
-    : process.env.STRIPE_TEST_PUBLIC_KEY;
-const stripePromise = loadStripe(
-  KEY ||
-    "pk_test_51MpyVZJeBXv7Fk8avWiQ3bmLjhPRrlfS3pGdPwdZYhkhX2g9YkqUkwWxemUXUYfeSc6xXaNz5VwcKzXaM9Qz0sZq00dv0hMvNF"
-);
+  process.env.NEXT_PUBLIC_ENV === "DEV"
+    ? process.env.NEXT_PUBLIC_STRIPE_TEST_PUBLIC_KEY
+    : process.env.NEXT_PUBLIC_STRIPE_PROD_PUBLIC_KEY;
+const stripePromise = loadStripe(KEY || "");
 
 type TopupAmountSelectorProps = {
   amount: number;
@@ -50,7 +47,9 @@ function TopupAmountSelector({ amount, setAmount }: TopupAmountSelectorProps) {
           <Heading textAlign={"center"}>Top-up</Heading>
         </CardHeader>
         <FormLabel>Select Amount</FormLabel>
-        <FormHelperText mb={5}>Select the top-up amount before proceeding to checkout.</FormHelperText>
+        <FormHelperText mb={5}>
+          Select the top-up amount before proceeding to checkout.
+        </FormHelperText>
         <Input
           type={"range"}
           min={1}
@@ -73,11 +72,15 @@ function Content({ points }: ContentProps) {
 
   const [clientSecret, setClientSecret] = useState("");
 
+  const user = useSelector(selectGlobalUser);
+  const { username, customerID } = user;
+
   useEffect(() => {
     const URI = "/api/makePayment";
     axios
       .post(URI, {
-        username: "init",
+        username,
+        customerID,
         amount: amountInCents,
       })
       .then((response) => {
@@ -85,12 +88,12 @@ function Content({ points }: ContentProps) {
         const { clientSecret: newClientSecret } = data;
         setClientSecret(newClientSecret);
       });
-  }, [amountInCents]);
+  }, [amountInCents, customerID, username]);
 
   const appearance = {
     theme: "stripe",
   };
-  
+
   const options = {
     clientSecret,
     appearance,
