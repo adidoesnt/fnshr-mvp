@@ -18,7 +18,7 @@ export default async function handler(
   if (!preflight(req)) {
     res.status(403).json({ status: "unauthorised" } as any);
   }
-  if (req.method === "PUT") {
+  if (req.method === "POST") {
     await initDb();
     const { username, customerID } = req.body;
     try {

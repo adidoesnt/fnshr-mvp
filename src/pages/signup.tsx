@@ -44,7 +44,7 @@ export default function SignupPage() {
 
   const addCustomerID = async (username: string, customerID: string) => {
     const URI = "/api/addCustomerID";
-    const response = await axios.put(
+    const response = await axios.post(
       URI,
       {
         username,
