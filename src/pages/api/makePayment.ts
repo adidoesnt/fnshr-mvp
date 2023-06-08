@@ -10,9 +10,10 @@ type Data = {
   clientSecret?: string;
 };
 
-const PRIVATE_KEY = (process.env.ENV = "DEV"
-  ? process.env.STRIPE_TEST_PRIVATE_KEY
-  : process.env.STRIPE_PROD_PRIVATE_KEY);
+const PRIVATE_KEY =
+  process.env.ENV === "DEV"
+    ? process.env.STRIPE_TEST_PRIVATE_KEY
+    : process.env.STRIPE_PROD_PRIVATE_KEY;
 export const stripe = new Stripe(PRIVATE_KEY || "", {
   apiVersion: "2022-11-15",
 });
@@ -28,7 +29,7 @@ export default async function handler(
         amount,
         currency: "sgd",
         payment_method_types: ["card"],
-        customer: process.env.TEST_CUST_ID
+        customer: process.env.TEST_CUST_ID,
       });
       res.status(200).json({
         username,
