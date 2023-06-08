@@ -9,37 +9,60 @@ import { store } from "@/app/store";
 import { fetchUsers } from "@/app/features/users/usersSlice";
 import type { AuthStatus } from "@/components/AuthForm";
 import { defaultReqConfig } from "./api/preflight";
-import { stripe } from "./api/makePayment";
 
 export default function SignupPage() {
   const size = useWindowSize();
-  const signupURI = "/api/signup";
-  const customerURI = "/api/addCustomerID";
   const router = useRouter();
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<AuthStatus>("Success");
 
+  const createUser = async (username: string, password: string) => {
+    const URI = "/api/signup";
+    const response = await axios.post(
+      URI,
+      {
+        username,
+        password,
+      },
+      defaultReqConfig
+    );
+    console.log(response.data);
+  };
+
+  const createCustomer = async (username: string) => {
+    const URI = "/api/createCustomer";
+    const reponse = await axios.post(
+      URI,
+      { username },
+      defaultReqConfig
+    );
+    console.log(reponse.data);
+    const { customerID } = reponse.data;
+    return customerID;
+  };
+
+  const addCustomerID = async (username: string, customerID: string) => {
+    const URI = "/api/addCustomerID";
+    const response = await axios.put(
+      URI,
+      {
+        username,
+        customerID,
+      },
+      defaultReqConfig
+    );
+    console.log(response.data);
+  };
+
   const onSubmit = async (username: string, password: string) => {
     setSubmitting(true);
     try {
-      const signupResponse = await axios.post(
-        signupURI,
-        {
-          username,
-          password,
-        },
-        defaultReqConfig
-      );
+      await createUser(username, password);
+      const customerID = await createCustomer(username);
+      await addCustomerID(username, customerID);
       await store.dispatch(fetchUsers());
       await store.dispatch(fetchGlobalUser(username));
-      console.log(signupResponse.data);
-      const customerIDResponse = await axios.put(
-        customerURI,
-        { username },
-        defaultReqConfig
-      );
-      console.log(customerIDResponse.data);
       router.push("/home");
     } catch (err: any) {
       const errMessage = err.response.data.status;

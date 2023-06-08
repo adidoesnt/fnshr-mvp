@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { initDb, closeDb } from "./repository";
-import { User } from "./schemas";
 import { preflight } from "./preflight";
+import { stripe } from "./makePayment";
 
 type UpdateStatus = "success" | "failure";
 
@@ -18,15 +17,17 @@ export default async function handler(
   if (!preflight(req)) {
     res.status(403).json({ status: "unauthorised" } as any);
   }
-  if (req.method === "PUT") {
-    await initDb();
-    const { username, customerID } = req.body;
+  if (req.method === "POST") {
+    const { username } = req.body;
     try {
-      await User.updateOne({ username }, { customerID });
-      await closeDb();
+      const customer = await stripe.customers.create(
+        {
+          name: username,
+        }
+      );
+      const { id: customerID } = customer;
       res.status(200).json({ username, customerID, status: "success" });
     } catch {
-      await closeDb();
       res.status(500).json({ username, status: "failure" });
     }
   }
