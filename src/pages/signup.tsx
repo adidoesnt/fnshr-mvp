@@ -34,13 +34,9 @@ export default function SignupPage() {
       await store.dispatch(fetchUsers());
       await store.dispatch(fetchGlobalUser(username));
       console.log(signupResponse.data);
-      const customer = await stripe.customers.create({
-        name: username,
-      });
-      const { id: customerID } = customer;
       const customerIDResponse = await axios.put(
         customerURI,
-        { username, customerID },
+        { username },
         defaultReqConfig
       );
       console.log(customerIDResponse.data);
