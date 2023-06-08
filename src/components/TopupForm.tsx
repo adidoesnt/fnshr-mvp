@@ -1,179 +1,141 @@
+import { useState, useEffect, useCallback } from "react";
 import {
-  FormControl,
-  FormLabel,
-  Input,
+  PaymentElement,
+  useStripe,
+  useElements,
+} from "@stripe/react-stripe-js";
+import { PaymentIntent, StripePaymentElementOptions } from "@stripe/stripe-js";
+import {
   Button,
-  Center,
-  FormHelperText,
-  Flex,
-  Badge,
+  Card,
+  CardBody,
+  CardHeader,
+  Heading,
+  Text,
 } from "@chakra-ui/react";
-import axios from "axios";
-import { useRouter } from "next/router";
-import { useState } from "react";
 import LoadingSpinner from "./LoadingSpinner";
-import {
-  fetchGlobalUser,
-  selectGlobalUser,
-} from "@/app/features/user/userSlice";
+import axios from "axios";
+import { selectGlobalUser } from "@/app/features/user/userSlice";
 import { useSelector } from "react-redux";
-import HelpCard from "./HelpCard";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { storage } from "@/app/firebase";
-import { defaultReqConfig } from "@/pages/api/preflight";
 import { store } from "@/app/store";
+import { fetchGlobalUser } from "@/app/features/user/userSlice";
 
-export default function TopupForm() {
+type TopupFormProps = {
+  amount: number;
+};
+
+export default function TopupForm({ amount }: TopupFormProps) {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const points = amount * 10;
   const user = useSelector(selectGlobalUser);
   const { username } = user;
-  const router = useRouter();
-  const [points, setPoints] = useState(NaN);
-  const [file, setFile] = useState<any>(null);
-  const [submitting, setSubmitting] = useState(false);
-  const [paymentSuccess, setPaymentSuccess] = useState(false);
 
-  const validate = () => {
-    return points > 0 && file !== null;
-  };
+  useEffect(() => {
+    if (!stripe) {
+      return;
+    }
 
-  const compressImage: any = async (file: any) => {
-    const maxSize = 1024 * 1024;
+    const clientSecret = new URLSearchParams(window.location.search).get(
+      "payment_intent_client_secret"
+    );
 
-    try {
-      const { default: ImageCompressor } = await import("image-compressor.js");
-      const compressedFile = await new ImageCompressor().compress(file, {
-        maxWidth: 500,
-        quality: 0.8,
-        mimeType: "image/jpeg",
+    if (!clientSecret) {
+      return;
+    }
+
+    stripe
+      .retrievePaymentIntent(clientSecret)
+      .then(async ({ paymentIntent }) => {
+        switch (paymentIntent?.status) {
+          case "succeeded":
+            setMessage("Payment succeeded!");
+            break;
+          case "processing":
+            setMessage("Your payment is processing.");
+            break;
+          case "requires_payment_method":
+            setMessage("Your payment was not successful, please try again.");
+            break;
+          default:
+            setMessage("Something went wrong.");
+            break;
+        }
       });
-      if (compressedFile.size <= maxSize) {
-        return compressedFile;
-      } else {
-        return compressImage(compressedFile);
-      }
-    } catch (error) {
-      console.log(error);
-      return null;
+  }, [stripe]);
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+
+    if (!stripe || !elements) {
+      // Stripe.js hasn't yet loaded.
+      // Make sure to disable form submission until Stripe.js has loaded.
+      return;
     }
+
+    setIsLoading(true);
+
+    const { error } = await stripe.confirmPayment({
+      elements,
+      confirmParams: {
+        // Make sure to change this to your payment completion page
+        return_url: "http://localhost:3000/home",
+      },
+    });
+
+    // This point will only be reached if there is an immediate error when
+    // confirming the payment. Otherwise, your customer will be redirected to
+    // your `return_url`. For some payment methods like iDEAL, your customer will
+    // be redirected to an intermediate site first to authorize the payment, then
+    // redirected to the `return_url`.
+    const DEFAULT_ERR_MESSAGE = "An unexpected error occurred.";
+    if (error?.type === "card_error" || error?.type === "validation_error") {
+      setMessage(error?.message || DEFAULT_ERR_MESSAGE);
+    } else {
+      setMessage(DEFAULT_ERR_MESSAGE);
+    }
+
+    setIsLoading(false);
   };
 
-  const handleUpload = async () => {
-    if (file) {
-      const compressedFile = await compressImage(file);
-      const storageRef = ref(
-        storage,
-        `payments/${username}/${file.name}_${new Date().toISOString()}`
-      );
-      if (compressedFile) {
-        const uploadTask = uploadBytesResumable(storageRef, compressedFile);
-        return new Promise((resolve, reject) => {
-          uploadTask.on("state_changed", (snapshot) => {
-            const complete = snapshot.bytesTransferred >= snapshot.totalBytes;
-            if (complete) {
-              getDownloadURL(uploadTask.snapshot.ref)
-                .then((URL) => {
-                  resolve(URL);
-                })
-                .catch((error) => {
-                  console.error("Error retrieving URL:", error);
-                  reject(error);
-                });
-            }
-          });
-        });
-      }
-    }
+  const paymentElementOptions = {
+    layout: "tabs",
   };
-
-  const handleSubmit = async () => {
-    setSubmitting(true);
-    const paymentURI = "api/addPayment";
-    const creditURI = "api/creditPoints";
-    try {
-      const URL = await handleUpload();
-      const paymentResponse = await axios.post(
-        paymentURI,
-        {
-          username,
-          points,
-          screenshot: URL,
-        },
-        defaultReqConfig
-      );
-      console.log(paymentResponse.data);
-      setPaymentSuccess(true);
-      const creditResponse = await axios.post(
-        creditURI,
-        {
-          username,
-          pledge: points,
-        },
-        defaultReqConfig
-      );
-      console.log(creditResponse.data);
-      await store.dispatch(fetchGlobalUser(username));
-      setTimeout(() => {
-        router.back();
-      }, 1000);
-    } catch (err) {
-      console.log(err);
-      setSubmitting(false);
-    }
-  };
-
-  const submissionDisabled = !validate() || submitting;
 
   return (
-    <Center w={"90%"} m={25} flexDir={"column"} mb={20}>
-      <HelpCard />
-      <FormControl>
-        <FormLabel mt={"15px"}>Points</FormLabel>
-        <FormHelperText mb={"5px"}>
-          This is the number of points you would like to top-up.
-        </FormHelperText>
-        <Input
-          id="points"
-          type={"number"}
-          onChange={(e) => {
-            const numericPoints = parseInt(e.target.value);
-            setPoints(numericPoints);
-          }}
-        />
-        <FormLabel mt={"15px"}>Payment Screenshot</FormLabel>
-        <FormHelperText mb={"5px"}>
-          Please upload a screenshot of your successful payment.{" "}
-          {isNaN(points)
-            ? null
-            : `The amount
-          should be ${points / 10} SGD.`}
-        </FormHelperText>
-        <Input
-          id="file"
-          variant={"unstyled"}
-          mt={1}
-          type={"file"}
-          onChange={(e: any) => {
-            e.preventDefault();
-            const file = e.target?.files[0];
-            setFile(file);
-          }}
-          disabled={isNaN(points) || points < 1}
-        />
-        <Flex
-          mt={"20px"}
-          alignItems={"center"}
-          justifyContent={"space-between"}
-        >
-          <Button onClick={handleSubmit} isDisabled={submissionDisabled}>
-            {submitting ? <LoadingSpinner /> : "Submit"}
+    <Card w={"90%"} p={"5%"} mb={"5%"} overflowY="scroll">
+      <CardHeader textAlign={"center"}>
+        <Heading>Buy FNSHR points</Heading>
+        <Text textAlign={"center"}>
+          {amount} SGD = {points} FP
+        </Text>
+      </CardHeader>
+      <CardBody>
+        <form id="payment-form" onSubmit={handleSubmit}>
+          <PaymentElement
+            id="payment-element"
+            options={paymentElementOptions as StripePaymentElementOptions}
+          />
+          <Button
+            mt={5}
+            disabled={isLoading || !stripe || !elements}
+            id="submit"
+            onClick={handleSubmit}
+          >
+            <span id="Button-text">
+              {isLoading ? <LoadingSpinner /> : "Pay now"}
+            </span>
           </Button>
-          {paymentSuccess ? (
-            <Badge colorScheme={"green"} fontSize={17} variant={"solid"}>
-              Payment successful
-            </Badge>
-          ) : null}
-        </Flex>
-      </FormControl>
-    </Center>
+          {/* Show any error or success messages */}
+          {message && (
+            <div id="payment-message" style={{ marginTop: "5px" }}>
+              {message}
+            </div>
+          )}
+        </form>
+      </CardBody>
+    </Card>
   );
 }
