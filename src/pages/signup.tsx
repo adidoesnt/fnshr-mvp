@@ -60,7 +60,7 @@ export default function SignupPage() {
     try {
       await createUser(username, password);
       const customerID = await createCustomer(username);
-      // await addCustomerID(username, customerID);
+      await addCustomerID(username, customerID);
       await store.dispatch(fetchUsers());
       await store.dispatch(fetchGlobalUser(username));
       router.push("/home");
