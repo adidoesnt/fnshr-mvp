@@ -22,7 +22,7 @@ export default async function handler(
     await initDb();
     const { username, customerID } = req.body;
     try {
-      await User.updateOne({ username }, { $set: { customerID } });
+      await User.updateOne({ username }, { customerID });
       await closeDb();
       res.status(200).json({ username, customerID, status: "success" });
     } catch {
