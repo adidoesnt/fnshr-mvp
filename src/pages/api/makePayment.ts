@@ -28,7 +28,7 @@ export default async function handler(
         amount,
         currency: "sgd",
         payment_method_types: ["card"],
-        customer: customerID
+        customer: process.env.TEST_CUST_ID
       });
       res.status(200).json({
         username,
