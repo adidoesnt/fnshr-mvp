@@ -67,10 +67,15 @@ export default function TopupForm({ amount }: TopupFormProps) {
 
     setIsLoading(true);
 
+    const URI =
+      process.env.NEXT_PUBLIC_ENV === "DEV"
+        ? process.env.STRIPE_DEV_RETURN_URL
+        : process.env.STRIPE_PROD_RETURN_URL;
+
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: "http://localhost:3000/home",
+        return_url: URI || "",
       },
     });
 
