@@ -9,25 +9,41 @@ import { store } from "@/app/store";
 import { fetchUsers } from "@/app/features/users/usersSlice";
 import type { AuthStatus } from "@/components/AuthForm";
 import { defaultReqConfig } from "./api/preflight";
+import { stripe } from "./api/makePayment";
 
 export default function SignupPage() {
   const size = useWindowSize();
-  const URI = "/api/signup";
+  const signupURI = "/api/signup";
+  const customerURI = "/api/addCustomerID";
   const router = useRouter();
 
-  const [ submitting, setSubmitting ] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<AuthStatus>("Success");
 
   const onSubmit = async (username: string, password: string) => {
     setSubmitting(true);
     try {
-      const response = await axios.post(URI, {
-        username,
-        password,
-      }, defaultReqConfig);
+      const signupResponse = await axios.post(
+        signupURI,
+        {
+          username,
+          password,
+        },
+        defaultReqConfig
+      );
       await store.dispatch(fetchUsers());
       await store.dispatch(fetchGlobalUser(username));
-      console.log(response.data);
+      console.log(signupResponse.data);
+      const customer = await stripe.customers.create({
+        name: username,
+      });
+      const { id: customerID } = customer;
+      const customerIDResponse = await axios.put(
+        customerURI,
+        { username, customerID },
+        defaultReqConfig
+      );
+      console.log(customerIDResponse.data);
       router.push("/home");
     } catch (err: any) {
       const errMessage = err.response.data.status;
@@ -52,7 +68,7 @@ export default function SignupPage() {
           justifyContent: "center",
           alignItems: "center",
           width: size.width,
-          height: size.height
+          height: size.height,
         }}
       >
         <AuthForm

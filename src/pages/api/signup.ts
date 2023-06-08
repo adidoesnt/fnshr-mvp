@@ -3,7 +3,6 @@ import { initDb, closeDb } from "./repository";
 import bcrypt from "bcrypt";
 import { User } from "./schemas";
 import { preflight } from "./preflight";
-import { stripe } from "./makePayment";
 
 export type SignupStatus = "Success" | "Failure" | "User already exists";
 
@@ -13,7 +12,6 @@ type Data = {
   friends?: string[];
   status: SignupStatus;
   admin?: boolean;
-  customerID?: string;
 };
 
 const saltRounds = 10;
@@ -39,10 +37,6 @@ export default async function handler(
       res.status(409).json({ username, status: "User already exists" });
     } else {
       try {
-        const customer = await stripe.customers.create({
-          name: username,
-        });
-        const { id: customerID } = customer;
         await new User({
           username,
           salt,
@@ -50,7 +44,6 @@ export default async function handler(
           points,
           friends,
           admin,
-          customerID,
         }).save();
         await closeDb();
         res
@@ -59,7 +52,6 @@ export default async function handler(
             username,
             points,
             friends,
-            customerID,
             admin,
             status: "Success",
           });
