@@ -23,9 +23,12 @@ export default async function handler(
     await initDb();
     const { username } = req.body;
     try {
-      const customer = await stripe.customers.create({
-        name: username,
-      });
+      const customer = await stripe.customers.create(
+        {
+          name: username,
+        },
+        { timeout: 20000 }
+      );
       const { id: customerID } = customer;
       await User.updateOne({ username }, { customerID });
       await closeDb();

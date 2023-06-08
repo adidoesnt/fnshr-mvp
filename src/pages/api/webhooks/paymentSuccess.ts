@@ -14,11 +14,8 @@ const API_PREFIX =
 
 async function creditPoints(username: string, points: number) {
   const URI = `${API_PREFIX}creditPoints`;
-  const client = axios.create({
-    timeout: 10000
-  });
   try {
-    const response = await client.post(
+    const response = await axios.post(
       URI,
       { username, pledge: points },
       defaultReqConfig
