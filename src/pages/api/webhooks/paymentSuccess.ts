@@ -28,6 +28,11 @@ async function creditPoints(username: string, points: number) {
   }
 }
 
+const WEBHOOK_SECRET =
+  process.env.ENV === "DEV"
+    ? process.env.STRIPE_DEV_WEBHOOK_SIGNING_SECRET
+    : process.env.STRIPE_PROD_WEBHOOK_SIGNING_SECRET;
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -44,7 +49,7 @@ export default async function handler(
       const event = stripe.webhooks.constructEvent(
         buf,
         stripeSignature,
-        process.env.STRIPE_DEV_WEBHOOK_SIGNING_SECRET || ""
+        WEBHOOK_SECRET || ""
       );
       if (event.type === "payment_intent.succeeded") {
         const paymentIntent = event.data.object as any;
