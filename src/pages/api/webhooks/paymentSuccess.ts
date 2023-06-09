@@ -1,9 +1,10 @@
-import axios from "axios";
 import { stripe } from "../makePayment";
 import { NextApiRequest, NextApiResponse } from "next";
+import Queue from "bee-queue";
+import axios from "axios";
 import { defaultReqConfig } from "../preflight";
-import { store } from "@/app/store";
 import { fetchUsers } from "@/app/features/users/usersSlice";
+import { store } from "@/app/store";
 import { initDb } from "../repository";
 import { User } from "../schemas";
 
@@ -27,6 +28,32 @@ async function creditPoints(username: string, points: number) {
     console.log(err);
   }
 }
+
+const queue = new Queue("webhook-tasks");
+
+interface WebhookTask {
+  event: any;
+  res: NextApiResponse;
+}
+
+queue.process(async (job) => {
+  const { event, res }: WebhookTask = job.data;
+  try {
+    if (event.type === "payment_intent.succeeded") {
+      const paymentIntent = event.data.object as any;
+      const { amount, customer } = paymentIntent;
+      const points = parseInt(amount) / 10;
+      await initDb();
+      const user = await User.findOne({ customerID: customer });
+      const { username } = user;
+      await creditPoints(username, points);
+    }
+    res.status(200).json({ received: true });
+  } catch (error: any) {
+    console.error("Error verifying webhook event:", error);
+    res.status(400).send(`Webhook Error: ${error.message}`);
+  }
+});
 
 const WEBHOOK_SECRET =
   process.env.ENV === "DEV"
@@ -52,13 +79,10 @@ export default async function handler(
         WEBHOOK_SECRET || ""
       );
       if (event.type === "payment_intent.succeeded") {
-        const paymentIntent = event.data.object as any;
-        const { amount, customer } = paymentIntent;
-        const points = parseInt(amount) / 10;
-        await initDb();
-        const user = await User.findOne({ customerID: customer });
-        const { username } = user;
-        await creditPoints(username, points);
+        await queue.createJob({
+          event,
+          res,
+        }).save();
       }
       res.status(200).json({ received: true });
     } catch (error: any) {
