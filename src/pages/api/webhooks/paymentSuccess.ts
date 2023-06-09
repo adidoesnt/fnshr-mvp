@@ -1,12 +1,12 @@
 import { stripe } from "../makePayment";
 import { NextApiRequest, NextApiResponse } from "next";
-import Queue from "bee-queue";
 import axios from "axios";
 import { defaultReqConfig } from "../preflight";
 import { fetchUsers } from "@/app/features/users/usersSlice";
 import { store } from "@/app/store";
 import { initDb } from "../repository";
 import { User } from "../schemas";
+import Queue from "bull";
 
 const API_PREFIX =
   process.env.ENV === "PROD"
@@ -29,15 +29,13 @@ async function creditPoints(username: string, points: number) {
   }
 }
 
-const REDIS_SERVER = process.env.ENV === "DEV" ? {} : {
-  host: process.env.REDIS_PROD_HOST,
-  port: process.env.REDIS_PROD_PORT,
-  password: process.env.REDIS_PROD_PASSWORD
-}
-
 const queue = new Queue("webhook-tasks", {
-  redis: REDIS_SERVER
-});
+  redis: {
+    host: process.env.REDIS_PROD_HOST,
+    port: parseInt(process.env.REDIS_PROD_PORT || ""),
+    password: process.env.REDIS_PROD_PASSWORD || ""
+  }
+})
 
 interface WebhookTask {
   event: any;
@@ -87,10 +85,10 @@ export default async function handler(
         WEBHOOK_SECRET || ""
       );
       if (event.type === "payment_intent.succeeded") {
-        await queue.createJob({
+        await queue.add({
           event,
           res,
-        }).save();
+        });
       }
       res.status(200).json({ received: true });
     } catch (error: any) {
