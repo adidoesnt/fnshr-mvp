@@ -33,17 +33,16 @@ const queue = new Queue("webhook-tasks", {
   redis: {
     host: process.env.REDIS_PROD_HOST,
     port: parseInt(process.env.REDIS_PROD_PORT || ""),
-    password: process.env.REDIS_PROD_PASSWORD || ""
-  }
-})
+    password: process.env.REDIS_PROD_PASSWORD || "",
+  },
+});
 
 interface WebhookTask {
   event: any;
-  res: NextApiResponse;
 }
 
 queue.process(async (job) => {
-  const { event, res }: WebhookTask = job.data;
+  const { event }: WebhookTask = job.data;
   try {
     if (event.type === "payment_intent.succeeded") {
       const paymentIntent = event.data.object as any;
@@ -54,10 +53,8 @@ queue.process(async (job) => {
       const { username } = user;
       await creditPoints(username, points);
     }
-    res.status(200).json({ received: true });
   } catch (error: any) {
     console.error("Error verifying webhook event:", error);
-    res.status(400).send(`Webhook Error: ${error.message}`);
   }
 });
 
@@ -87,7 +84,6 @@ export default async function handler(
       if (event.type === "payment_intent.succeeded") {
         await queue.add({
           event,
-          res,
         });
       }
       res.status(200).json({ received: true });
