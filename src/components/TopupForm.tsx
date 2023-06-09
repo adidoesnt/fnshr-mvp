@@ -69,8 +69,8 @@ export default function TopupForm({ amount }: TopupFormProps) {
 
     const URI =
       process.env.NEXT_PUBLIC_ENV === "DEV"
-        ? process.env.STRIPE_DEV_RETURN_URL
-        : process.env.STRIPE_PROD_RETURN_URL;
+        ? process.env.NEXT_PUBLIC_STRIPE_DEV_RETURN_URL
+        : process.env.NEXT_PUBLIC_STRIPE_PROD_RETURN_URL;
 
     const { error } = await stripe.confirmPayment({
       elements,
