@@ -29,7 +29,15 @@ async function creditPoints(username: string, points: number) {
   }
 }
 
-const queue = new Queue("webhook-tasks");
+const REDIS_SERVER = process.env.ENV === "DEV" ? {} : {
+  host: process.env.REDIS_PROD_HOST,
+  port: process.env.REDIS_PROD_PORT,
+  password: process.env.REDIS_PROD_PASSWORD
+}
+
+const queue = new Queue("webhook-tasks", {
+  redis: REDIS_SERVER
+});
 
 interface WebhookTask {
   event: any;
