@@ -7,7 +7,6 @@ import { store } from "@/app/store";
 import { closeDb, initDb } from "../repository";
 import { User } from "../schemas";
 import getRawBody from "raw-body";
-import { fetchGlobalUser } from "@/app/features/user/userSlice";
 
 const API_PREFIX =
   process.env.ENV === "PROD"
@@ -64,7 +63,6 @@ export default async function handler(
         await closeDb();
         const { username } = user;
         await creditPoints(username, points);
-        await store.dispatch(fetchGlobalUser(username));
       }
       res.status(200).json({ received: true });
     } catch (error: any) {

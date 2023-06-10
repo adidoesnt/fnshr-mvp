@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Elements } from "@stripe/react-stripe-js";
 import {
+  Button,
   Card,
   CardHeader,
   FormControl,
@@ -35,9 +36,16 @@ const stripePromise = loadStripe(KEY || "");
 type TopupAmountSelectorProps = {
   amount: number;
   setAmount: (amount: number) => void;
+  setSubmitted: (submitted: boolean) => void;
+  submitted: boolean;
 };
 
-function TopupAmountSelector({ amount, setAmount }: TopupAmountSelectorProps) {
+function TopupAmountSelector({
+  amount,
+  setAmount,
+  setSubmitted,
+  submitted,
+}: TopupAmountSelectorProps) {
   const points = amount * 10;
 
   return (
@@ -53,14 +61,22 @@ function TopupAmountSelector({ amount, setAmount }: TopupAmountSelectorProps) {
         <Input
           type={"range"}
           min={1}
-          max={100}
+          max={20}
           onChange={(e) => setAmount(parseInt(e.target.value))}
           defaultValue={1}
+          isDisabled={submitted}
         />
         <Text textAlign={"center"}>
           {amount} SGD = {points} FP
         </Text>
       </FormControl>
+      <Button
+        mt={"10px"}
+        onClick={() => setSubmitted(true)}
+        isDisabled={submitted}
+      >
+        Set amount
+      </Button>
     </Card>
   );
 }
@@ -69,6 +85,7 @@ function Content({ points }: ContentProps) {
   const size = useWindowSize();
   const [amount, setAmount] = useState(1);
   const amountInCents = amount * 100;
+  const [submitted, setSubmitted] = useState(false);
 
   const [clientSecret, setClientSecret] = useState("");
 
@@ -76,19 +93,21 @@ function Content({ points }: ContentProps) {
   const { username, customerID } = user;
 
   useEffect(() => {
-    const URI = "/api/makePayment";
-    axios
-      .post(URI, {
-        username,
-        customerID,
-        amount: amountInCents,
-      })
-      .then((response) => {
-        const { data } = response;
-        const { clientSecret: newClientSecret } = data;
-        setClientSecret(newClientSecret);
-      });
-  }, [amountInCents, customerID, username]);
+    if (submitted) {
+      const URI = "/api/makePayment";
+      axios
+        .post(URI, {
+          username,
+          customerID,
+          amount: amountInCents,
+        })
+        .then((response) => {
+          const { data } = response;
+          const { clientSecret: newClientSecret } = data;
+          setClientSecret(newClientSecret);
+        });
+    }
+  }, [amountInCents, customerID, username, submitted]);
 
   const appearance = {
     theme: "stripe",
@@ -116,7 +135,14 @@ function Content({ points }: ContentProps) {
       >
         <BackButton w={"90%"} mt={"5%"} />
         <FnshrPoints points={points} noTopupButton />
-        <TopupAmountSelector amount={amount} setAmount={setAmount} />
+        {submitted ? null : (
+          <TopupAmountSelector
+            amount={amount}
+            setAmount={setAmount}
+            setSubmitted={setSubmitted}
+            submitted={submitted}
+          />
+        )}
         {clientSecret !== "" ? (
           <Elements
             options={options as StripeElementsOptions}
