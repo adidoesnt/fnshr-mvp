@@ -70,7 +70,7 @@ export default async function handler(
 ) {
   if (req.method === "POST") {
     try {
-      const buf = await buffer(req);
+      // const buf = await buffer(req);
       const stripeSignature = req.headers["stripe-signature"] as string;
       // let event;
       // try {
