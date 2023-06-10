@@ -7,12 +7,17 @@ import { store } from "@/app/store";
 import { initDb } from "../repository";
 import { User } from "../schemas";
 import Queue from "bull";
-import bodyParser from "body-parser";
 
 const API_PREFIX =
   process.env.ENV === "PROD"
     ? process.env.CLOUD_API_PREFIX
     : process.env.LOCAL_API_PREFIX;
+
+export const config = {
+  api: {
+    bodyParser: false
+  },
+};
 
 async function creditPoints(username: string, points: number) {
   const URI = `${API_PREFIX}creditPoints`;
@@ -60,32 +65,23 @@ const WEBHOOK_SECRET =
     ? process.env.STRIPE_DEV_WEBHOOK_SIGNING_SECRET
     : process.env.STRIPE_PROD_WEBHOOK_SIGNING_SECRET;
 
-const jsonParser = bodyParser.json();
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   if (req.method === "POST") {
     try {
-      jsonParser(req, res, async (err: any) => {
-        if (err) {
-          console.error("Error parsing request body:", err);
-          return res.status(400).send(`Webhook Error: ${err.message}`);
-        }
-        let event;
-        const { body } = req;
-        const stripeSignature = req.headers["stripe-signature"] as string;
-        event = stripe.webhooks.constructEvent(
-          body,
-          stripeSignature,
-          WEBHOOK_SECRET || ""
-        );
-        await queue.add({
-          event,
-        });
-        res.status(200).json({ received: true });
+      let event;
+      const stripeSignature = req.headers["stripe-signature"] as string;
+      event = stripe.webhooks.constructEvent(
+        req.body,
+        stripeSignature,
+        WEBHOOK_SECRET || ""
+      );
+      await queue.add({
+        event,
       });
+      res.status(200).json({ received: true });
     } catch (error: any) {
       console.error("Error verifying webhook event:", error);
       return res.status(400).send(`Webhook Error: ${error.message}`);
