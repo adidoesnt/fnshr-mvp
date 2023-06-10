@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { selectGlobalUser } from "@/app/features/user/userSlice";
+import { fetchGlobalUser, selectGlobalUser } from "@/app/features/user/userSlice";
 import Head from "next/head";
 import FnshrPoints from "@/components/FnshrPoints";
 import { useRouter } from "next/router";
@@ -12,7 +12,7 @@ import { useDispatch } from "react-redux";
 import { clearGlobalUser } from "@/app/features/user/userSlice";
 import { useWindowSize } from "@/app/hooks";
 import Callouts from "@/components/Callouts";
-import { persistor } from "@/app/store";
+import { persistor, store } from "@/app/store";
 import Notifications from "@/components/Notifications";
 
 type ContentProps = YourTasksProps & {
@@ -129,6 +129,8 @@ export default function Home() {
 
   if (!auth) {
     router.push("/login");
+  } else {
+    store.dispatch(fetchGlobalUser(username));
   }
 
   return auth ? (
