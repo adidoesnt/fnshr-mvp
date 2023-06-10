@@ -71,11 +71,11 @@ export default async function handler(
     try {
       const buf = await new Promise<Buffer>((resolve, reject) => {
         let body = Buffer.alloc(0);
-        req.on('data', (chunk) => (body = Buffer.concat([body, chunk])));
-        req.on('end', () => resolve(body));
-        req.on('error', reject);
+        req.on("data", (chunk) => (body = Buffer.concat([body, chunk])));
+        req.on("end", () => resolve(body));
+        req.on("error", reject);
       });
-      const event = buf.toString();
+      const event = buf.toString("utf8");
       // const stripeSignature = req.headers["stripe-signature"] as string;
       // const webhookEvent = stripe.webhooks.constructEvent(
       //   event,
