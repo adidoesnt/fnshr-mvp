@@ -129,8 +129,6 @@ export default function Home() {
 
   if (!auth) {
     router.push("/login");
-  } else {
-    store.dispatch(fetchGlobalUser(username));
   }
 
   return auth ? (
