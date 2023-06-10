@@ -4,7 +4,7 @@ import axios from "axios";
 import { defaultReqConfig } from "../preflight";
 import { fetchUsers } from "@/app/features/users/usersSlice";
 import { store } from "@/app/store";
-import { initDb } from "../repository";
+import { closeDb, initDb } from "../repository";
 import { User } from "../schemas";
 import Queue from "bull";
 import getRawBody from "raw-body";
@@ -89,6 +89,7 @@ export default async function handler(
         const points = parseInt(amount) / 10;
         await initDb();
         const user = await User.findOne({ customerID: customer });
+        await closeDb();
         const { username } = user;
         await creditPoints(username, points);
       }
