@@ -1,5 +1,5 @@
 import { stripe } from "../makePayment";
-import { NextRequest } from "next/server";
+import { NextApiRequest, NextApiResponse } from "next";
 import axios from "axios";
 import { defaultReqConfig } from "../preflight";
 import { fetchUsers } from "@/app/features/users/usersSlice";
@@ -7,6 +7,7 @@ import { store } from "@/app/store";
 import { initDb } from "../repository";
 import { User } from "../schemas";
 import Queue from "bull";
+import getRawBody from "raw-body";
 
 const API_PREFIX =
   process.env.ENV === "PROD"
@@ -65,34 +66,29 @@ const WEBHOOK_SECRET =
     ? process.env.STRIPE_DEV_WEBHOOK_SIGNING_SECRET
     : process.env.STRIPE_PROD_WEBHOOK_SIGNING_SECRET;
 
-export default async function handler(req: NextRequest) {
+export default async function handler(
+  req: NextApiRequest & { rawBody: any },
+  res: NextApiResponse
+) {
   if (req.method === "POST") {
     try {
-      const reader = req.body?.getReader();
-      let body = "";
-      while (reader && true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        body += new TextDecoder().decode(value);
-      }
+      const rawBody = await getRawBody(req);
+      const stripeSignature = req.headers["stripe-signature"] as string;
       let event;
-      const stripeSignature = req.headers.get("stripe-signature") as
-        | string
-        | string[];
       event = stripe.webhooks.constructEvent(
-        body,
+        rawBody,
         stripeSignature,
         WEBHOOK_SECRET || ""
       );
       await queue.add({
         event,
       });
-      return new Response("webhook receieved", { status: 200 });
+      res.status(200).json({ received: true });
     } catch (error: any) {
       console.error("Error verifying webhook event:", error);
-      return new Response(`Webhook Error: ${error.message}`, { status: 400 });
+      return res.status(400).send(`Webhook Error: ${error.message}`);
     }
   } else {
-    return new Response("", { status: 405 });
+    res.status(405).end();
   }
 }
