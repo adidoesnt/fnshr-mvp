@@ -6,7 +6,9 @@ import { store } from "@/app/store";
 import { Center, Heading, Button, Text, Flex } from "@chakra-ui/react";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { useState } from "react";
 import { useSelector } from "react-redux";
+import LoadingSpinner from "./LoadingSpinner";
 
 export type FnshrPointsProps = {
   points: number;
@@ -26,13 +28,16 @@ export default function FnshrPoints({
   const user = useSelector(selectGlobalUser);
   const { username } = user;
   const router = useRouter();
+  const [submitting, setSubmitting] = useState(false);
 
   const handleTopupClick = () => {
     router.push("/topup");
   };
 
   const handleRefreshClick = async () => {
+    setSubmitting(true);
     await store.dispatch(fetchGlobalUser(username));
+    setSubmitting(false);
   };
 
   return (
@@ -46,8 +51,14 @@ export default function FnshrPoints({
           </Button>
         )}
         {noRefreshButton ? null : (
-          <Button ml={2.5} w={"150px"} onClick={handleRefreshClick} mt={2.5}>
-            Refresh Points
+          <Button
+            ml={2.5}
+            w={"150px"}
+            onClick={handleRefreshClick}
+            mt={2.5}
+            isDisabled={submitting}
+          >
+            {submitting ? <LoadingSpinner /> : "Refresh Points"}
           </Button>
         )}
       </Flex>
