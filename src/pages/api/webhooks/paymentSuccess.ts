@@ -86,7 +86,6 @@ export default async function handler(
         });
         res.status(200).json({ received: true });
       });
-      res.status(200).json({ received: true });
     } catch (error: any) {
       console.error("Error verifying webhook event:", error);
       return res.status(400).send(`Webhook Error: ${error.message}`);
