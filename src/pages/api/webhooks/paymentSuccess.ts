@@ -81,11 +81,11 @@ export default async function handler(
         stripeSignature,
         WEBHOOK_SECRET || ""
       );
-      if (event.type === "payment_intent.succeeded") {
-        await queue.add({
-          event,
-        });
-      }
+      // if (event.type === "payment_intent.succeeded") {
+      //   await queue.add({
+      //     event,
+      //   });
+      // }
       res.status(200).json({ received: true });
     } catch (error: any) {
       console.error("Error verifying webhook event:", error);
