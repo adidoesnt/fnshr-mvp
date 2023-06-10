@@ -6,7 +6,6 @@ import { fetchUsers } from "@/app/features/users/usersSlice";
 import { store } from "@/app/store";
 import { closeDb, initDb } from "../repository";
 import { User } from "../schemas";
-import Queue from "bull";
 import getRawBody from "raw-body";
 
 const API_PREFIX =
@@ -36,31 +35,6 @@ async function creditPoints(username: string, points: number) {
   }
 }
 
-const queue = new Queue("webhook-tasks", {
-  redis: {
-    host: process.env.REDIS_PROD_HOST,
-    port: parseInt(process.env.REDIS_PROD_PORT || ""),
-    password: process.env.REDIS_PROD_PASSWORD || "",
-  },
-});
-
-queue.process(async (job) => {
-  const { event } = job.data;
-  try {
-    if (event.type === "payment_intent.succeeded") {
-      const paymentIntent = event.data.object as any;
-      const { amount, customer } = paymentIntent;
-      const points = parseInt(amount) / 10;
-      await initDb();
-      const user = await User.findOne({ customerID: customer });
-      const { username } = user;
-      await creditPoints(username, points);
-    }
-  } catch (error: any) {
-    console.error("Error verifying webhook event:", error);
-  }
-});
-
 const WEBHOOK_SECRET =
   process.env.ENV === "DEV"
     ? process.env.STRIPE_DEV_WEBHOOK_SIGNING_SECRET
@@ -80,9 +54,6 @@ export default async function handler(
         stripeSignature,
         WEBHOOK_SECRET || ""
       );
-      // await queue.add({
-      //   event,
-      // });
       if (event.type === "payment_intent.succeeded") {
         const paymentIntent = event.data.object as any;
         const { amount, customer } = paymentIntent;
