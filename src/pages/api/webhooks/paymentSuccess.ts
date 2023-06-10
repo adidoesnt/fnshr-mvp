@@ -1,5 +1,5 @@
 import { stripe } from "../makePayment";
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 import { defaultReqConfig } from "../preflight";
 import { fetchUsers } from "@/app/features/users/usersSlice";
@@ -66,16 +66,14 @@ const WEBHOOK_SECRET =
     ? process.env.STRIPE_DEV_WEBHOOK_SIGNING_SECRET
     : process.env.STRIPE_PROD_WEBHOOK_SIGNING_SECRET;
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req: NextRequest) {
   if (req.method === "POST") {
     try {
-      const rawBody = await buffer(req);
-      const body = JSON.parse(rawBody.toString());
+      const body = await req.text();
       let event;
-      const stripeSignature = req.headers["stripe-signature"] as string;
+      const stripeSignature = req.headers.get("stripe-signature") as
+        | string
+        | string[];
       event = stripe.webhooks.constructEvent(
         body,
         stripeSignature,
@@ -84,12 +82,12 @@ export default async function handler(
       await queue.add({
         event,
       });
-      res.status(200).json({ received: true });
+      return new Response("webhook receieved", { status: 200 });
     } catch (error: any) {
       console.error("Error verifying webhook event:", error);
-      return res.status(400).send(`Webhook Error: ${error.message}`);
+      return new Response(`Webhook Error: ${error.message}`, { status: 400 });
     }
   } else {
-    res.status(405).end();
+    return new Response("", { status: 405 });
   }
 }
