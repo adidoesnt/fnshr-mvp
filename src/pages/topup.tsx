@@ -15,6 +15,7 @@ import {
   Button,
   Card,
   CardHeader,
+  Flex,
   FormControl,
   FormHelperText,
   FormLabel,
@@ -54,16 +55,25 @@ function TopupAmountSelector({
         <CardHeader>
           <Heading textAlign={"center"}>Top-up</Heading>
         </CardHeader>
+        <Heading></Heading>
+        <Flex mb={"20px"}>
+          <Text>
+            For every top-up, a <b>processing fee of $1</b> applies, allowing
+            the FNSHR team to cover our processing fees with our integrated
+            payment partner, <b>Stripe</b>.
+          </Text>
+        </Flex>
         <FormLabel>Select Amount</FormLabel>
         <FormHelperText mb={5}>
           Select the top-up amount before proceeding to checkout.
         </FormHelperText>
         <Input
           type={"range"}
-          min={1}
+          min={5}
           max={20}
+          step={5}
           onChange={(e) => setAmount(parseInt(e.target.value))}
-          defaultValue={1}
+          defaultValue={5}
           isDisabled={submitted}
         />
         <Text textAlign={"center"}>
@@ -83,7 +93,7 @@ function TopupAmountSelector({
 
 function Content({ points }: ContentProps) {
   const size = useWindowSize();
-  const [amount, setAmount] = useState(1);
+  const [amount, setAmount] = useState(5);
   const amountInCents = amount * 100;
   const [submitted, setSubmitted] = useState(false);
 
