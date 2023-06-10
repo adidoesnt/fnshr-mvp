@@ -11,6 +11,7 @@ import {
   useDisclosure,
   Heading,
   Center,
+  Divider,
 } from "@chakra-ui/react";
 
 type FAQModalProps = {
@@ -32,7 +33,13 @@ function FAQModal({ isOpen, onClose }: FAQModalProps) {
         <ModalHeader>Help and FAQ</ModalHeader>
         <ModalBody>
           <Center flexDir={"column"}>
-            <Heading fontSize={20} mt={2.5} mb={2.5}>
+            <Heading
+              w={"100%"}
+              textAlign={"left"}
+              fontSize={20}
+              mt={2.5}
+              mb={2.5}
+            >
               What is FNSHR?
             </Heading>
             <Text mb={30}>
@@ -40,13 +47,27 @@ function FAQModal({ isOpen, onClose }: FAQModalProps) {
               social and monetary accountability to facilitate improvements in
               productivity.
             </Text>
-            <Heading fontSize={20} mt={2.5} mb={2.5}>
+            <Divider />
+            <Heading
+              w={"100%"}
+              textAlign={"left"}
+              fontSize={20}
+              mt={2.5}
+              mb={2.5}
+            >
               How do you pronounce FNSHR?
             </Heading>
             <Text w={"100%"} mb={30}>
               Finisher!
             </Text>
-            <Heading fontSize={20} mt={2.5} mb={2.5}>
+            <Divider />
+            <Heading
+              w={"100%"}
+              textAlign={"left"}
+              fontSize={20}
+              mt={2.5}
+              mb={2.5}
+            >
               What is the plan for FNSHR?
             </Heading>
             <Text mb={30}>
@@ -61,7 +82,14 @@ function FAQModal({ isOpen, onClose }: FAQModalProps) {
               <br />
               This validation cycle will last <b>until July.</b>
             </Text>
-            <Heading fontSize={20} mt={2.5} mb={2.5}>
+            <Divider />
+            <Heading
+              w={"100%"}
+              textAlign={"left"}
+              fontSize={20}
+              mt={2.5}
+              mb={2.5}
+            >
               How do I use the application?
             </Heading>
             <Text mb={30}>
@@ -80,12 +108,22 @@ function FAQModal({ isOpen, onClose }: FAQModalProps) {
               </b>{" "}
               from your account.
             </Text>
-            <Heading fontSize={20} mt={2.5} mb={2.5}>
+            <Divider />
+            <Heading textAlign={"left"} fontSize={20} mt={2.5} mb={2.5}>
               What is the conversion rate between Singapore Dollars and FNSHR
               points?
             </Heading>
-            <Text w={"100%"} mb={30}>1 Singapore Dollar is 10 FNSHR points.</Text>
-            <Heading fontSize={20} mt={2.5} mb={2.5}>
+            <Text w={"100%"} mb={30}>
+              1 Singapore Dollar is 10 FNSHR points.
+            </Text>
+            <Divider />
+            <Heading
+              w={"100%"}
+              textAlign={"left"}
+              fontSize={20}
+              mt={2.5}
+              mb={2.5}
+            >
               What happens to our money?
             </Heading>
             <Text mb={30}>

@@ -4,7 +4,6 @@ import {
 } from "@/app/features/user/userSlice";
 import { store } from "@/app/store";
 import { Center, Heading, Button, Text, Flex } from "@chakra-ui/react";
-import axios from "axios";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useSelector } from "react-redux";
