@@ -72,17 +72,17 @@ export default async function handler(
     try {
       const buf = await buffer(req);
       const stripeSignature = req.headers["stripe-signature"] as string;
-      let event;
-      try {
-        event = stripe.webhooks.constructEvent(
-          buf,
-          stripeSignature,
-          WEBHOOK_SECRET || ""
-        );
-      } catch (err: any) {
-        res.status(400).send(`Webhook Error: ${err.message}`);
-        return;
-      }
+      // let event;
+      // try {
+      //   event = stripe.webhooks.constructEvent(
+      //     buf,
+      //     stripeSignature,
+      //     WEBHOOK_SECRET || ""
+      //   );
+      // } catch (err: any) {
+      //   res.status(400).send(`Webhook Error: ${err.message}`);
+      //   return;
+      // }
       // if (event.type === "payment_intent.succeeded") {
       //   await queue.add({
       //     event,
