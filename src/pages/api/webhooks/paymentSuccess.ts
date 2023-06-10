@@ -1,5 +1,5 @@
 import { stripe } from "../makePayment";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import axios from "axios";
 import { defaultReqConfig } from "../preflight";
 import { fetchUsers } from "@/app/features/users/usersSlice";
@@ -7,7 +7,6 @@ import { store } from "@/app/store";
 import { initDb } from "../repository";
 import { User } from "../schemas";
 import Queue from "bull";
-import { buffer } from "micro";
 
 const API_PREFIX =
   process.env.ENV === "PROD"
@@ -69,7 +68,13 @@ const WEBHOOK_SECRET =
 export default async function handler(req: NextRequest) {
   if (req.method === "POST") {
     try {
-      const body = await req.text();
+      const reader = req.body?.getReader();
+      let body = "";
+      while (reader && true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        body += new TextDecoder().decode(value);
+      }
       let event;
       const stripeSignature = req.headers.get("stripe-signature") as
         | string
