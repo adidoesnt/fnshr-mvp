@@ -134,7 +134,7 @@ function Content({ points }: ContentProps) {
         }}
       >
         <BackButton w={"90%"} mt={"5%"} />
-        <FnshrPoints points={points} noTopupButton />
+        <FnshrPoints points={points} noTopupButton noRefreshButton />
         {submitted ? null : (
           <TopupAmountSelector
             amount={amount}
