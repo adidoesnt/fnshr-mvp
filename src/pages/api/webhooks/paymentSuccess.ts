@@ -13,12 +13,6 @@ const API_PREFIX =
     ? process.env.CLOUD_API_PREFIX
     : process.env.LOCAL_API_PREFIX;
 
-export const config = {
-  api: {
-    bodyParser: false
-  },
-};
-
 async function creditPoints(username: string, points: number) {
   const URI = `${API_PREFIX}creditPoints`;
   try {
