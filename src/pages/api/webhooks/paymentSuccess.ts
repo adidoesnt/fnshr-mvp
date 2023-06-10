@@ -69,24 +69,24 @@ export default async function handler(
 ) {
   if (req.method === "POST") {
     try {
-      const buf = await new Promise<Buffer>((resolve, reject) => {
-        let body = Buffer.alloc(0);
-        req.on('data', (chunk) => (body = Buffer.concat([body, chunk])));
-        req.on('end', () => resolve(body));
-        req.on('error', reject);
-      });
-      const event = buf.toString();
-      const stripeSignature = req.headers["stripe-signature"] as string;
-      const webhookEvent = stripe.webhooks.constructEvent(
-        event,
-        stripeSignature,
-        WEBHOOK_SECRET || ""
-      );
-      if (webhookEvent.type === "payment_intent.succeeded") {
-        await queue.add({
-          event,
-        });
-      }
+      // const buf = await new Promise<Buffer>((resolve, reject) => {
+      //   let body = Buffer.alloc(0);
+      //   req.on('data', (chunk) => (body = Buffer.concat([body, chunk])));
+      //   req.on('end', () => resolve(body));
+      //   req.on('error', reject);
+      // });
+      // const event = buf.toString();
+      // const stripeSignature = req.headers["stripe-signature"] as string;
+      // const webhookEvent = stripe.webhooks.constructEvent(
+      //   event,
+      //   stripeSignature,
+      //   WEBHOOK_SECRET || ""
+      // );
+      // if (webhookEvent.type === "payment_intent.succeeded") {
+      //   await queue.add({
+      //     event,
+      //   });
+      // }
       res.status(200).json({ received: true });
     } catch (error: any) {
       console.error("Error verifying webhook event:", error);
