@@ -7,11 +7,18 @@ import { store } from "@/app/store";
 import { initDb } from "../repository";
 import { User } from "../schemas";
 import Queue from "bull";
+import { buffer } from "micro";
 
 const API_PREFIX =
   process.env.ENV === "PROD"
     ? process.env.CLOUD_API_PREFIX
     : process.env.LOCAL_API_PREFIX;
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
 
 async function creditPoints(username: string, points: number) {
   const URI = `${API_PREFIX}creditPoints`;
@@ -65,10 +72,12 @@ export default async function handler(
 ) {
   if (req.method === "POST") {
     try {
+      const rawBody = await buffer(req);
+      const body = JSON.parse(rawBody.toString());
       let event;
       const stripeSignature = req.headers["stripe-signature"] as string;
       event = stripe.webhooks.constructEvent(
-        req.body,
+        body,
         stripeSignature,
         WEBHOOK_SECRET || ""
       );

@@ -31,6 +31,7 @@
     "firebase": "^9.22.1",
     "framer-motion": "^10.12.12",
     "image-compressor.js": "^1.1.4",
+    "micro": "^10.0.1",
     "mongoose": "^7.2.0",
     "next": "13.4.3",
     "react": "18.2.0",
