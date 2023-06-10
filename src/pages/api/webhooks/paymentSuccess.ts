@@ -7,6 +7,7 @@ import { store } from "@/app/store";
 import { initDb } from "../repository";
 import { User } from "../schemas";
 import Queue from "bull";
+import { buffer } from "micro";
 
 const API_PREFIX =
   process.env.ENV === "PROD"
@@ -69,20 +70,20 @@ export default async function handler(
 ) {
   if (req.method === "POST") {
     try {
-      const buf = await new Promise<Buffer>((resolve, reject) => {
-        let body = Buffer.alloc(0);
-        req.on("data", (chunk) => (body = Buffer.concat([body, chunk])));
-        req.on("end", () => resolve(body));
-        req.on("error", reject);
-      });
-      const event = buf.toString("utf8");
-      // const stripeSignature = req.headers["stripe-signature"] as string;
-      // const webhookEvent = stripe.webhooks.constructEvent(
-      //   event,
-      //   stripeSignature,
-      //   WEBHOOK_SECRET || ""
-      // );
-      // if (webhookEvent.type === "payment_intent.succeeded") {
+      const buf = await buffer(req);
+      const stripeSignature = req.headers["stripe-signature"] as string;
+      let event;
+      try {
+        event = stripe.webhooks.constructEvent(
+          buf,
+          stripeSignature,
+          WEBHOOK_SECRET || ""
+        );
+      } catch (err: any) {
+        res.status(400).send(`Webhook Error: ${err.message}`);
+        return;
+      }
+      // if (event.type === "payment_intent.succeeded") {
       //   await queue.add({
       //     event,
       //   });
