@@ -7,7 +7,7 @@ import { store } from "@/app/store";
 import { initDb } from "../repository";
 import { User } from "../schemas";
 import Queue from "bull";
-import { buffer } from "micro";
+import bodyParser from "body-parser";
 
 const API_PREFIX =
   process.env.ENV === "PROD"
@@ -38,12 +38,8 @@ const queue = new Queue("webhook-tasks", {
   },
 });
 
-interface WebhookTask {
-  event: any;
-}
-
 queue.process(async (job) => {
-  const { event }: WebhookTask = job.data;
+  const { event } = job.data;
   try {
     if (event.type === "payment_intent.succeeded") {
       const paymentIntent = event.data.object as any;
@@ -64,30 +60,32 @@ const WEBHOOK_SECRET =
     ? process.env.STRIPE_DEV_WEBHOOK_SIGNING_SECRET
     : process.env.STRIPE_PROD_WEBHOOK_SIGNING_SECRET;
 
+const jsonParser = bodyParser.json();
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   if (req.method === "POST") {
     try {
-      // const buf = await buffer(req);
-      const stripeSignature = req.headers["stripe-signature"] as string;
-      // let event;
-      // try {
-      //   event = stripe.webhooks.constructEvent(
-      //     buf,
-      //     stripeSignature,
-      //     WEBHOOK_SECRET || ""
-      //   );
-      // } catch (err: any) {
-      //   res.status(400).send(`Webhook Error: ${err.message}`);
-      //   return;
-      // }
-      // if (event.type === "payment_intent.succeeded") {
-      //   await queue.add({
-      //     event,
-      //   });
-      // }
+      jsonParser(req, res, async (err: any) => {
+        if (err) {
+          console.error("Error parsing request body:", err);
+          return res.status(400).send(`Webhook Error: ${err.message}`);
+        }
+        let event;
+        const { body } = req;
+        const stripeSignature = req.headers["stripe-signature"] as string;
+        event = stripe.webhooks.constructEvent(
+          body,
+          stripeSignature,
+          WEBHOOK_SECRET || ""
+        );
+        await queue.add({
+          event,
+        });
+        res.status(200).json({ received: true });
+      });
       res.status(200).json({ received: true });
     } catch (error: any) {
       console.error("Error verifying webhook event:", error);
