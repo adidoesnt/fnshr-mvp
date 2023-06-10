@@ -11,6 +11,10 @@ import theme from "@/app/theme";
 import { fetchNotifications } from "@/app/features/notifications/notificationsSlice";
 import { Toaster } from "react-hot-toast";
 
+if (process.env.NEXT_PUBLIC_ENV !== "DEV") {
+  console.log = function () {};
+}
+
 store.dispatch(markTasksOverdue()).then(() => {
   store.dispatch(fetchUsers()).then(() => {
     store.dispatch(fetchTasks()).then(() => {
@@ -53,7 +57,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <Toaster/>
+        <Toaster />
         <ChakraProvider theme={theme}>
           {isMobile && isPortrait ? (
             <div

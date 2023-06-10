@@ -1,10 +1,13 @@
 import { useSelector } from "react-redux";
-import { fetchGlobalUser, selectGlobalUser } from "@/app/features/user/userSlice";
+import {
+  fetchGlobalUser,
+  selectGlobalUser,
+} from "@/app/features/user/userSlice";
 import Head from "next/head";
 import FnshrPoints from "@/components/FnshrPoints";
 import { useRouter } from "next/router";
 import Loading from "@/components/Loading";
-import { Button, Flex, Text } from "@chakra-ui/react";
+import { Button, Card, Center, Flex, Heading, Text } from "@chakra-ui/react";
 import { AddIcon, SearchIcon, ViewIcon } from "@chakra-ui/icons";
 import YourTasks, { YourTasksProps } from "@/components/YourTasks";
 import FriendsTasks from "@/components/FriendsTasks";
@@ -14,6 +17,7 @@ import { useWindowSize } from "@/app/hooks";
 import Callouts from "@/components/Callouts";
 import { persistor, store } from "@/app/store";
 import Notifications from "@/components/Notifications";
+import FAQ from "@/components/FAQ";
 
 type ContentProps = YourTasksProps & {
   points: number;
@@ -115,6 +119,7 @@ function Content({ username, points, friends }: ContentProps) {
         <AddTaskButton />
         <YourTasks username={username} />
         <FriendsTasks friends={friends} />
+        <FAQ />
       </main>
     </>
   );
@@ -132,11 +137,7 @@ export default function Home() {
   }
 
   return auth ? (
-    <Content
-      username={username}
-      points={points}
-      friends={friends}
-    />
+    <Content username={username} points={points} friends={friends} />
   ) : (
     <Loading />
   );
