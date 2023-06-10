@@ -80,9 +80,18 @@ export default async function handler(
         stripeSignature,
         WEBHOOK_SECRET || ""
       );
-      await queue.add({
-        event,
-      });
+      // await queue.add({
+      //   event,
+      // });
+      if (event.type === "payment_intent.succeeded") {
+        const paymentIntent = event.data.object as any;
+        const { amount, customer } = paymentIntent;
+        const points = parseInt(amount) / 10;
+        await initDb();
+        const user = await User.findOne({ customerID: customer });
+        const { username } = user;
+        await creditPoints(username, points);
+      }
       res.status(200).json({ received: true });
     } catch (error: any) {
       console.error("Error verifying webhook event:", error);
