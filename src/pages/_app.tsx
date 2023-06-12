@@ -6,7 +6,6 @@ import { PersistGate } from "redux-persist/integration/react";
 import { Provider } from "react-redux";
 import { fetchTasks, markTasksOverdue } from "@/app/features/tasks/tasksSlice";
 import { fetchUsers } from "@/app/features/users/usersSlice";
-import { useWindowSize } from "@/app/hooks";
 import theme from "@/app/theme";
 import { fetchNotifications } from "@/app/features/notifications/notificationsSlice";
 import { Toaster } from "react-hot-toast";
@@ -34,8 +33,7 @@ setInterval(() => {
 
 export default function App({ Component, pageProps }: AppProps) {
   const [isMobile, setIsMobile] = useState(false);
-  const size = useWindowSize();
-  const isPortrait = size.width < size.height;
+  const [isPortrait, setIsPortrait] = useState(false);
 
   const handleResize = () => {
     require("events").EventEmitter.defaultMaxListeners = 15;
@@ -44,6 +42,7 @@ export default function App({ Component, pageProps }: AppProps) {
         navigator.userAgent
       )
     );
+    setIsPortrait(window.orientation === 0);
   };
 
   useEffect(() => {
