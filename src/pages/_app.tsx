@@ -42,14 +42,16 @@ export default function App({ Component, pageProps }: AppProps) {
         navigator.userAgent
       )
     );
-    setIsPortrait(window.orientation === 0);
+    setIsPortrait(window.matchMedia("(orientation: portrait)").matches);
   };
 
   useEffect(() => {
     handleResize();
     window.addEventListener("resize", handleResize);
+    window.addEventListener("orientationchange", handleResize);
     return () => {
       window.removeEventListener("resize", handleResize);
+      window.removeEventListener("orientationchange", handleResize);
     };
   }, []);
 
