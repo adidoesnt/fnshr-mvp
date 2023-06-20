@@ -33,7 +33,6 @@ setInterval(() => {
 
 export default function App({ Component, pageProps }: AppProps) {
   const [isMobile, setIsMobile] = useState(false);
-  const [isPortrait, setIsPortrait] = useState(false);
 
   const handleResize = () => {
     require("events").EventEmitter.defaultMaxListeners = 15;
@@ -42,7 +41,6 @@ export default function App({ Component, pageProps }: AppProps) {
         navigator.userAgent
       )
     );
-    setIsPortrait(window.matchMedia("(orientation: portrait)").matches);
   };
 
   useEffect(() => {
@@ -60,7 +58,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <PersistGate loading={null} persistor={persistor}>
         <Toaster />
         <ChakraProvider theme={theme}>
-          {isMobile && isPortrait ? (
+          {isMobile ? (
             <div
               style={{
                 background: `linear-gradient(to right, ${theme.colors.primary}, ${theme.colors.secondary})`,
@@ -82,8 +80,7 @@ export default function App({ Component, pageProps }: AppProps) {
                 color: "white",
               }}
             >
-              The Fnshr web-app is currently only supported on mobile browsers,
-              in portrait orientation.
+              The Fnshr web-app is currently only supported on mobile browsers.
             </div>
           )}
         </ChakraProvider>
